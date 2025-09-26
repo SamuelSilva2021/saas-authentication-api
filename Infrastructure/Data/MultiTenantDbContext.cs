@@ -3,6 +3,7 @@ using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using Authenticator.API.Core.Domain.MultiTenant.TenantProduct;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Authenticator.API.Infrastructure.Data;
 
@@ -38,7 +39,13 @@ public class MultiTenantDbContext : DbContext
             entity.Property(e => e.Slug).HasColumnName("slug");
             entity.Property(e => e.Domain).HasColumnName("domain");
             entity.Property(e => e.Status).HasColumnName("status");
-            entity.Property(e => e.Settings).HasColumnName("settings").HasColumnType("jsonb");
+
+            entity.Property(e => e.Settings)
+            .HasColumnName("settings").HasColumnType("jsonb")
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
+                v => JsonSerializer.Deserialize<Dictionary<string, object>>(v, new JsonSerializerOptions()) ?? new Dictionary<string, object>());
+
             entity.Property(e => e.ActiveSubscriptionId).HasColumnName("active_subscription_id");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
@@ -85,6 +92,9 @@ public class MultiTenantDbContext : DbContext
             entity.HasOne(d => d.ActiveSubscription)
                 .WithMany()
                 .HasForeignKey(d => d.ActiveSubscriptionId);
+
+            
+
         });
 
         // Configuração da tabela Products
