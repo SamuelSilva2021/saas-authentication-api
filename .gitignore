@@ -58,3 +58,4 @@ nunit-*.xml
 /.vs/Authenticator.API/DesignTimeBuild
 /.vs/Authenticator.API/config
 /.vs/Authenticator.API/v17
+/Migrations
