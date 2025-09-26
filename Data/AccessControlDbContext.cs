@@ -1,4 +1,13 @@
-using Authenticator.API.Entities;
+using Authenticator.API.Core.Domain.AccessControl.AccessGroups;
+using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups;
+using Authenticator.API.Core.Domain.AccessControl.Applications;
+using Authenticator.API.Core.Domain.AccessControl.Modules;
+using Authenticator.API.Core.Domain.AccessControl.Operations;
+using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
+using Authenticator.API.Core.Domain.AccessControl.Permissions;
+using Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
+using Authenticator.API.Core.Domain.AccessControl.Roles;
+using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Authenticator.API.Data;
@@ -13,20 +22,20 @@ public class AccessControlDbContext : DbContext
     {
     }
 
-    public DbSet<UserAccount> UserAccounts { get; set; }
-    public DbSet<AccessGroup> AccessGroups { get; set; }
-    public DbSet<AccountAccessGroup> AccountAccessGroups { get; set; }
-    public DbSet<Role> Roles { get; set; }
-    public DbSet<RoleAccessGroup> RoleAccessGroups { get; set; }
-    public DbSet<Permission> Permissions { get; set; }
-    public DbSet<Operation> Operations { get; set; }
-    public DbSet<PermissionOperation> PermissionOperations { get; set; }   
-    public DbSet<Application> Applications { get; set; }
-    public DbSet<Module> Modules { get; set; }
+    public DbSet<UserAccountEntity> UserAccounts { get; set; }
+    public DbSet<AccessGroupEntity> AccessGroups { get; set; }
+    public DbSet<AccountAccessGroupEntity> AccountAccessGroups { get; set; }
+    public DbSet<RoleEntity> Roles { get; set; }
+    public DbSet<RoleAccessGroupEntity> RoleAccessGroups { get; set; }
+    public DbSet<PermissionEntity> Permissions { get; set; }
+    public DbSet<OperationEntity> Operations { get; set; }
+    public DbSet<PermissionOperationEntity> PermissionOperations { get; set; }   
+    public DbSet<ApplicationEntity> Applications { get; set; }
+    public DbSet<ModuleEntity> Modules { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<UserAccount>(entity =>
+        modelBuilder.Entity<UserAccountEntity>(entity =>
         {
             entity.ToTable("user_account");
             entity.HasKey(e => e.Id);
@@ -51,7 +60,7 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
         });
 
-        modelBuilder.Entity<AccessGroup>(entity =>
+        modelBuilder.Entity<AccessGroupEntity>(entity =>
         {
             entity.ToTable("access_group");
             entity.HasKey(e => e.Id);
@@ -69,7 +78,7 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
         });
 
-        modelBuilder.Entity<AccountAccessGroup>(entity =>
+        modelBuilder.Entity<AccountAccessGroupEntity>(entity =>
         {
             entity.ToTable("account_access_group");
             entity.HasKey(e => e.Id);
@@ -97,7 +106,7 @@ public class AccessControlDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
-        modelBuilder.Entity<Role>(entity =>
+        modelBuilder.Entity<RoleEntity>(entity =>
         {
             entity.ToTable("role");
             entity.HasKey(e => e.Id);
@@ -116,7 +125,7 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
         });
 
-        modelBuilder.Entity<RoleAccessGroup>(entity =>
+        modelBuilder.Entity<RoleAccessGroupEntity>(entity =>
         {
             entity.ToTable("role_access_group");
             entity.HasKey(e => e.Id);
@@ -143,7 +152,7 @@ public class AccessControlDbContext : DbContext
         });
 
 
-        modelBuilder.Entity<Application>(entity =>
+        modelBuilder.Entity<ApplicationEntity>(entity =>
         {
             entity.ToTable("application");
             entity.HasKey(e => e.Id);
@@ -161,7 +170,7 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
         });
 
-        modelBuilder.Entity<Module>(entity =>
+        modelBuilder.Entity<ModuleEntity>(entity =>
         {
             entity.ToTable("module");
             entity.HasKey(e => e.Id);
@@ -187,7 +196,7 @@ public class AccessControlDbContext : DbContext
                 .OnDelete(DeleteBehavior.SetNull);
         });
 
-        modelBuilder.Entity<Permission>(entity =>
+        modelBuilder.Entity<PermissionEntity>(entity =>
         {
             entity.ToTable("permission");
             entity.HasKey(e => e.Id);
@@ -213,7 +222,7 @@ public class AccessControlDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
-        modelBuilder.Entity<Operation>(entity =>
+        modelBuilder.Entity<OperationEntity>(entity =>
         {
             entity.ToTable("operation");
             entity.HasKey(e => e.Id);
@@ -229,7 +238,7 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
         });
 
-        modelBuilder.Entity<PermissionOperation>(entity =>
+        modelBuilder.Entity<PermissionOperationEntity>(entity =>
         {
             entity.ToTable("permission_operation");
             entity.HasKey(e => e.Id);

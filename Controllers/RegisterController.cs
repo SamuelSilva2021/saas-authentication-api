@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using Authenticator.API.Data;
-using Authenticator.API.Entities;
-using Authenticator.API.Models;
-using Authenticator.API.Services;
+using Authenticator.API.Core.Domain.Api;
+using Authenticator.API.Core.Application.Interfaces;
+using Authenticator.API.Core.Domain.MultiTenant.Tenant;
+using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
 
 namespace Authenticator.API.Controllers;
 
@@ -86,7 +87,7 @@ public class RegisterController : ControllerBase
             try
             {
                 // 1. Criar o Tenant
-                var tenant = new Tenant
+                var tenant = new TenantEntity
                 {
                     Id = Guid.NewGuid(),
                     Name = request.CompanyName,
@@ -117,7 +118,7 @@ public class RegisterController : ControllerBase
                 var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
                 var username = await GenerateUniqueUsernameAsync(request.Email);
 
-                var adminUser = new UserAccount
+                var adminUser = new UserAccountEntity
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenant.Id,

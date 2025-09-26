@@ -1,5 +1,6 @@
+using Authenticator.API.Core.Application.Implementation;
+using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Data;
-using Authenticator.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

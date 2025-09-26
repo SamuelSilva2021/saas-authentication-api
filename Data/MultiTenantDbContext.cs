@@ -1,4 +1,7 @@
-using Authenticator.API.Entities;
+using Authenticator.API.Core.Domain.MultiTenant.Plan;
+using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
+using Authenticator.API.Core.Domain.MultiTenant.Tenant;
+using Authenticator.API.Core.Domain.MultiTenant.TenantProduct;
 using Microsoft.EntityFrameworkCore;
 
 namespace Authenticator.API.Data;
@@ -14,15 +17,15 @@ public class MultiTenantDbContext : DbContext
     }
 
     // DbSets das entidades
-    public DbSet<Tenant> Tenants { get; set; }
-    public DbSet<TenantProduct> Products { get; set; }
-    public DbSet<Plan> Plans { get; set; }
-    public DbSet<Subscription> Subscriptions { get; set; }
+    public DbSet<TenantEntity> Tenants { get; set; }
+    public DbSet<TenantProductEntity> Products { get; set; }
+    public DbSet<PlanEntity> Plans { get; set; }
+    public DbSet<SubscriptionEnity> Subscriptions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Configuração da tabela Tenants
-        modelBuilder.Entity<Tenant>(entity =>
+        modelBuilder.Entity<TenantEntity>(entity =>
         {
             entity.ToTable("tenants");
             entity.HasKey(e => e.Id);
@@ -85,7 +88,7 @@ public class MultiTenantDbContext : DbContext
         });
 
         // Configuração da tabela Products
-        modelBuilder.Entity<TenantProduct>(entity =>
+        modelBuilder.Entity<TenantProductEntity>(entity =>
         {
             entity.ToTable("products");
             entity.HasKey(e => e.Id);
@@ -107,7 +110,7 @@ public class MultiTenantDbContext : DbContext
         });
 
         // Configuração da tabela Plans
-        modelBuilder.Entity<Plan>(entity =>
+        modelBuilder.Entity<PlanEntity>(entity =>
         {
             entity.ToTable("plans");
             entity.HasKey(e => e.Id);
@@ -131,7 +134,7 @@ public class MultiTenantDbContext : DbContext
         });
 
         // Configuração da tabela Subscriptions
-        modelBuilder.Entity<Subscription>(entity =>
+        modelBuilder.Entity<SubscriptionEnity>(entity =>
         {
             entity.ToTable("subscriptions");
             entity.HasKey(e => e.Id);

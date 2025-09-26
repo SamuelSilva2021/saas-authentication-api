@@ -1,5 +1,5 @@
-using Authenticator.API.Models;
-using Authenticator.API.Services;
+using Authenticator.API.Core.Application.Interfaces;
+using Authenticator.API.Core.Domain.Api;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -30,20 +30,6 @@ public class AuthController : ControllerBase
     /// </summary>
     /// <param name="request">Dados de login</param>
     /// <returns>Token JWT e informações do usuário</returns>
-    /// <remarks>
-    /// Exemplo de uso:
-    /// 
-    ///     POST /api/auth/login
-    ///     {
-    ///         "usernameOrEmail": "admin@pedeja.com",
-    ///         "password": "senha123",
-    ///     }
-    ///     
-    /// O endpoint retorna:
-    /// - **AccessToken**: Token JWT para autenticação (válido por 30 minutos)
-    /// - **RefreshToken**: Token para renovação (válido por 7 dias) 
-    /// - **User**: Informações completas do usuário incluindo permissões
-    /// </remarks>
     [HttpPost("login")]
     [AllowAnonymous]
     [SwaggerOperation(

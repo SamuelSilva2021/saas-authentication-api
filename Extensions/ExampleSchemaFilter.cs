@@ -1,7 +1,7 @@
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Authenticator.API.Models;
+using Authenticator.API.Core.Domain.Api;
 
 namespace Authenticator.API.Extensions;
 
@@ -18,7 +18,6 @@ public class ExampleSchemaFilter : ISchemaFilter
             {
                 ["usernameOrEmail"] = new OpenApiString("admin@pedeja.com"),
                 ["password"] = new OpenApiString("senha123"),
-                ["tenantSlug"] = new OpenApiString("restaurante-exemplo")
             };
         }
         else if (context.Type == typeof(RefreshTokenRequest))
