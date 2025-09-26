@@ -1,5 +1,6 @@
 using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
+using Authenticator.API.Core.Domain.Api;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -24,7 +25,15 @@ public class JwtTokenService : IJwtTokenService
         _logger = logger;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gera um token JWT para o usuário
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="tenant"></param>
+    /// <param name="accessGroups"></param>
+    /// <param name="roles"></param>
+    /// <param name="permissions"></param>
+    /// <returns></returns>
     public string GenerateAccessToken(UserAccountEntity user, TenantEntity? tenant, List<string> accessGroups, List<string> roles, List<string> permissions)
     {
         try
@@ -40,7 +49,6 @@ public class JwtTokenService : IJwtTokenService
                 new("email", user.Email)
             };
 
-            // Adiciona informações do tenant se disponível
             if (tenant != null)
             {
                 claims.Add(new Claim("tenant_id", tenant.Id.ToString()));
@@ -48,23 +56,14 @@ public class JwtTokenService : IJwtTokenService
                 claims.Add(new Claim("tenant_name", tenant.Name));
             }
 
-            // Adiciona grupos de acesso
             foreach (var group in accessGroups)
-            {
-                claims.Add(new Claim("access_group", group));
-            }
+                claims.Add(new Claim("access_group", group));            
 
-            // Adiciona roles
             foreach (var role in roles)
-            {
                 claims.Add(new Claim(ClaimTypes.Role, role));
-            }
 
-            // Adiciona permissões
             foreach (var permission in permissions)
-            {
                 claims.Add(new Claim("permission", permission));
-            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -86,7 +85,10 @@ public class JwtTokenService : IJwtTokenService
         }
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gera um refresh token
+    /// </summary>
+    /// <returns></returns>
     public string GenerateRefreshToken()
     {
         var randomNumber = new byte[32];
@@ -95,7 +97,11 @@ public class JwtTokenService : IJwtTokenService
         return Convert.ToBase64String(randomNumber);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Obtém os claims de um token JWT válido
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public ClaimsPrincipal? GetPrincipalFromToken(string token)
     {
         try
@@ -125,7 +131,11 @@ public class JwtTokenService : IJwtTokenService
         }
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Valida um token JWT
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public bool ValidateToken(string token)
     {
         try
@@ -155,21 +165,9 @@ public class JwtTokenService : IJwtTokenService
         }
     }
 
-    /// <inheritdoc />
-    public int GetTokenExpirationTime()
-    {
-        return _jwtSettings.AccessTokenExpirationMinutes * 60; // Retorna em segundos
-    }
-}
-
-/// <summary>
-/// Configurações do JWT
-/// </summary>
-public class JwtSettings
-{
-    public string SecretKey { get; set; } = string.Empty;
-    public string Issuer { get; set; } = string.Empty;
-    public string Audience { get; set; } = string.Empty;
-    public int AccessTokenExpirationMinutes { get; set; } = 30;
-    public int RefreshTokenExpirationDays { get; set; } = 7;
+    /// <summary>
+    /// Obtém o tempo de expiração configurado para tokens (em segundos)
+    /// </summary>
+    /// <returns></returns>
+    public int GetTokenExpirationTime() =>  _jwtSettings.AccessTokenExpirationMinutes * 60; 
 }

@@ -1,5 +1,6 @@
 using Authenticator.API.Core.Application.Implementation;
 using Authenticator.API.Core.Application.Interfaces;
+using Authenticator.API.Core.Domain.Api;
 using Authenticator.API.Infrastructure.Data;
 using Authenticator.API.Infrastructure.Providers;
 using Authenticator.API.Infrastructure.Repositories;
@@ -150,14 +151,14 @@ public static class ServiceCollectionExtensions
                 In = ParameterLocation.Header,
                 Description = @"Autenticação JWT usando o esquema Bearer.
                 
-**Como usar:**
-1. Faça login no endpoint `/api/auth/login`
-2. Copie o `accessToken` da resposta
-3. Cole o token no campo abaixo (apenas o token, sem 'Bearer ')
-4. Clique em 'Authorize' e teste os endpoints protegidos
-
-**Exemplo de token:**
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    **Como usar:**
+                    1. Faça login no endpoint `/api/auth/login`
+                    2. Copie o `accessToken` da resposta
+                    3. Cole o token no campo abaixo (apenas o token, sem 'Bearer ')
+                    4. Clique em 'Authorize' e teste os endpoints protegidos
+                    
+                    **Exemplo de token:**
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
             });
 
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
