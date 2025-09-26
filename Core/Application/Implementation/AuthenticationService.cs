@@ -18,6 +18,7 @@ public class AuthenticationService : IAuthenticationService
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IMemoryCache _cache;
     private readonly ILogger<AuthenticationService> _logger;
+    private readonly IUserAccountsRepository _userAccountsRepository;
 
     // Chaves para cache
     private const string REFRESH_TOKENS_CACHE_KEY = "refresh_tokens";
@@ -28,26 +29,32 @@ public class AuthenticationService : IAuthenticationService
         MultiTenantDbContext multiTenantContext,
         IJwtTokenService jwtTokenService,
         IMemoryCache cache,
-        ILogger<AuthenticationService> logger)
+        ILogger<AuthenticationService> logger,
+        IUserAccountsRepository userAccountsRepository
+        )
     {
         _accessControlContext = accessControlContext;
         _multiTenantContext = multiTenantContext;
         _jwtTokenService = jwtTokenService;
         _cache = cache;
         _logger = logger;
+        _userAccountsRepository = userAccountsRepository;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Autentica um usuário com username/email e senha
+    /// </summary>
+    /// <param name="usernameOrEmail"></param>
+    /// <param name="password"></param>
+    /// <returns></returns>
     public async Task<ApiResponse<LoginResponse>> LoginAsync(string usernameOrEmail, string password)
     {
         try
         {
             _logger.LogInformation("Tentativa de login para: {UsernameOrEmail}", usernameOrEmail);
-
-            var user = await _accessControlContext.UserAccounts
-                .Where(u => (u.Username == usernameOrEmail || u.Email == usernameOrEmail)
-                           && u.IsActive && u.DeletedAt == null)
-                .FirstOrDefaultAsync();
+            var user = await _userAccountsRepository.FirstOrDefaultAsync(u =>
+                (u.Username.ToLower() == usernameOrEmail.ToLower() || u.Email.ToLower() == usernameOrEmail.ToLower()) &&
+                u.IsActive && u.DeletedAt == null);
 
             if (user == null)
             {
@@ -110,7 +117,11 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Renova o token de acesso usando o refresh token
+    /// </summary>
+    /// <param name="refreshToken"></param>
+    /// <returns></returns>
     public async Task<ApiResponse<LoginResponse>> RefreshTokenAsync(string refreshToken)
     {
         try
@@ -186,7 +197,11 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Revoga o refresh token (logout)
+    /// </summary>
+    /// <param name="refreshToken"></param>
+    /// <returns></returns>
     public async Task<ApiResponse<bool>> RevokeTokenAsync(string refreshToken)
     {
         try
@@ -202,7 +217,12 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Obtém informações do usuário pelo token JWT
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="tenantSlug"></param>
+    /// <returns></returns>
     public async Task<ApiResponse<UserInfo>> GetUserInfoAsync(Guid userId, string? tenantSlug = null)
     {
         try
@@ -265,14 +285,21 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    /// <inheritdoc />
-    public async Task<bool> ValidateTokenAsync(string token)
-    {
-        return await Task.FromResult(_jwtTokenService.ValidateToken(token));
-    }
+    /// <summary>
+    /// Valida se o token JWT é válido
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task<bool> ValidateTokenAsync(string token) =>
+        await Task.FromResult(_jwtTokenService.ValidateToken(token));
 
     #region Métodos auxiliares privados
 
+    /// <summary>
+    /// Obtém os grupos de acesso do usuário
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     private async Task<List<string>> GetUserAccessGroupsAsync(Guid userId)
     {
         return await _accessControlContext.AccountAccessGroups
@@ -283,6 +310,11 @@ public class AuthenticationService : IAuthenticationService
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Obtém as roles do usuário com base nos grupos de acesso
+    /// </summary>
+    /// <param name="accessGroups"></param>
+    /// <returns></returns>
     private async Task<List<string>> GetUserRolesAsync(List<string> accessGroups)
     {
         return await _accessControlContext.RoleAccessGroups
@@ -294,6 +326,11 @@ public class AuthenticationService : IAuthenticationService
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Obtém as permissões do usuário com base nas roles
+    /// </summary>
+    /// <param name="roles"></param>
+    /// <returns></returns>
     private async Task<List<string>> GetUserPermissionsAsync(List<string> roles)
     {
         return await _accessControlContext.Permissions
@@ -305,6 +342,13 @@ public class AuthenticationService : IAuthenticationService
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Armazena o refresh token em cache
+    /// </summary>
+    /// <param name="refreshToken"></param>
+    /// <param name="userId"></param>
+    /// <param name="tenantId"></param>
+    /// <returns></returns>
     private async Task StoreRefreshTokenAsync(string refreshToken, Guid userId, Guid? tenantId)
     {
         var tokenData = new RefreshTokenData
@@ -326,6 +370,11 @@ public class AuthenticationService : IAuthenticationService
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Obtém os dados do refresh token do cache
+    /// </summary>
+    /// <param name="refreshToken"></param>
+    /// <returns></returns>
     private async Task<RefreshTokenData?> GetRefreshTokenDataAsync(string refreshToken)
     {
         if (_cache.TryGetValue(REFRESH_TOKENS_CACHE_KEY, out Dictionary<string, RefreshTokenData>? tokens))
@@ -346,6 +395,11 @@ public class AuthenticationService : IAuthenticationService
         return await Task.FromResult<RefreshTokenData?>(null);
     }
 
+    /// <summary>
+    /// Revoga o refresh token removendo do cache
+    /// </summary>
+    /// <param name="refreshToken"></param>
+    /// <returns></returns>
     private async Task RevokeRefreshTokenAsync(string refreshToken)
     {
         if (_cache.TryGetValue(REFRESH_TOKENS_CACHE_KEY, out Dictionary<string, RefreshTokenData>? tokens))
@@ -358,15 +412,4 @@ public class AuthenticationService : IAuthenticationService
     }
 
     #endregion
-}
-
-/// <summary>
-/// Dados do refresh token para cache
-/// </summary>
-internal class RefreshTokenData
-{
-    public Guid UserId { get; set; }
-    public Guid? TenantId { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime ExpiresAt { get; set; }
 }

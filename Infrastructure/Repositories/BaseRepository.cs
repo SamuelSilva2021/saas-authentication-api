@@ -9,13 +9,13 @@ namespace Authenticator.API.Infrastructure.Repositories
     /// Implementação genérica do repositório usando Entity Framework Core
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Repository<T> : IRepository<T> where T : class
+    public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         private readonly IDbContextProvider _dbContextProvider;
         private readonly DbContext _context;
         private readonly DbSet<T> _dbSet;
 
-        public Repository(IDbContextProvider dbContextProvider)
+        public BaseRepository(IDbContextProvider dbContextProvider)
         {
             _dbContextProvider = dbContextProvider;
             _context = _dbContextProvider.GetContext<T>();

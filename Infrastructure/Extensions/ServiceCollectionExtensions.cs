@@ -102,7 +102,7 @@ public static class ServiceCollectionExtensions
 
         // Configuração do Repository dinâmico
         services.AddScoped<IDbContextProvider, DbContextProvider>();
-        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
         services.AddMemoryCache();
 

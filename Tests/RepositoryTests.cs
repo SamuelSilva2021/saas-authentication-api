@@ -65,7 +65,7 @@ namespace Authenticator.API.Tests
             var accessControlContext = GetAccessControlInMemoryContext();
             var multiTenantContext = GetMultiTenantInMemoryContext();
             var provider = new DbContextProvider(accessControlContext, multiTenantContext);
-            var repository = new Repository<UserAccountEntity>(provider);
+            var repository = new BaseRepository<UserAccountEntity>(provider);
 
             var userAccount = new UserAccountEntity
             {
@@ -97,7 +97,7 @@ namespace Authenticator.API.Tests
             var accessControlContext = GetAccessControlInMemoryContext();
             var multiTenantContext = GetMultiTenantInMemoryContext();
             var provider = new DbContextProvider(accessControlContext, multiTenantContext);
-            var repository = new Repository<TenantEntity>(provider);
+            var repository = new BaseRepository<TenantEntity>(provider);
 
             var tenant = new TenantEntity
             {
@@ -128,7 +128,7 @@ namespace Authenticator.API.Tests
             var accessControlContext = GetAccessControlInMemoryContext();
             var multiTenantContext = GetMultiTenantInMemoryContext();
             var provider = new DbContextProvider(accessControlContext, multiTenantContext);
-            var repository = new Repository<UserAccountEntity>(provider);
+            var repository = new BaseRepository<UserAccountEntity>(provider);
 
             var userAccount1 = new UserAccountEntity
             {
@@ -175,7 +175,7 @@ namespace Authenticator.API.Tests
             var accessControlContext = GetAccessControlInMemoryContext();
             var multiTenantContext = GetMultiTenantInMemoryContext();
             var provider = new DbContextProvider(accessControlContext, multiTenantContext);
-            var repository = new Repository<UserAccountEntity>(provider);
+            var repository = new BaseRepository<UserAccountEntity>(provider);
 
             var userAccount = new UserAccountEntity
             {
@@ -207,7 +207,7 @@ namespace Authenticator.API.Tests
             var accessControlContext = GetAccessControlInMemoryContext();
             var multiTenantContext = GetMultiTenantInMemoryContext();
             var provider = new DbContextProvider(accessControlContext, multiTenantContext);
-            var repository = new Repository<UserAccountEntity>(provider);
+            var repository = new BaseRepository<UserAccountEntity>(provider);
 
             var userAccount = new UserAccountEntity
             {
@@ -244,7 +244,7 @@ namespace Authenticator.API.Tests
             var accessControlContext = GetAccessControlInMemoryContext();
             var multiTenantContext = GetMultiTenantInMemoryContext();
             var provider = new DbContextProvider(accessControlContext, multiTenantContext);
-            var repository = new Repository<UserAccountEntity>(provider);
+            var repository = new BaseRepository<UserAccountEntity>(provider);
 
             var userAccount = new UserAccountEntity
             {
@@ -276,7 +276,7 @@ namespace Authenticator.API.Tests
             var accessControlContext = GetAccessControlInMemoryContext();
             var multiTenantContext = GetMultiTenantInMemoryContext();
             var provider = new DbContextProvider(accessControlContext, multiTenantContext);
-            var repository = new Repository<UserAccountEntity>(provider);
+            var repository = new BaseRepository<UserAccountEntity>(provider);
 
             var userAccount1 = new UserAccountEntity
             {
@@ -323,7 +323,7 @@ namespace Authenticator.API.Tests
             var accessControlContext = GetAccessControlInMemoryContext();
             var multiTenantContext = GetMultiTenantInMemoryContext();
             var provider = new DbContextProvider(accessControlContext, multiTenantContext);
-            var repository = new Repository<UserAccountEntity>(provider);
+            var repository = new BaseRepository<UserAccountEntity>(provider);
 
             var userAccount = new UserAccountEntity
             {

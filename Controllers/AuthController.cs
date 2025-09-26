@@ -159,21 +159,6 @@ public class AuthController : ControllerBase
     /// </summary>
     /// <param name="tenantSlug">Slug do tenant (opcional)</param>
     /// <returns>Informações completas do usuário incluindo permissões</returns>
-    /// <remarks>
-    /// Este endpoint retorna todas as permissões e informações do usuário autenticado.
-    /// 
-    /// **Requer autenticação**: Inclua o token JWT no header Authorization
-    /// 
-    /// **Parâmetros:**
-    /// - tenantSlug (opcional): Filtrar permissões por tenant específico
-    /// 
-    /// **Retorna:**
-    /// - Informações básicas do usuário
-    /// - Lista de grupos de acesso
-    /// - Lista de roles/papéis
-    /// - Lista detalhada de permissões
-    /// - Informações do tenant (se aplicável)
-    /// </remarks>
     [HttpGet("permissions")]
     [Authorize]
     [SwaggerOperation(
