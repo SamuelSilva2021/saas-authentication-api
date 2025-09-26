@@ -56,3 +56,5 @@ nunit-*.xml
 /.vs/Authenticator.API/v17/.suo
 /.vs/Authenticator.API/FileContentIndex
 /.vs/Authenticator.API/DesignTimeBuild
+/.vs/Authenticator.API/config
+/.vs/Authenticator.API/v17
