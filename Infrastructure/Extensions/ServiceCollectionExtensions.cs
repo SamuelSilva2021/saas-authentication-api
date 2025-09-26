@@ -99,6 +99,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<IUserAccountsRepository, UserAccountsRepository>();
 
         // Configuração do Repository dinâmico
         services.AddScoped<IDbContextProvider, DbContextProvider>();
