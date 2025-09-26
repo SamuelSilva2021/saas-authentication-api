@@ -49,10 +49,20 @@
     
     <!-- Swagger -->
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
+    
+    <!-- Testing -->
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="FluentAssertions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.9" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Repositories\" />
+    <Folder Include="Infrastructure\Configurations\" />
     <Folder Include="Services\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>

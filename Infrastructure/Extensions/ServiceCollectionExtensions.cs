@@ -1,6 +1,8 @@
 using Authenticator.API.Core.Application.Implementation;
 using Authenticator.API.Core.Application.Interfaces;
-using Authenticator.API.Data;
+using Authenticator.API.Infrastructure.Data;
+using Authenticator.API.Infrastructure.Providers;
+using Authenticator.API.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -8,7 +10,7 @@ using Microsoft.OpenApi.Models;
 using Npgsql;
 using System.Text;
 
-namespace Authenticator.API.Extensions;
+namespace Authenticator.API.Infrastructure.Extensions;
 
 /// <summary>
 /// Extensões para configuração de serviços
@@ -21,7 +23,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddDatabaseServices(this IServiceCollection services, IConfiguration configuration)
     {
         var accessControlDataSourceBuilder = new NpgsqlDataSourceBuilder(configuration.GetConnectionString("AccessControlDatabase"));
-        accessControlDataSourceBuilder.EnableDynamicJson(); 
+        accessControlDataSourceBuilder.EnableDynamicJson();
         var accessControlDataSource = accessControlDataSourceBuilder.Build();
 
         services.AddDbContext<AccessControlDbContext>(options =>
@@ -98,6 +100,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
 
+        // Configuração do Repository dinâmico
+        services.AddScoped<IDbContextProvider, DbContextProvider>();
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
         services.AddMemoryCache();
 
         return services;
@@ -113,7 +119,7 @@ public static class ServiceCollectionExtensions
         {
             // Habilitar anotações do Swagger
             c.EnableAnnotations();
-            
+
             c.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "Authentication API",
@@ -208,7 +214,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
             options.AddPolicy("DefaultPolicy", builder =>
             {
                 var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? new[] { "*" };
-                
+
                 if (allowedOrigins.Contains("*"))
                 {
                     builder.AllowAnyOrigin()

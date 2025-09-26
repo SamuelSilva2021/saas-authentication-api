@@ -1,10 +1,10 @@
-using Authenticator.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using BCrypt.Net;
 using Authenticator.API.Core.Domain.Api;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using Authenticator.API.Core.Application.Interfaces;
+using Authenticator.API.Infrastructure.Data;
 
 namespace Authenticator.API.Core.Application.Implementation;
 

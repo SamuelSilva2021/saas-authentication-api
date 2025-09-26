@@ -10,7 +10,7 @@ using Authenticator.API.Core.Domain.AccessControl.Roles;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Authenticator.API.Data;
+namespace Authenticator.API.Infrastructure.Data;
 
 /// <summary>
 /// Contexto do banco de dados de controle de acesso
@@ -29,7 +29,7 @@ public class AccessControlDbContext : DbContext
     public DbSet<RoleAccessGroupEntity> RoleAccessGroups { get; set; }
     public DbSet<PermissionEntity> Permissions { get; set; }
     public DbSet<OperationEntity> Operations { get; set; }
-    public DbSet<PermissionOperationEntity> PermissionOperations { get; set; }   
+    public DbSet<PermissionOperationEntity> PermissionOperations { get; set; }
     public DbSet<ApplicationEntity> Applications { get; set; }
     public DbSet<ModuleEntity> Modules { get; set; }
 
@@ -41,7 +41,7 @@ public class AccessControlDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.Username).IsUnique();
             entity.HasIndex(e => e.Email).IsUnique();
-            
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             entity.Property(e => e.Username).HasColumnName("username").HasMaxLength(100);
@@ -65,7 +65,7 @@ public class AccessControlDbContext : DbContext
             entity.ToTable("access_group");
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.Code).IsUnique();
-            
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(255);
             entity.Property(e => e.Description).HasColumnName("description");
@@ -83,7 +83,7 @@ public class AccessControlDbContext : DbContext
             entity.ToTable("account_access_group");
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => new { e.UserAccountId, e.AccessGroupId }).IsUnique();
-            
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.UserAccountId).HasColumnName("user_account_id");
             entity.Property(e => e.AccessGroupId).HasColumnName("access_group_id");
@@ -111,7 +111,7 @@ public class AccessControlDbContext : DbContext
             entity.ToTable("role");
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.Code).IsUnique();
-            
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(255);
             entity.Property(e => e.Description).HasColumnName("description");
@@ -130,7 +130,7 @@ public class AccessControlDbContext : DbContext
             entity.ToTable("role_access_group");
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => new { e.AccessGroupId, e.RoleId }).IsUnique();
-            
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.AccessGroupId).HasColumnName("access_group_id");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
@@ -156,7 +156,7 @@ public class AccessControlDbContext : DbContext
         {
             entity.ToTable("application");
             entity.HasKey(e => e.Id);
-            
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(255);
             entity.Property(e => e.Description).HasColumnName("description");
@@ -175,7 +175,7 @@ public class AccessControlDbContext : DbContext
             entity.ToTable("module");
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.ModuleKey);
-            
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(255);
             entity.Property(e => e.Description).HasColumnName("description");
@@ -201,7 +201,7 @@ public class AccessControlDbContext : DbContext
             entity.ToTable("permission");
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => new { e.RoleId, e.ModuleId }).IsUnique();
-            
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.ModuleId).HasColumnName("module_id");
@@ -227,7 +227,7 @@ public class AccessControlDbContext : DbContext
             entity.ToTable("operation");
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.Value).IsUnique();
-            
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(100);
             entity.Property(e => e.Description).HasColumnName("description");
@@ -243,7 +243,7 @@ public class AccessControlDbContext : DbContext
             entity.ToTable("permission_operation");
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => new { e.PermissionId, e.OperationId }).IsUnique();
-            
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.PermissionId).HasColumnName("permission_id");
             entity.Property(e => e.OperationId).HasColumnName("operation_id");

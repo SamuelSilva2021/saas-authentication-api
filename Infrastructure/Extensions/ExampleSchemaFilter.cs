@@ -3,7 +3,7 @@ using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Authenticator.API.Core.Domain.Api;
 
-namespace Authenticator.API.Extensions;
+namespace Authenticator.API.Infrastructure.Extensions;
 
 /// <summary>
 /// Filtro para adicionar exemplos aos schemas do Swagger

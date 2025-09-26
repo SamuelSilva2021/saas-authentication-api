@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
-using Authenticator.API.Data;
 using Authenticator.API.Core.Domain.Api;
 using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
+using Authenticator.API.Infrastructure.Data;
 
 namespace Authenticator.API.Controllers;
 

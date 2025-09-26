@@ -4,7 +4,7 @@ using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using Authenticator.API.Core.Domain.MultiTenant.TenantProduct;
 using Microsoft.EntityFrameworkCore;
 
-namespace Authenticator.API.Data;
+namespace Authenticator.API.Infrastructure.Data;
 
 /// <summary>
 /// Contexto do banco de dados multi-tenant
@@ -32,7 +32,7 @@ public class MultiTenantDbContext : DbContext
             entity.HasIndex(e => e.Slug).IsUnique();
             entity.HasIndex(e => e.Domain).IsUnique();
             entity.HasIndex(e => e.CnpjCpf).IsUnique();
-            
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name).HasColumnName("name");
             entity.Property(e => e.Slug).HasColumnName("slug");
@@ -93,7 +93,7 @@ public class MultiTenantDbContext : DbContext
             entity.ToTable("products");
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.Slug).IsUnique();
-            
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name).HasColumnName("name");
             entity.Property(e => e.Slug).HasColumnName("slug");
@@ -115,7 +115,7 @@ public class MultiTenantDbContext : DbContext
             entity.ToTable("plans");
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.Slug).IsUnique();
-            
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name).HasColumnName("name");
             entity.Property(e => e.Slug).HasColumnName("slug");
@@ -139,7 +139,7 @@ public class MultiTenantDbContext : DbContext
             entity.ToTable("subscriptions");
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => new { e.TenantId, e.ProductId }).IsUnique();
-            
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
