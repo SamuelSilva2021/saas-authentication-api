@@ -12,7 +12,6 @@ public interface IAuthenticationService
     /// </summary>
     /// <param name="usernameOrEmail">Username ou email do usuário</param>
     /// <param name="password">Senha do usuário</param>
-    /// <param name="tenantSlug">Slug do tenant (opcional)</param>
     /// <returns>Resposta de login com tokens e informações do usuário</returns>
     Task<ApiResponse<LoginResponse>> LoginAsync(string usernameOrEmail, string password);
 
