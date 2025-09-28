@@ -51,7 +51,7 @@ public class AccessGroupEntity
     /// <summary>
     /// Data de criação
     /// </summary>
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     /// <summary>
     /// Data de atualização
@@ -62,6 +62,7 @@ public class AccessGroupEntity
     /// Data de exclusão (soft delete)
     /// </summary>
     public DateTime? DeletedAt { get; set; }
+    public GroupTypeEntity GroupType { get; set; } = null!;
 
     // Navigation properties
     public virtual ICollection<AccountAccessGroupEntity> AccountAccessGroups { get; set; } = new List<AccountAccessGroupEntity>();

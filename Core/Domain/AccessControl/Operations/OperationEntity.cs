@@ -23,9 +23,9 @@ public class OperationEntity
     public string? Description { get; set; }
 
     /// <summary>
-    /// Valor binário da operação para controle de bits
+    /// Valor da operação (ex: 'CREATE', 'READ', 'UPDATE','DELETE')
     /// </summary>
-    public int Value { get; set; }
+    public string? Value { get; set; }
 
     /// <summary>
     /// Se a operação está ativa

@@ -9,6 +9,7 @@ using Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
 using Authenticator.API.Core.Domain.AccessControl.Roles;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Authenticator.API.Infrastructure.Data;
 
@@ -65,17 +66,42 @@ public class AccessControlDbContext : DbContext
             entity.ToTable("access_group");
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.Code).IsUnique();
-
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(255);
-            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(255).IsRequired();
+            entity.Property(e => e.Description).HasColumnName("description").HasMaxLength(500);
             entity.Property(e => e.Code).HasColumnName("code").HasMaxLength(50);
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             entity.Property(e => e.GroupTypeId).HasColumnName("group_type_id");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.IsActive).HasColumnName("is_active").HasDefaultValue(true);
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.HasOne(e => e.GroupType)
+                .WithMany(gt => gt.AccessGroups)
+                .HasForeignKey(e => e.GroupTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<GroupTypeEntity>(entity =>
+        {
+            entity.ToTable("group_type");
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Code).IsUnique();
+            entity.Property(e => e.Id).HasColumnName("id").IsRequired();
+            entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(100);
+            entity.Property(e => e.Description).HasColumnName("description").HasMaxLength(500); 
+            entity.Property(e => e.Code).HasColumnName("code").HasMaxLength(50);
+            entity.Property(e => e.IsActive).HasColumnName("is_active").HasDefaultValue(true); 
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("NOW()"); 
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+
+            entity.HasIndex(gt => gt.Code)
+               .IsUnique();
+
+            entity.HasMany(gt => gt.AccessGroups)
+                .WithOne(ag => ag.GroupType)
+                .HasForeignKey(ag => ag.GroupTypeId);
         });
 
         modelBuilder.Entity<AccountAccessGroupEntity>(entity =>
@@ -104,6 +130,18 @@ public class AccessControlDbContext : DbContext
                 .WithMany(p => p.AccountAccessGroups)
                 .HasForeignKey(d => d.AccessGroupId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<RoleTypeEntity>(entity =>
+        {
+            entity.ToTable("role_type", "public");
+            entity.HasKey(rt => rt.Id);
+            entity.Property(rt => rt.Id).HasColumnName("id").HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(rt => rt.Name).HasColumnName("name").HasMaxLength(100).IsRequired();
+            entity.Property(rt => rt.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("now()").IsRequired();
+            entity.Property(rt => rt.UpdatedAt).HasColumnName("updated_at").HasDefaultValueSql("now()").IsRequired();
+            entity.Property(rt => rt.DeletedAt).HasColumnName("deleted_at");
+            entity.HasMany(rt => rt.Roles).WithOne(r => r.RoleType).HasForeignKey(r => r.RoleTypeId);
         });
 
         modelBuilder.Entity<RoleEntity>(entity =>
@@ -151,7 +189,6 @@ public class AccessControlDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
-
         modelBuilder.Entity<ApplicationEntity>(entity =>
         {
             entity.ToTable("application");
@@ -160,6 +197,7 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(255);
             entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.SecretKey).HasColumnName("secret_key").HasMaxLength(255);
             entity.Property(e => e.Url).HasColumnName("url");
             entity.Property(e => e.Code).HasColumnName("code");
             entity.Property(e => e.AuxiliarSchema).HasColumnName("auxiliar_schema");
@@ -194,6 +232,21 @@ public class AccessControlDbContext : DbContext
                 .WithMany(p => p.Modules)
                 .HasForeignKey(d => d.ApplicationId)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<ModuleTypeEntity>(entity =>
+        {
+            entity.ToTable("module_type");
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Code).IsUnique();
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(100).IsRequired();
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Code).HasColumnName("code").HasMaxLength(50).IsRequired();
+            entity.Property(e => e.IsActive).HasColumnName("is_active").HasDefaultValue(true);
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
         });
 
         modelBuilder.Entity<PermissionEntity>(entity =>

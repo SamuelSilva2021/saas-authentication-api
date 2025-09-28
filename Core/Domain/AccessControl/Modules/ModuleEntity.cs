@@ -42,7 +42,7 @@ public class ModuleEntity
     /// <summary>
     /// Código numérico do módulo
     /// </summary>
-    public int? Code { get; set; }
+    public string? Code { get; set; }
 
     /// <summary>
     /// ID da aplicação à qual o módulo pertence
@@ -53,6 +53,11 @@ public class ModuleEntity
     /// ID do tipo de módulo
     /// </summary>
     public Guid? ModuleTypeId { get; set; }
+
+    /// <summary>
+    /// Tipo do módulo
+    /// </summary>
+    public ModuleTypeEntity ModuleType { get; set; } = null!;
 
     /// <summary>
     /// Se o módulo está ativo

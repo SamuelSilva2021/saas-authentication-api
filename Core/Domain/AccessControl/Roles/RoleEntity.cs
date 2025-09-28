@@ -44,6 +44,10 @@ public class RoleEntity
     public Guid? RoleTypeId { get; set; }
 
     /// <summary>
+    /// Tipo do papel
+    /// </summary>
+    public RoleTypeEntity RoleType { get; set; } = default!;
+    /// <summary>
     /// ID da aplicação
     /// </summary>
     public Guid? ApplicationId { get; set; }

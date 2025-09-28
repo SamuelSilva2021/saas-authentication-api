@@ -40,7 +40,7 @@ public class ApplicationEntity
     /// <summary>
     /// Código numérico da aplicação
     /// </summary>
-    public int? Code { get; set; }
+    public string? Code { get; set; }
 
     /// <summary>
     /// Schema auxiliar da aplicação
