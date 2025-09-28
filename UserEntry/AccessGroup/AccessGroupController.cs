@@ -15,10 +15,45 @@ namespace Authenticator.API.UserEntry.AccessGroup
     [Route("api/access-group")]
     [ApiController]
     [Produces("application/json")]
-    [Tags("👥 Grupos de Acesso")]
-    public class AccessGroupController(IGroupTypeService groupTypeService) : ControllerBase
+    [Tags("Grupos de Acesso")]
+    public class AccessGroupController(
+        ILogger<AccessGroupController> logger,
+        IGroupTypeService groupTypeService,
+        IAccessGroupService accessGroupService
+        ) : ControllerBase
     {
+        private readonly ILogger<AccessGroupController> _logger = logger;
         private readonly IGroupTypeService _groupTypeService = groupTypeService;
+        private readonly IAccessGroupService _accessGroupService = accessGroupService;
+
+        #region GET
+        [HttpGet]
+        [AllowAnonymous]
+        [SwaggerResponse(200, "Lista de grupos de acesso recuperada com sucesso", typeof(ApiResponse<IEnumerable<AccessGroupDTO>>))]
+        [SwaggerResponse(404, "Grupos de acesso não encontrado", typeof(ApiResponse<AccessGroupDTO>))]
+        [SwaggerResponse(401, "Credenciais inválidas", typeof(ApiResponse<IEnumerable<AccessGroupDTO>>))]
+        [SwaggerResponse(500, "Erro interno do servidor", typeof(ApiResponse<IEnumerable<AccessGroupDTO>>))]
+        public async Task<ActionResult<ApiResponse<IEnumerable<AccessGroupDTO>>>> GetAllAccessGroups()
+        {
+            var accessGroups = await _accessGroupService.GetAllAsync();
+            if (accessGroups.Data == null || !accessGroups.Data.Any())
+                return NotFound(new ApiResponse<IEnumerable<AccessGroupDTO>>());
+            return Ok(accessGroups);
+        }
+
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        [SwaggerResponse(200, "Grupo de acesso recuperado com sucesso", typeof(ApiResponse<AccessGroupDTO>))]
+        [SwaggerResponse(401, "Credenciais inválidas", typeof(ApiResponse<AccessGroupDTO>))]
+        [SwaggerResponse(404, "Grupo de acesso não encontrado", typeof(ApiResponse<AccessGroupDTO>))]
+        [SwaggerResponse(500, "Erro interno do servidor", typeof(ApiResponse<AccessGroupDTO>))]
+        public async Task<ActionResult<ApiResponse<AccessGroupDTO>>> GetAccessGroupById([FromRoute] Guid id)
+        {
+            var accessGroup = await _accessGroupService.GetByIdAsync(id);
+            if (accessGroup == null)
+                return NotFound(new ApiResponse<AccessGroupDTO>());
+            return Ok(accessGroup);
+        }
 
         [HttpGet("group-types")]
         [AllowAnonymous]
@@ -49,6 +84,28 @@ namespace Authenticator.API.UserEntry.AccessGroup
             return Ok(groupType);
         }
 
+        #endregion GET
+
+        #region POST
+        [HttpPost]
+        [AllowAnonymous]
+        [SwaggerResponse(200, "Grupo de acesso criado com sucesso", typeof(ApiResponse<AccessGroupDTO>))]
+        [SwaggerResponse(400, "Dados de entrada inválidos", typeof(ApiResponse<AccessGroupDTO>))]
+        [SwaggerResponse(401, "Credenciais inválidas", typeof(ApiResponse<AccessGroupDTO>))]
+        [SwaggerResponse(500, "Erro interno do servidor", typeof(ApiResponse<AccessGroupDTO>))]
+        [ProducesResponseType(typeof(ApiResponse<AccessGroupDTO>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<AccessGroupDTO>), 400)]
+        [ProducesResponseType(typeof(ApiResponse<AccessGroupDTO>), 401)]
+        public async Task<ActionResult<ApiResponse<AccessGroupDTO>>> CreateAccessGroup([FromBody] CreateAccessGroupDTO createAccessGroupDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new ApiResponse<AccessGroupDTO> { Success = false, Message = "Dados de entrada inválidos." });
+            var response = await _accessGroupService.CreateAsync(createAccessGroupDTO);
+            if (!response.Success)
+                return BadRequest(response);
+            return Ok(response);
+        }
+
         [HttpPost("group-types")]
         [AllowAnonymous]
         [SwaggerResponse(200, "Tipo de grupo criado com sucesso", typeof(ApiResponse<GroupTypeDTO>))]
@@ -67,6 +124,30 @@ namespace Authenticator.API.UserEntry.AccessGroup
                 return BadRequest(createdGroupType);
             return Ok(createdGroupType);
         }
+        #endregion
+
+        #region PUT
+        [HttpPut("{id}")]
+        [AllowAnonymous]
+        [SwaggerResponse(200, "Grupo de acesso atualizado com sucesso", typeof(ApiResponse<AccessGroupDTO>))]
+        [SwaggerResponse(400, "Dados de entrada inválidos", typeof(ApiResponse<AccessGroupDTO>))]
+        [SwaggerResponse(401, "Credenciais inválidas", typeof(ApiResponse<AccessGroupDTO>))]
+        [SwaggerResponse(404, "Grupo de acesso não encontrado", typeof(ApiResponse<AccessGroupDTO>))]
+        [SwaggerResponse(500, "Erro interno do servidor", typeof(ApiResponse<AccessGroupDTO>))]
+        public async Task<ActionResult<ApiResponse<AccessGroupDTO>>> UpdateAccessGroup([FromRoute] Guid id, [FromBody] UpdateAccessGroupDTO updateAccessGroupDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new ApiResponse<AccessGroupDTO> { Success = false, Message = "Dados de entrada inválidos." });
+            var response = await _accessGroupService.UpdateAsync(id, updateAccessGroupDTO);
+            if (!response.Success)
+            {
+                if (response.Message == "Grupo de acesso não encontrado")
+                    return NotFound(response);
+                return BadRequest(response);
+            }
+            return Ok(response);
+        }
+
 
         [HttpPut("group-types/{id:guid}")]
         [AllowAnonymous]
@@ -90,6 +171,27 @@ namespace Authenticator.API.UserEntry.AccessGroup
             return Ok(response);
         }
 
+        #endregion PUT
+
+        #region DELETE
+        [HttpDelete("{id:guid}")]
+        [AllowAnonymous]
+        [SwaggerResponse(200, "Grupo de acesso deletado com sucesso", typeof(ApiResponse<bool>))]
+        [SwaggerResponse(401, "Credenciais inválidas", typeof(ApiResponse<bool>))]
+        [SwaggerResponse(404, "Grupo de acesso não encontrado", typeof(ApiResponse<bool>))]
+        [SwaggerResponse(500, "Erro interno do servidor", typeof(ApiResponse<bool>))]
+        public async Task<ActionResult<ApiResponse<bool>>> DeleteAccessGroup([FromRoute] Guid id)
+        {
+            var response = await _accessGroupService.DeleteAsync(id);
+            if (!response.Success)
+            {
+                if (response.Message == "Grupo de acesso não encontrado")
+                    return NotFound(response);
+                return BadRequest(response);
+            }
+            return Ok(response);
+        }
+
         [HttpDelete("group-types/{id:guid}")]
         [AllowAnonymous]
         [SwaggerResponse(200, "Tipo de grupo deletado com sucesso", typeof(ApiResponse<bool>))]
@@ -107,5 +209,7 @@ namespace Authenticator.API.UserEntry.AccessGroup
             }
             return Ok(response);
         }
+
+        #endregion DELETE
     }
 }

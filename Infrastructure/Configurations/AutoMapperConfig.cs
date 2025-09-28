@@ -15,6 +15,7 @@ namespace Authenticator.API.Infrastructure.Configurations
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile(new GroupTypeProfile());
+                cfg.AddProfile(new AccessGroupProfile());
             });
         }
     }

@@ -11,9 +11,9 @@ namespace Authenticator.API.UserEntry.Auth;
 /// Controller de autenticação e autorização
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
 [Produces("application/json")]
-[Tags("🔐 Autenticação")]
+[Tags("Autenticação")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthenticationService _authenticationService;
@@ -32,12 +32,6 @@ public class AuthController : ControllerBase
     /// <returns>Token JWT e informações do usuário</returns>
     [HttpPost("login")]
     [AllowAnonymous]
-    [SwaggerOperation(
-        Summary = "Fazer login",
-        Description = "Autentica usuário com email/username e senha, retornando tokens JWT",
-        OperationId = "Login",
-        Tags = new[] { "🔐 Autenticação" }
-    )]
     [SwaggerResponse(200, "Login realizado com sucesso", typeof(ApiResponse<LoginResponse>))]
     [SwaggerResponse(400, "Dados de entrada inválidos", typeof(ApiResponse<LoginResponse>))]
     [SwaggerResponse(401, "Credenciais inválidas", typeof(ApiResponse<LoginResponse>))]
@@ -161,12 +155,6 @@ public class AuthController : ControllerBase
     /// <returns>Informações completas do usuário incluindo permissões</returns>
     [HttpGet("permissions")]
     [Authorize]
-    [SwaggerOperation(
-        Summary = "Obter permissões do usuário",
-        Description = "Retorna todas as permissões e informações detalhadas do usuário autenticado",
-        OperationId = "GetUserPermissions",
-        Tags = new[] { "🔐 Autenticação" }
-    )]
     [SwaggerResponse(200, "Permissões obtidas com sucesso", typeof(ApiResponse<UserInfo>))]
     [SwaggerResponse(401, "Token JWT inválido ou expirado", typeof(ApiResponse<UserInfo>))]
     [SwaggerResponse(404, "Usuário não encontrado", typeof(ApiResponse<UserInfo>))]

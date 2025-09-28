@@ -114,7 +114,6 @@ public static class ServiceCollectionExtensions
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
         {
-            // Habilitar anotações do Swagger
             c.EnableAnnotations();
 
             c.SwaggerDoc("v1", new OpenApiInfo
@@ -179,22 +178,9 @@ public static class ServiceCollectionExtensions
                 c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
             }
 
-            // Configurações adicionais
             c.EnableAnnotations();
             c.OrderActionsBy(apiDesc => $"{apiDesc.ActionDescriptor.RouteValues["controller"]}_{apiDesc.HttpMethod}");
 
-            // Tags personalizadas
-            c.TagActionsBy(api =>
-            {
-                var controllerName = api.ActionDescriptor.RouteValues["controller"];
-                return controllerName switch
-                {
-                    "Auth" => new[] { "🔐 Autenticação" },
-                    _ => new[] { controllerName ?? "Default" }
-                };
-            });
-
-            // Exemplos de schema
             c.SchemaFilter<ExampleSchemaFilter>();
         });
 
