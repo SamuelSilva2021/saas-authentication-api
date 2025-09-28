@@ -1,4 +1,4 @@
-using Authenticator.API.Core.Domain.AccessControl.AccessGroups;
+using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups;
 using Authenticator.API.Core.Domain.AccessControl.Applications;
 using Authenticator.API.Core.Domain.AccessControl.Modules;
@@ -25,7 +25,9 @@ public class AccessControlDbContext : DbContext
 
     public DbSet<UserAccountEntity> UserAccounts { get; set; }
     public DbSet<AccessGroupEntity> AccessGroups { get; set; }
+    public DbSet<GroupTypeEntity> GroupTypes { get; set; }
     public DbSet<AccountAccessGroupEntity> AccountAccessGroups { get; set; }
+    public DbSet<RoleTypeEntity> RoleTypes { get; set; }
     public DbSet<RoleEntity> Roles { get; set; }
     public DbSet<RoleAccessGroupEntity> RoleAccessGroups { get; set; }
     public DbSet<PermissionEntity> Permissions { get; set; }
@@ -33,6 +35,7 @@ public class AccessControlDbContext : DbContext
     public DbSet<PermissionOperationEntity> PermissionOperations { get; set; }
     public DbSet<ApplicationEntity> Applications { get; set; }
     public DbSet<ModuleEntity> Modules { get; set; }
+    public DbSet<ModuleTypeEntity> ModuleTypes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

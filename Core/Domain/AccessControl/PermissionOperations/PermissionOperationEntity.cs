@@ -32,7 +32,7 @@ public class PermissionOperationEntity
     /// <summary>
     /// Data de criação do relacionamento
     /// </summary>
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     /// <summary>
     /// Data de atualização

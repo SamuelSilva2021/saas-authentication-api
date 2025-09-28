@@ -1,5 +1,5 @@
 using Authenticator.API.Core.Application.Interfaces;
-using Authenticator.API.Core.Domain.AccessControl.AccessGroups;
+using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups;
 using Authenticator.API.Core.Domain.AccessControl.Applications;
 using Authenticator.API.Core.Domain.AccessControl.Modules;
@@ -78,14 +78,17 @@ public class DbContextProvider : IDbContextProvider
     {
         return entityType == typeof(UserAccountEntity) ||
                entityType == typeof(AccessGroupEntity) ||
+               entityType == typeof(GroupTypeEntity) ||
                entityType == typeof(AccountAccessGroupEntity) ||
+               entityType == typeof(RoleTypeEntity) ||
                entityType == typeof(RoleEntity) ||
                entityType == typeof(RoleAccessGroupEntity) ||
                entityType == typeof(PermissionEntity) ||
                entityType == typeof(OperationEntity) ||
                entityType == typeof(PermissionOperationEntity) ||
                entityType == typeof(ApplicationEntity) ||
-               entityType == typeof(ModuleEntity);
+               entityType == typeof(ModuleEntity) ||
+               entityType == typeof(ModuleTypeEntity);
     }
 
     /// <summary>

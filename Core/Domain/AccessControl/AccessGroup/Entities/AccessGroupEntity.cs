@@ -2,7 +2,7 @@ using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups;
 using Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
 using System.ComponentModel.DataAnnotations;
 
-namespace Authenticator.API.Core.Domain.AccessControl.AccessGroups;
+namespace Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 
 /// <summary>
 /// Grupo de acesso para usuários

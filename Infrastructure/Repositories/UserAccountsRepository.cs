@@ -10,19 +10,13 @@ namespace Authenticator.API.Infrastructure.Repositories;
 /// Implementação específica do repositório para contas de usuário
 /// Herda de Repository<UserAccountEntity> para ter acesso aos métodos CRUD básicos
 /// </summary>
-public class UserAccountsRepository : BaseRepository<UserAccountEntity>, IUserAccountsRepository
+public class UserAccountsRepository(
+    IDbContextProvider dbContextProvider,
+    IMemoryCache cache,
+    ILogger<UserAccountsRepository> logger) : BaseRepository<UserAccountEntity>(dbContextProvider), IUserAccountsRepository
 {
-    private readonly IMemoryCache _cache;
-    private readonly ILogger<UserAccountsRepository> _logger;
-
-    public UserAccountsRepository(
-        IDbContextProvider dbContextProvider,
-        IMemoryCache cache,
-        ILogger<UserAccountsRepository> logger) : base(dbContextProvider)
-    {
-        _cache = cache;
-        _logger = logger;
-    }
+    private readonly IMemoryCache _cache = cache;
+    private readonly ILogger<UserAccountsRepository> _logger = logger;
 
     /// <summary>
     /// Busca um usuário pelo email

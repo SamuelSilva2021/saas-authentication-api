@@ -1,3 +1,4 @@
+using Authenticator.API.Infrastructure.Configurations;
 using Authenticator.API.Infrastructure.Extensions;
 using Serilog;
 
@@ -16,6 +17,8 @@ builder.Services.AddSwaggerGen();
 
 // Configuração dos serviços
 builder.Services.AddControllers();
+
+builder.Services.AddAutoMapperConfig();
 
 // Configuração dos bancos de dados
 builder.Services.AddDatabaseServices(builder.Configuration);

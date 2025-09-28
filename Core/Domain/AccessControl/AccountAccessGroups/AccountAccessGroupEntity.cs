@@ -1,4 +1,4 @@
-using Authenticator.API.Core.Domain.AccessControl.AccessGroups;
+using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
 
 namespace Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups;

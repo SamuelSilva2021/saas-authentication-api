@@ -60,7 +60,7 @@ public class ApplicationEntity
     /// <summary>
     /// Data de criação
     /// </summary>
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     /// <summary>
     /// Data de atualização

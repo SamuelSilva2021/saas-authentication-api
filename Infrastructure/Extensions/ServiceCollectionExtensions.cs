@@ -1,6 +1,7 @@
 using Authenticator.API.Core.Application.Implementation;
 using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Domain.Api;
+using Authenticator.API.Infrastructure.Configurations;
 using Authenticator.API.Infrastructure.Data;
 using Authenticator.API.Infrastructure.Providers;
 using Authenticator.API.Infrastructure.Repositories;
@@ -98,14 +99,8 @@ public static class ServiceCollectionExtensions
     /// </summary>
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<IAuthenticationService, AuthenticationService>();
-        services.AddScoped<IJwtTokenService, JwtTokenService>();
-        services.AddScoped<IUserAccountsRepository, UserAccountsRepository>();
-
-        // Configuração do Repository dinâmico
-        services.AddScoped<IDbContextProvider, DbContextProvider>();
-        services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
-
+        services.AddConfigureScrutor();
+        services.AddAutoMapperConfig();
         services.AddMemoryCache();
 
         return services;

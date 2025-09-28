@@ -15,14 +15,14 @@ public class RoleEntity
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Nome do role
+    /// Nome do role ex: Administrador, Usuário
     /// </summary>
     [Required]
     [MaxLength(255)]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Descrição do role
+    /// Descrição do role ex: Papel com permissões administrativas, Papel com permissões de usuário comum
     /// </summary>
     [MaxLength(500)]
     public string Description { get; set; } = string.Empty;
@@ -60,7 +60,7 @@ public class RoleEntity
     /// <summary>
     /// Data de criação
     /// </summary>
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     /// <summary>
     /// Data de atualização

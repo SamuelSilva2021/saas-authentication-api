@@ -7,7 +7,7 @@ using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
 using Authenticator.API.Infrastructure.Data;
 
-namespace Authenticator.API.Controllers;
+namespace Authenticator.API.UserEntry.Register;
 
 /// <summary>
 /// Controller para registro de novos tenants (clientes/empresas)
@@ -83,7 +83,7 @@ public class RegisterController : ControllerBase
             // Usar transações em ambos os contextos
             using var tenantTransaction = await _tenantContext.Database.BeginTransactionAsync();
             using var accessTransaction = await _accessContext.Database.BeginTransactionAsync();
-            
+
             try
             {
                 // 1. Criar o Tenant
@@ -144,7 +144,7 @@ public class RegisterController : ControllerBase
 
                 if (!string.IsNullOrWhiteSpace(request.LeadSource))
                 {
-                    _logger.LogInformation("Lead registrado - Fonte: {LeadSource}, UTM: {UtmSource}/{UtmCampaign}/{UtmMedium}", 
+                    _logger.LogInformation("Lead registrado - Fonte: {LeadSource}, UTM: {UtmSource}/{UtmCampaign}/{UtmMedium}",
                         request.LeadSource, request.UtmSource, request.UtmCampaign, request.UtmMedium);
                 }
 
@@ -167,7 +167,7 @@ public class RegisterController : ControllerBase
                     Message = "Empresa e usuário administrador criados com sucesso!"
                 };
 
-                _logger.LogInformation("Registro concluído com sucesso para {CompanyName} - TenantId: {TenantId}", 
+                _logger.LogInformation("Registro concluído com sucesso para {CompanyName} - TenantId: {TenantId}",
                     tenant.Name, tenant.Id);
 
                 return Ok(new ApiResponse<RegisterTenantResponse>
@@ -181,7 +181,7 @@ public class RegisterController : ControllerBase
             {
                 await tenantTransaction.RollbackAsync();
                 await accessTransaction.RollbackAsync();
-                _logger.LogError(ex, "Erro durante a transação de registro para {CompanyName}: {Error}", 
+                _logger.LogError(ex, "Erro durante a transação de registro para {CompanyName}: {Error}",
                     request.CompanyName, ex.Message);
                 throw;
             }

@@ -1,4 +1,4 @@
-using Authenticator.API.Core.Domain.AccessControl.AccessGroups;
+using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 using Authenticator.API.Core.Domain.AccessControl.Roles;
 
 namespace Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
@@ -31,7 +31,7 @@ public class RoleAccessGroupEntity
     /// <summary>
     /// Data de criação do relacionamento
     /// </summary>
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     /// <summary>
     /// Data de atualização

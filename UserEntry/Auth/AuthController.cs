@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
 
-namespace Authenticator.API.Controllers;
+namespace Authenticator.API.UserEntry.Auth;
 
 /// <summary>
 /// Controller de autenticação e autorização
@@ -57,7 +57,7 @@ public class AuthController : ControllerBase
             }
 
             var result = await _authenticationService.LoginAsync(
-                request.UsernameOrEmail, 
+                request.UsernameOrEmail,
                 request.Password);
 
             if (!result.Success)
