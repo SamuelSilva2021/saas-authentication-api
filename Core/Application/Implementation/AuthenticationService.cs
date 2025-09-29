@@ -53,8 +53,8 @@ public class AuthenticationService : IAuthenticationService
         {
             _logger.LogInformation("Tentativa de login para: {UsernameOrEmail}", usernameOrEmail);
             var user = await _userAccountsRepository.FirstOrDefaultAsync(u =>
-                (u.Username.ToLower() == usernameOrEmail.ToLower() || u.Email.ToLower() == usernameOrEmail.ToLower()) &&
-                u.IsActive && u.DeletedAt == null);
+                (u.Username.Equals(usernameOrEmail) || u.Email.Equals(usernameOrEmail)) &&
+                    u.IsActive && u.DeletedAt == null);
 
             if (user == null)
             {

@@ -8,6 +8,7 @@ namespace Authenticator.API.Infrastructure.Repositories
         IDbContextProvider dbContextProvider
         ) : BaseRepository<AccessGroupEntity>(dbContextProvider), IAccessGroupRepository
     {
-
+        public async Task<IEnumerable<AccessGroupEntity>> GetAllAsyncByTenantId(Guid tenantId) =>
+            await FindAsync(ag => ag.TenantId == tenantId);
     }
 }

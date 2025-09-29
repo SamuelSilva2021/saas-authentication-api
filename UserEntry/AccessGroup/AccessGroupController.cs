@@ -2,6 +2,7 @@
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroups.DTOs;
 using Authenticator.API.Core.Domain.Api;
+using Authenticator.API.Infrastructure.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,7 @@ namespace Authenticator.API.UserEntry.AccessGroup
     [ApiController]
     [Produces("application/json")]
     [Tags("Grupos de Acesso")]
+    [Authorize]
     public class AccessGroupController(
         ILogger<AccessGroupController> logger,
         IGroupTypeService groupTypeService,
@@ -28,7 +30,6 @@ namespace Authenticator.API.UserEntry.AccessGroup
 
         #region GET
         [HttpGet]
-        [AllowAnonymous]
         [SwaggerResponse(200, "Lista de grupos de acesso recuperada com sucesso", typeof(ApiResponse<IEnumerable<AccessGroupDTO>>))]
         [SwaggerResponse(404, "Grupos de acesso não encontrado", typeof(ApiResponse<AccessGroupDTO>))]
         [SwaggerResponse(401, "Credenciais inválidas", typeof(ApiResponse<IEnumerable<AccessGroupDTO>>))]

@@ -1,4 +1,5 @@
 ﻿using Authenticator.API.Core.Application.Interfaces.AccessGroup;
+using Authenticator.API.Core.Application.Interfaces.Auth;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 using Authenticator.API.Core.Domain.Api;
@@ -12,11 +13,18 @@ namespace Authenticator.API.Core.Application.Implementation.AccessGroup
     /// <param name="logger"></param>
     /// <param name="accessGroupRepository"></param>
     /// <param name="mapper"></param>
-    public class AccessGroupService(ILogger<AccessGroupService> logger, IAccessGroupRepository accessGroupRepository, IMapper mapper) : IAccessGroupService
+    /// <param name="userContext"></param>
+    public class AccessGroupService(
+        ILogger<AccessGroupService> logger, 
+        IAccessGroupRepository accessGroupRepository, 
+        IMapper mapper,
+        IUserContext userContext
+        ) : IAccessGroupService
     {
         private readonly ILogger<AccessGroupService> _logger = logger;
         private readonly IAccessGroupRepository _accessGroupRepository = accessGroupRepository;
         private readonly IMapper _mapper = mapper;
+        private readonly IUserContext _userContext = userContext;
 
         /// <summary>
         /// Cria um novo grupo de acesso
@@ -72,7 +80,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessGroup
         {
             try
             {
-                var entities = await _accessGroupRepository.GetAllAsync();
+                var entities = await _accessGroupRepository.GetAllAsyncByTenantId(_userContext.CurrentUser.TenantId);
                 if (entities == null || !entities.Any())
                     return ApiResponse<IEnumerable<AccessGroupDTO>>.ErrorResult("Nenhum grupo de acesso encontrado.");
 
