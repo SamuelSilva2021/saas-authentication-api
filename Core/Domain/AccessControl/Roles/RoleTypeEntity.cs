@@ -30,10 +30,6 @@ namespace Authenticator.API.Core.Domain.AccessControl.Roles
         /// </summary>
         public DateTime? UpdatedAt { get; set; }
         /// <summary>
-        /// Data de exclusão (soft delete)
-        /// </summary>
-        public DateTime? DeletedAt { get; set; }
-        /// <summary>
         /// Lista de papéis associados a este tipo
         /// </summary>
         public ICollection<RoleEntity> Roles { get; set; } = new List<RoleEntity>();

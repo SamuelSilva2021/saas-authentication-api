@@ -1,4 +1,4 @@
-namespace Authenticator.API.Core.Domain.Api;
+namespace Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
 
 /// <summary>
 /// Resposta do cadastro de novo tenant

@@ -1,4 +1,5 @@
-﻿using Authenticator.API.Infrastructure.Mapper;
+﻿using Authenticator.API.Infrastructure.Mapper.AccessGroup;
+using Authenticator.API.Infrastructure.Mapper.Module;
 using AutoMapper;
 using System.Diagnostics.CodeAnalysis;
 
@@ -16,6 +17,7 @@ namespace Authenticator.API.Infrastructure.Configurations
             {
                 cfg.AddProfile(new GroupTypeProfile());
                 cfg.AddProfile(new AccessGroupProfile());
+                cfg.AddProfile(new ModuleTypeProfile());
             });
         }
     }

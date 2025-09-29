@@ -1,3 +1,5 @@
+using Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
+
 namespace Authenticator.API.Core.Domain.Api;
 
 /// <summary>
@@ -43,5 +45,5 @@ public class UserInfo
     /// <summary>
     /// Informações do tenant (se aplicável)
     /// </summary>
-    public TenantInfo? Tenant { get; set; }
+    public TenantInfoDTO? Tenant { get; set; }
 }

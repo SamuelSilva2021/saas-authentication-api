@@ -74,11 +74,6 @@ public class ModuleEntity
     /// </summary>
     public DateTime? UpdatedAt { get; set; }
 
-    /// <summary>
-    /// Data de exclusão (soft delete)
-    /// </summary>
-    public DateTime? DeletedAt { get; set; }
-
     // Navigation properties
     public virtual ApplicationEntity? Application { get; set; }
     public virtual ICollection<PermissionEntity> Permissions { get; set; } = new List<PermissionEntity>();

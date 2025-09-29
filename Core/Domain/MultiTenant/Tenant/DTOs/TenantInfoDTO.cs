@@ -1,9 +1,9 @@
-namespace Authenticator.API.Core.Domain.Api;
+namespace Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
 
 /// <summary>
 /// Informações básicas do tenant
 /// </summary>
-public class TenantInfo
+public class TenantInfoDTO
 {
     /// <summary>
     /// ID do tenant

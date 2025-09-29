@@ -6,6 +6,7 @@ using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
 using Authenticator.API.Infrastructure.Data;
+using Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
 
 namespace Authenticator.API.UserEntry.Register;
 
@@ -42,7 +43,7 @@ public class RegisterController : ControllerBase
     /// <param name="request">Dados do tenant e usuário administrador</param>
     /// <returns>Informações do tenant criado com tokens de autenticação</returns>
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<RegisterTenantResponse>>> Register([FromBody] RegisterTenantRequest request)
+    public async Task<ActionResult<ResponseDTO<RegisterTenantResponse>>> Register([FromBody] CreateTenantDTO request)
     {
         try
         {
@@ -54,12 +55,7 @@ public class RegisterController : ControllerBase
             if (existingUser != null)
             {
                 _logger.LogWarning("Tentativa de registro com email já existente: {Email}", request.Email);
-                return BadRequest(new ApiResponse<RegisterTenantResponse>
-                {
-                    Success = false,
-                    Message = "Este email já está sendo utilizado por outro usuário.",
-                    Data = null
-                });
+                return BadRequest();
             }
 
             // Validar CNPJ/CPF se fornecido
@@ -71,12 +67,7 @@ public class RegisterController : ControllerBase
                 if (existingTenant != null)
                 {
                     _logger.LogWarning("Tentativa de registro com CNPJ/CPF já existente: {CnpjCpf}", request.CnpjCpf);
-                    return BadRequest(new ApiResponse<RegisterTenantResponse>
-                    {
-                        Success = false,
-                        Message = "Este CNPJ/CPF já está cadastrado no sistema.",
-                        Data = null
-                    });
+                    return BadRequest();
                 }
             }
 
@@ -170,12 +161,7 @@ public class RegisterController : ControllerBase
                 _logger.LogInformation("Registro concluído com sucesso para {CompanyName} - TenantId: {TenantId}",
                     tenant.Name, tenant.Id);
 
-                return Ok(new ApiResponse<RegisterTenantResponse>
-                {
-                    Success = true,
-                    Message = "Registro realizado com sucesso!",
-                    Data = response
-                });
+                return Ok(ResponseBuilder<RegisterTenantResponse>.Ok(response).Build());
             }
             catch (Exception ex)
             {
@@ -189,12 +175,11 @@ public class RegisterController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro no processo de registro: {Error}", ex.Message);
-            return StatusCode(500, new ApiResponse<RegisterTenantResponse>
-            {
-                Success = false,
-                Message = "Erro interno do servidor. Tente novamente mais tarde.",
-                Data = null
-            });
+            return ResponseBuilder<RegisterTenantResponse>
+                .Fail(new ErrorDTO { Message = "Erro ao registrar empresa. " + ex.Message })
+                .WithCode(500)
+                .Build();
+
         }
     }
 

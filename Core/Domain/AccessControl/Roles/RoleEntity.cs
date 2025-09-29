@@ -67,11 +67,6 @@ public class RoleEntity
     /// </summary>
     public DateTime? UpdatedAt { get; set; }
 
-    /// <summary>
-    /// Data de exclusão (soft delete)
-    /// </summary>
-    public DateTime? DeletedAt { get; set; }
-
     // Navigation properties
     public virtual ICollection<PermissionEntity> Permissions { get; set; } = new List<PermissionEntity>();
     public virtual ICollection<RoleAccessGroupEntity> RoleAccessGroups { get; set; } = new List<RoleAccessGroupEntity>();

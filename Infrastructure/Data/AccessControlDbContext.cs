@@ -59,9 +59,9 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.LastLoginAt).HasColumnName("last_login_at");
             entity.Property(e => e.PasswordResetToken).HasColumnName("password_reset_token").HasMaxLength(500);
             entity.Property(e => e.PasswordResetExpiresAt).HasColumnName("password_reset_expires_at");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
+            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at").HasColumnType("timestamp without time zone");
         });
 
         modelBuilder.Entity<AccessGroupEntity>(entity =>
@@ -76,9 +76,8 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             entity.Property(e => e.GroupTypeId).HasColumnName("group_type_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active").HasDefaultValue(true);
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("NOW()");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasDefaultValueSql("NOW()");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
             entity.HasOne(e => e.GroupType)
                 .WithMany(gt => gt.AccessGroups)
                 .HasForeignKey(e => e.GroupTypeId)
@@ -95,9 +94,8 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.Description).HasColumnName("description").HasMaxLength(500); 
             entity.Property(e => e.Code).HasColumnName("code").HasMaxLength(50);
             entity.Property(e => e.IsActive).HasColumnName("is_active").HasDefaultValue(true); 
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("NOW()"); 
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()"); 
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
 
             entity.HasIndex(gt => gt.Code)
                .IsUnique();
@@ -120,9 +118,8 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.GrantedBy).HasColumnName("granted_by");
             entity.Property(e => e.GrantedAt).HasColumnName("granted_at");
             entity.Property(e => e.ExpiresAt).HasColumnName("expires_at");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
 
             entity.HasOne(d => d.UserAccount)
                 .WithMany(p => p.AccountAccessGroups)
@@ -142,8 +139,7 @@ public class AccessControlDbContext : DbContext
             entity.Property(rt => rt.Id).HasColumnName("id").HasDefaultValueSql("gen_random_uuid()");
             entity.Property(rt => rt.Name).HasColumnName("name").HasMaxLength(100).IsRequired();
             entity.Property(rt => rt.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("now()").IsRequired();
-            entity.Property(rt => rt.UpdatedAt).HasColumnName("updated_at").HasDefaultValueSql("now()").IsRequired();
-            entity.Property(rt => rt.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(rt => rt.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
             entity.HasMany(rt => rt.Roles).WithOne(r => r.RoleType).HasForeignKey(r => r.RoleTypeId);
         });
 
@@ -161,9 +157,8 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.RoleTypeId).HasColumnName("role_type_id");
             entity.Property(e => e.ApplicationId).HasColumnName("application_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
         });
 
         modelBuilder.Entity<RoleAccessGroupEntity>(entity =>
@@ -176,9 +171,8 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.AccessGroupId).HasColumnName("access_group_id");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
 
             // Relacionamentos
             entity.HasOne(d => d.Role)
@@ -206,9 +200,8 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.AuxiliarSchema).HasColumnName("auxiliar_schema");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.Visible).HasColumnName("visible");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
         });
 
         modelBuilder.Entity<ModuleEntity>(entity =>
@@ -226,11 +219,9 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.ApplicationId).HasColumnName("application_id");
             entity.Property(e => e.ModuleTypeId).HasColumnName("module_type_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
 
-            // Relacionamentos
             entity.HasOne(d => d.Application)
                 .WithMany(p => p.Modules)
                 .HasForeignKey(d => d.ApplicationId)
@@ -247,9 +238,8 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Code).HasColumnName("code").HasMaxLength(50).IsRequired();
             entity.Property(e => e.IsActive).HasColumnName("is_active").HasDefaultValue(true);
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("NOW()");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
         });
 
         modelBuilder.Entity<PermissionEntity>(entity =>
@@ -262,9 +252,8 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.ModuleId).HasColumnName("module_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
 
             // Relacionamentos
             entity.HasOne(d => d.Role)
@@ -289,9 +278,8 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Value).HasColumnName("value");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
         });
 
         modelBuilder.Entity<PermissionOperationEntity>(entity =>
@@ -304,9 +292,8 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.PermissionId).HasColumnName("permission_id");
             entity.Property(e => e.OperationId).HasColumnName("operation_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
 
             entity.HasOne(d => d.Permission)
                 .WithMany(p => p.PermissionOperations)

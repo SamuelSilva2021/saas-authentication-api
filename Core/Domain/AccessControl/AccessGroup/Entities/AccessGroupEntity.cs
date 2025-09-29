@@ -57,11 +57,6 @@ public class AccessGroupEntity
     /// Data de atualização
     /// </summary>
     public DateTime? UpdatedAt { get; set; }
-
-    /// <summary>
-    /// Data de exclusão (soft delete)
-    /// </summary>
-    public DateTime? DeletedAt { get; set; }
     public GroupTypeEntity GroupType { get; set; } = null!;
 
     // Navigation properties

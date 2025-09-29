@@ -2,7 +2,7 @@
 using Authenticator.API.Core.Application.Interfaces.AccessGroup;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 
-namespace Authenticator.API.Infrastructure.Repositories
+namespace Authenticator.API.Infrastructure.Repositories.AccessGroup
 {
     public class AccessGroupRepository(
         IDbContextProvider dbContextProvider

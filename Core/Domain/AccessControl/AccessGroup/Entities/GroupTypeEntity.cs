@@ -34,11 +34,6 @@
         /// </summary>
         public DateTime? UpdatedAt { get; set; }
         /// <summary>
-        /// Data de exclusão do tipo de grupo de acesso (soft delete)
-        /// </summary>
-        public DateTime? DeletedAt { get; set; }
-
-        /// <summary>
         /// Grupos de Acesso associados a este tipo
         /// </summary>
         public ICollection<AccessGroupEntity> AccessGroups { get; set; } = new List<AccessGroupEntity>();

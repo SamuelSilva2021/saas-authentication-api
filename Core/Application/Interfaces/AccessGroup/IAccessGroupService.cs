@@ -5,10 +5,10 @@ namespace Authenticator.API.Core.Application.Interfaces.AccessGroup
 {
     public interface IAccessGroupService
     {
-        Task<ApiResponse<IEnumerable<AccessGroupDTO>>> GetAllAsync();
-        Task<ApiResponse<AccessGroupDTO>> GetByIdAsync(Guid id);
-        Task<ApiResponse<AccessGroupDTO>> CreateAsync(CreateAccessGroupDTO dto);
-        Task<ApiResponse<AccessGroupDTO>> UpdateAsync(Guid id, UpdateAccessGroupDTO dto);
-        Task<ApiResponse<bool>> DeleteAsync(Guid id);
+        Task<ResponseDTO<IEnumerable<AccessGroupDTO>>> GetAllAsync();
+        Task<ResponseDTO<AccessGroupDTO>> GetByIdAsync(Guid id);
+        Task<ResponseDTO<AccessGroupDTO>> CreateAsync(CreateAccessGroupDTO dto);
+        Task<ResponseDTO<AccessGroupDTO>> UpdateAsync(Guid id, UpdateAccessGroupDTO dto);
+        Task<ResponseDTO<bool>> DeleteAsync(Guid id);
     }
 }

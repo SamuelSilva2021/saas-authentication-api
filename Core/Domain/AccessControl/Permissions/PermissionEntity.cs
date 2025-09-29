@@ -55,11 +55,6 @@ public class PermissionEntity
     /// </summary>
     public DateTime? UpdatedAt { get; set; }
 
-    /// <summary>
-    /// Data de exclusão (soft delete)
-    /// </summary>
-    public DateTime? DeletedAt { get; set; }
-
     // Navigation properties
     public virtual RoleEntity? Role { get; set; }
     public virtual ModuleEntity? Module { get; set; }

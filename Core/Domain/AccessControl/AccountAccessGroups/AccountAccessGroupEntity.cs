@@ -53,11 +53,6 @@ public class AccountAccessGroupEntity
     /// </summary>
     public DateTime? UpdatedAt { get; set; }
 
-    /// <summary>
-    /// Data de exclusão (soft delete)
-    /// </summary>
-    public DateTime? DeletedAt { get; set; }
-
     // Navigation properties
     public virtual UserAccountEntity UserAccount { get; set; } = null!;
     public virtual AccessGroupEntity AccessGroup { get; set; } = null!;

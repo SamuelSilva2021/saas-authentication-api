@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Authenticator.API.Core.Domain.Api;
+namespace Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
 
 /// <summary>
 /// Requisição para cadastro de novo tenant (cliente/empresa)
 /// </summary>
-public class RegisterTenantRequest
+public class CreateTenantDTO
 {
     /// <summary>
     /// Nome da empresa/organização

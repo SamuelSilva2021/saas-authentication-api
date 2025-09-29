@@ -5,6 +5,7 @@ using Authenticator.API.Core.Domain.Api;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Infrastructure.Data;
+using Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
 
 namespace Authenticator.API.Core.Application.Implementation;
 
@@ -47,7 +48,7 @@ public class AuthenticationService : IAuthenticationService
     /// <param name="usernameOrEmail"></param>
     /// <param name="password"></param>
     /// <returns></returns>
-    public async Task<ApiResponse<LoginResponse>> LoginAsync(string usernameOrEmail, string password)
+    public async Task<ResponseDTO<LoginResponse>> LoginAsync(string usernameOrEmail, string password)
     {
         try
         {
@@ -59,13 +60,14 @@ public class AuthenticationService : IAuthenticationService
             if (user == null)
             {
                 _logger.LogWarning("Usuário não encontrado: {UsernameOrEmail}", usernameOrEmail);
-                return ApiResponse<LoginResponse>.ErrorResult("Credenciais inválidas");
+               return ResponseBuilder<LoginResponse>
+                    .Fail(new ErrorDTO { Message = "Credenciais inválidas" }).WithCode(401).Build();
             }
 
             if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
                 _logger.LogWarning("Senha incorreta para usuário: {UserId}", user.Id);
-                return ApiResponse<LoginResponse>.ErrorResult("Credenciais inválidas");
+                return ResponseBuilder<LoginResponse> .Fail(new ErrorDTO { Message = "Credenciais inválidas" }).WithCode(401).Build();
             }
 
             var tenant = _multiTenantContext.Tenants.Where(t => t.Id == user.TenantId).FirstOrDefault();
@@ -97,7 +99,7 @@ public class AuthenticationService : IAuthenticationService
                     AccessGroups = accessGroups,
                     Roles = roles,
                     Permissions = permissions,
-                    Tenant = tenant != null ? new TenantInfo
+                    Tenant = tenant != null ? new TenantInfoDTO
                     {
                         Id = tenant.Id,
                         Name = tenant.Name,
@@ -108,12 +110,13 @@ public class AuthenticationService : IAuthenticationService
             };
 
             _logger.LogInformation("Login bem-sucedido para usuário: {UserId}", user.Id);
-            return ApiResponse<LoginResponse>.SuccessResult(loginResponse, "Login realizado com sucesso");
+            return ResponseBuilder<LoginResponse>.Ok(loginResponse).Build();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro durante o login para: {UsernameOrEmail}", usernameOrEmail);
-            return ApiResponse<LoginResponse>.ErrorResult("Erro interno do servidor");
+            return ResponseBuilder<LoginResponse>
+                .Fail(new ErrorDTO { Message = "Erro interno do servidor" }).WithCode(500).Build();
         }
     }
 
@@ -122,7 +125,7 @@ public class AuthenticationService : IAuthenticationService
     /// </summary>
     /// <param name="refreshToken"></param>
     /// <returns></returns>
-    public async Task<ApiResponse<LoginResponse>> RefreshTokenAsync(string refreshToken)
+    public async Task<ResponseDTO<LoginResponse>> RefreshTokenAsync(string refreshToken)
     {
         try
         {
@@ -132,7 +135,7 @@ public class AuthenticationService : IAuthenticationService
             if (tokenData == null)
             {
                 _logger.LogWarning("Refresh token inválido ou expirado");
-                return ApiResponse<LoginResponse>.ErrorResult("Token de renovação inválido");
+                return ResponseBuilder<LoginResponse>.Fail(new ErrorDTO { Message = "Token de renovação inválido" }).WithCode(401).Build();
             }
 
             var user = await _accessControlContext.UserAccounts
@@ -142,14 +145,14 @@ public class AuthenticationService : IAuthenticationService
             if (user == null)
             {
                 _logger.LogWarning("Usuário não encontrado para refresh token: {UserId}", tokenData.UserId);
-                return ApiResponse<LoginResponse>.ErrorResult("Usuário não encontrado");
+                return ResponseBuilder<LoginResponse>.Fail(new ErrorDTO { Message = "Usuário não encontrado" }).WithCode(401).Build();
             }
 
             TenantEntity? tenant = null;
             if (tokenData.TenantId.HasValue)
             {
                 tenant = await _multiTenantContext.Tenants
-                    .Where(t => t.Id == tokenData.TenantId && t.Status == "active" && t.DeletedAt == null)
+                    .Where(t => t.Id == tokenData.TenantId && t.Status == "active")
                     .FirstOrDefaultAsync();
             }
 
@@ -177,7 +180,7 @@ public class AuthenticationService : IAuthenticationService
                     AccessGroups = accessGroups,
                     Roles = roles,
                     Permissions = permissions,
-                    Tenant = tenant != null ? new TenantInfo
+                    Tenant = tenant != null ? new TenantInfoDTO
                     {
                         Id = tenant.Id,
                         Name = tenant.Name,
@@ -188,12 +191,12 @@ public class AuthenticationService : IAuthenticationService
             };
 
             _logger.LogInformation("Token renovado com sucesso para usuário: {UserId}", user.Id);
-            return ApiResponse<LoginResponse>.SuccessResult(loginResponse, "Token renovado com sucesso");
+            return ResponseBuilder<LoginResponse>.Ok(loginResponse).Build();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro durante renovação de token");
-            return ApiResponse<LoginResponse>.ErrorResult("Erro interno do servidor");
+            return ResponseBuilder<LoginResponse>.Fail(new ErrorDTO { Message = "Erro interno do servidor" }).WithCode(401).Build();
         }
     }
 
@@ -202,18 +205,18 @@ public class AuthenticationService : IAuthenticationService
     /// </summary>
     /// <param name="refreshToken"></param>
     /// <returns></returns>
-    public async Task<ApiResponse<bool>> RevokeTokenAsync(string refreshToken)
+    public async Task<ResponseDTO<bool>> RevokeTokenAsync(string refreshToken)
     {
         try
         {
             await RevokeRefreshTokenAsync(refreshToken);
             _logger.LogInformation("Refresh token revogado com sucesso");
-            return ApiResponse<bool>.SuccessResult(true, "Logout realizado com sucesso");
+            return ResponseBuilder<bool>.Ok(true).Build();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao revogar token");
-            return ApiResponse<bool>.ErrorResult("Erro ao realizar logout");
+            return ResponseBuilder<bool>.Fail(new ErrorDTO { Message = "Erro interno do servidor" }).WithCode(500).Build();
         }
     }
 
@@ -223,16 +226,14 @@ public class AuthenticationService : IAuthenticationService
     /// <param name="userId"></param>
     /// <param name="tenantSlug"></param>
     /// <returns></returns>
-    public async Task<ApiResponse<UserInfo>> GetUserInfoAsync(Guid userId, string? tenantSlug = null)
+    public async Task<ResponseDTO<UserInfo>> GetUserInfoAsync(Guid userId, string? tenantSlug = null)
     {
         try
         {
             // Busca no cache primeiro
             var cacheKey = $"{USER_CACHE_KEY_PREFIX}{userId}_{tenantSlug ?? "no_tenant"}";
             if (_cache.TryGetValue(cacheKey, out UserInfo? cachedUserInfo))
-            {
-                return ApiResponse<UserInfo>.SuccessResult(cachedUserInfo!, "Informações do usuário obtidas com sucesso");
-            }
+                return ResponseBuilder<UserInfo>.Ok(cachedUserInfo!).Build();
 
             var user = await _accessControlContext.UserAccounts
                 .Where(u => u.Id == userId && u.IsActive && u.DeletedAt == null)
@@ -240,14 +241,15 @@ public class AuthenticationService : IAuthenticationService
 
             if (user == null)
             {
-                return ApiResponse<UserInfo>.ErrorResult("Usuário não encontrado");
+                _logger.LogWarning("Usuário não encontrado: {UserId}", userId);
+                return ResponseBuilder<UserInfo>.Fail(new ErrorDTO { Message = "Usuário não encontrado" }).WithCode(404).Build();
             }
 
             TenantEntity? tenant = null;
             if (!string.IsNullOrEmpty(tenantSlug))
             {
                 tenant = await _multiTenantContext.Tenants
-                    .Where(t => t.Slug == tenantSlug && t.Status == "active" && t.DeletedAt == null)
+                    .Where(t => t.Slug == tenantSlug && t.Status == "active")
                     .FirstOrDefaultAsync();
             }
 
@@ -264,7 +266,7 @@ public class AuthenticationService : IAuthenticationService
                 AccessGroups = accessGroups,
                 Roles = roles,
                 Permissions = permissions,
-                Tenant = tenant != null ? new TenantInfo
+                Tenant = tenant != null ? new TenantInfoDTO
                 {
                     Id = tenant.Id,
                     Name = tenant.Name,
@@ -276,12 +278,12 @@ public class AuthenticationService : IAuthenticationService
             // Armazena no cache por 15 minutos
             _cache.Set(cacheKey, userInfo, TimeSpan.FromMinutes(15));
 
-            return ApiResponse<UserInfo>.SuccessResult(userInfo, "Informações do usuário obtidas com sucesso");
+            return ResponseBuilder<UserInfo>.Ok(userInfo).Build();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao obter informações do usuário: {UserId}", userId);
-            return ApiResponse<UserInfo>.ErrorResult("Erro ao obter informações do usuário");
+            return ResponseBuilder<UserInfo>.Fail(new ErrorDTO { Message = "Erro interno do servidor" }).WithCode(500).Build();
         }
     }
 
@@ -305,7 +307,7 @@ public class AuthenticationService : IAuthenticationService
         return await _accessControlContext.AccountAccessGroups
             .Where(aag => aag.UserAccountId == userId && aag.IsActive)
             .Include(aag => aag.AccessGroup)
-            .Where(aag => aag.AccessGroup.IsActive && aag.AccessGroup.DeletedAt == null)
+            .Where(aag => aag.AccessGroup.IsActive)
             .Select(aag => aag.AccessGroup.Name)
             .ToListAsync();
     }
@@ -320,7 +322,7 @@ public class AuthenticationService : IAuthenticationService
         return await _accessControlContext.RoleAccessGroups
             .Where(rag => accessGroups.Contains(rag.AccessGroup.Name) && rag.IsActive)
             .Include(rag => rag.Role)
-            .Where(rag => rag.Role.IsActive && rag.Role.DeletedAt == null)
+            .Where(rag => rag.Role.IsActive)
             .Select(rag => rag.Role.Name)
             .Distinct()
             .ToListAsync();
@@ -334,9 +336,9 @@ public class AuthenticationService : IAuthenticationService
     private async Task<List<string>> GetUserPermissionsAsync(List<string> roles)
     {
         return await _accessControlContext.Permissions
-            .Where(p => roles.Contains(p.Role!.Name) && p.IsActive && p.DeletedAt == null)
+            .Where(p => roles.Contains(p.Role!.Name) && p.IsActive)
             .Include(p => p.Role)
-            .Where(p => p.Role!.IsActive && p.Role.DeletedAt == null)
+            .Where(p => p.Role!.IsActive)
             .Select(p => p.Name)
             .Distinct()
             .ToListAsync();

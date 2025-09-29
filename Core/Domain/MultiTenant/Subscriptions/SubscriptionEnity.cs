@@ -82,11 +82,6 @@ public class SubscriptionEnity
     /// </summary>
     public DateTime? UpdatedAt { get; set; }
 
-    /// <summary>
-    /// Data de exclusão (soft delete)
-    /// </summary>
-    public DateTime? DeletedAt { get; set; }
-
     // Navigation properties
     public virtual TenantEntity Tenant { get; set; } = null!;
     public virtual TenantProductEntity Product { get; set; } = null!;

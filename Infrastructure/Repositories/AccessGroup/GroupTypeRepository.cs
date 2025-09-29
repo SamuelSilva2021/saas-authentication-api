@@ -3,7 +3,7 @@ using Authenticator.API.Core.Application.Interfaces.AccessGroup;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Authenticator.API.Infrastructure.Repositories
+namespace Authenticator.API.Infrastructure.Repositories.AccessGroup
 {
     /// <summary>
     /// Implementação específica do repositório para tipos de grupo

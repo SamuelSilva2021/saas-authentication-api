@@ -47,9 +47,8 @@ public class MultiTenantDbContext : DbContext
                 v => JsonSerializer.Deserialize<Dictionary<string, object>>(v, new JsonSerializerOptions()) ?? new Dictionary<string, object>());
 
             entity.Property(e => e.ActiveSubscriptionId).HasColumnName("active_subscription_id");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
 
             // Campos corporativos
             entity.Property(e => e.CnpjCpf).HasColumnName("cnpj_cpf");
@@ -93,8 +92,6 @@ public class MultiTenantDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(d => d.ActiveSubscriptionId);
 
-            
-
         });
 
         // Configuração da tabela Products
@@ -115,8 +112,8 @@ public class MultiTenantDbContext : DbContext
             entity.Property(e => e.PricingModel).HasColumnName("pricing_model");
             entity.Property(e => e.BasePrice).HasColumnName("base_price").HasPrecision(10, 2);
             entity.Property(e => e.SetupFee).HasColumnName("setup_fee").HasPrecision(10, 2);
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
         });
 
         // Configuração da tabela Plans
@@ -138,9 +135,8 @@ public class MultiTenantDbContext : DbContext
             entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.SortOrder).HasColumnName("sort_order");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
         });
 
         // Configuração da tabela Subscriptions
@@ -162,9 +158,8 @@ public class MultiTenantDbContext : DbContext
             entity.Property(e => e.CancelledAt).HasColumnName("cancelled_at");
             entity.Property(e => e.CustomPricing).HasColumnName("custom_pricing").HasPrecision(10, 2);
             entity.Property(e => e.UsageLimits).HasColumnName("usage_limits");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
 
             // Relacionamentos
             entity.HasOne(d => d.Tenant)

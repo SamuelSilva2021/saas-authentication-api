@@ -4,7 +4,7 @@ using Authenticator.API.Core.Domain.AccessControl.AccessGroups.DTOs;
 using Authenticator.API.Core.Domain.Api;
 using AutoMapper;
 
-namespace Authenticator.API.Infrastructure.Mapper
+namespace Authenticator.API.Infrastructure.Mapper.AccessGroup
 {
     public class AccessGroupProfile : Profile
     {
@@ -19,23 +19,11 @@ namespace Authenticator.API.Infrastructure.Mapper
             CreateMap<CreateAccessGroupDTO, AccessGroupEntity>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
-                .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-                .ForMember(dest => dest.DeletedAt, opt => opt.Ignore());
+                .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
 
             CreateMap<UpdateAccessGroupDTO, AccessGroupEntity>()
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
-                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-                .ForMember(dest => dest.DeletedAt, opt => opt.Ignore());
-
-            // Entidade → ApiResponse<DTO>
-            CreateMap<AccessGroupEntity, ApiResponse<AccessGroupDTO>>()
-                .ForMember(dest => dest.Data, opt => opt.MapFrom(src => src))
-                .ForMember(dest => dest.Success, opt => opt.MapFrom(_ => true))
-                .ForMember(dest => dest.Message, opt => opt.MapFrom(_ => "Grupo de acesso criado com sucesso."))
-                .ForMember(dest => dest.Errors, opt => opt.Ignore())
-                .ForMember(dest => dest.Timestamp, opt => opt.MapFrom(_ => DateTime.UtcNow));
-
-
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
         }
     }
 }

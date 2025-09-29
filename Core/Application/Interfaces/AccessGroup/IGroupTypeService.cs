@@ -7,10 +7,10 @@ namespace Authenticator.API.Core.Application.Interfaces.AccessGroup
 {
     public interface IGroupTypeService
     {
-        Task <ApiResponse<IEnumerable<GroupTypeDTO>>> GetAllAsync();
-        Task<ApiResponse<GroupTypeDTO?>> GetByIdAsync(Guid id);
-        Task<ApiResponse<GroupTypeDTO>> CreateAsync(GroupTypeCreateDTO groupType);
-        Task<ApiResponse<GroupTypeDTO?>> UpdateAsync(Guid id, GroupTypeUpdateDTO groupType);
-        Task<ApiResponse<bool>> DeleteAsync(Guid id);
+        Task <ResponseDTO<IEnumerable<GroupTypeDTO>>> GetAllAsync();
+        Task<ResponseDTO<GroupTypeDTO?>> GetByIdAsync(Guid id);
+        Task<ResponseDTO<GroupTypeDTO>> CreateAsync(GroupTypeCreateDTO groupType);
+        Task<ResponseDTO<GroupTypeDTO?>> UpdateAsync(Guid id, GroupTypeUpdateDTO groupType);
+        Task<ResponseDTO<bool>> DeleteAsync(Guid id);
     }
 }
