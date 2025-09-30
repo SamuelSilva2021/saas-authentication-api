@@ -1,9 +1,9 @@
 ﻿using Authenticator.API.Core.Application.Interfaces;
-using Authenticator.API.Core.Application.Interfaces.Module;
+using Authenticator.API.Core.Application.Interfaces.AccessControl.Module;
 using Authenticator.API.Core.Domain.AccessControl.Modules;
-using Authenticator.API.Infrastructure.Repositories.AccessGroup;
+using Authenticator.API.Infrastructure.Repositories.AccessControl.AccessGroup;
 
-namespace Authenticator.API.Infrastructure.Repositories.Module
+namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Module
 {
     /// <summary>
     /// Implementação específica do repositório para tipos de módulo

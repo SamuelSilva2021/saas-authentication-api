@@ -1,7 +1,7 @@
 ﻿using Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs;
 using Authenticator.API.Core.Domain.Api;
 
-namespace Authenticator.API.Core.Application.Interfaces.AccessGroup
+namespace Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGroup
 {
     public interface IAccessGroupService
     {

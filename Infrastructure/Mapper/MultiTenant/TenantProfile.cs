@@ -17,6 +17,7 @@ namespace Authenticator.API.Infrastructure.Mapper.Tenant
             // CreateTenantDto -> TenantEntity
             CreateMap<CreateTenantDTO, TenantEntity>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.CompanyName))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => "active"))
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())

@@ -3,7 +3,7 @@ namespace Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
 /// <summary>
 /// Resposta do cadastro de novo tenant
 /// </summary>
-public class RegisterTenantResponse
+public class RegisterTenantResponseDTO
 {
     /// <summary>
     /// ID do tenant criado

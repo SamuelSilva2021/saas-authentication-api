@@ -1,6 +1,6 @@
 ﻿using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 
-namespace Authenticator.API.Core.Application.Interfaces.AccessGroup
+namespace Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGroup
 {
     public interface IAccessGroupRepository : IBaseRepository<AccessGroupEntity>
     {

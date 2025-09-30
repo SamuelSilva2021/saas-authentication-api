@@ -1,5 +1,7 @@
 ﻿using Authenticator.API.Infrastructure.Mapper.AccessGroup;
 using Authenticator.API.Infrastructure.Mapper.Module;
+using Authenticator.API.Infrastructure.Mapper.MultiTenant;
+using Authenticator.API.Infrastructure.Mapper.Tenant;
 using AutoMapper;
 using System.Diagnostics.CodeAnalysis;
 
@@ -18,6 +20,10 @@ namespace Authenticator.API.Infrastructure.Configurations
                 cfg.AddProfile(new GroupTypeProfile());
                 cfg.AddProfile(new AccessGroupProfile());
                 cfg.AddProfile(new ModuleTypeProfile());
+                cfg.AddProfile(new TenantProfile());
+                cfg.AddProfile(new TenantProductProfile());
+                cfg.AddProfile(new PlanProfile());
+                cfg.AddProfile(new SubscriptionProfile());
             });
         }
     }

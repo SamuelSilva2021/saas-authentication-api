@@ -4,7 +4,7 @@ using Authenticator.API.Infrastructure.Providers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Authenticator.API.Infrastructure.Repositories;
+namespace Authenticator.API.Infrastructure.Repositories.MultiTenant;
 
 /// <summary>
 /// Implementação específica do repositório para contas de usuário
@@ -24,14 +24,14 @@ public class UserAccountsRepository(
     /// <param name="email">Email do usuário</param>
     /// <returns>Usuário encontrado ou null</returns>
     public async Task<UserAccountEntity?> GetByEmailAsync(string email)
-    {        
+    {
         var cacheKey = $"user_email_{email.ToLowerInvariant()}";
-        
+
         if (_cache.TryGetValue(cacheKey, out UserAccountEntity? cachedUser))
             return cachedUser;
 
         var user = await FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower() && u.DeletedAt == null);
-        
+
         if (user != null)
             _cache.Set(cacheKey, user, TimeSpan.FromMinutes(15));
 
@@ -44,9 +44,9 @@ public class UserAccountsRepository(
     /// <param name="username">Nome de usuário</param>
     /// <returns>Usuário encontrado ou null</returns>
     public async Task<UserAccountEntity?> GetByUsernameAsync(string username)
-    {        
+    {
         var cacheKey = $"user_username_{username.ToLowerInvariant()}";
-        
+
         if (_cache.TryGetValue(cacheKey, out UserAccountEntity? cachedUser))
         {
             _logger.LogDebug("Usuário encontrado no cache para username: {Username}", username);
@@ -54,7 +54,7 @@ public class UserAccountsRepository(
         }
 
         var user = await FirstOrDefaultAsync(u => u.Username.ToLower() == username.ToLower() && u.DeletedAt == null);
-        
+
         if (user != null)
             _cache.Set(cacheKey, user, TimeSpan.FromMinutes(15));
 
@@ -67,10 +67,10 @@ public class UserAccountsRepository(
     /// <param name="emailOrUsername">Email ou username</param>
     /// <returns>Usuário encontrado ou null</returns>
     public async Task<UserAccountEntity?> GetByEmailOrUsernameAsync(string emailOrUsername)
-    {        
-        return await FirstOrDefaultAsync(u => 
-            (u.Email.ToLower() == emailOrUsername.ToLower() || 
-             u.Username.ToLower() == emailOrUsername.ToLower()) && 
+    {
+        return await FirstOrDefaultAsync(u =>
+            (u.Email.ToLower() == emailOrUsername.ToLower() ||
+             u.Username.ToLower() == emailOrUsername.ToLower()) &&
             u.DeletedAt == null);
     }
 
@@ -81,11 +81,11 @@ public class UserAccountsRepository(
     /// <param name="excludeUserId">ID do usuário a ser excluído da verificação (para updates)</param>
     /// <returns>True se o email já existe</returns>
     public async Task<bool> EmailExistsAsync(string email, Guid? excludeUserId = null)
-    {        
+    {
         if (excludeUserId.HasValue)
         {
-            return await AnyAsync(u => u.Email.ToLower() == email.ToLower() && 
-                                      u.Id != excludeUserId.Value && 
+            return await AnyAsync(u => u.Email.ToLower() == email.ToLower() &&
+                                      u.Id != excludeUserId.Value &&
                                       u.DeletedAt == null);
         }
 
@@ -99,11 +99,11 @@ public class UserAccountsRepository(
     /// <param name="excludeUserId">ID do usuário a ser excluído da verificação (para updates)</param>
     /// <returns>True se o username já existe</returns>
     public async Task<bool> UsernameExistsAsync(string username, Guid? excludeUserId = null)
-    {        
+    {
         if (excludeUserId.HasValue)
         {
-            return await AnyAsync(u => u.Username.ToLower() == username.ToLower() && 
-                                      u.Id != excludeUserId.Value && 
+            return await AnyAsync(u => u.Username.ToLower() == username.ToLower() &&
+                                      u.Id != excludeUserId.Value &&
                                       u.DeletedAt == null);
         }
 
@@ -116,9 +116,9 @@ public class UserAccountsRepository(
     /// <param name="tenantId">ID do tenant</param>
     /// <returns>Lista de usuários ativos do tenant</returns>
     public async Task<IEnumerable<UserAccountEntity>> GetActiveUsersByTenantAsync(Guid tenantId)
-    {        
-        return await FindAsync(u => u.TenantId == tenantId && 
-                                   u.IsActive && 
+    {
+        return await FindAsync(u => u.TenantId == tenantId &&
+                                   u.IsActive &&
                                    u.DeletedAt == null);
     }
 
@@ -139,14 +139,14 @@ public class UserAccountsRepository(
     /// <returns>Task</returns>
     public async Task UpdateLastLoginAsync(Guid userId)
     {
-        
+
         var user = await GetByIdAsync(userId);
         if (user != null)
         {
             user.LastLoginAt = DateTime.UtcNow;
             user.UpdatedAt = DateTime.UtcNow;
             await UpdateAsync(user);
-            
+
             _cache.Remove($"user_email_{user.Email.ToLowerInvariant()}");
             _cache.Remove($"user_username_{user.Username.ToLowerInvariant()}");
         }
@@ -160,7 +160,7 @@ public class UserAccountsRepository(
     /// <param name="expiresAt">Data de expiração do token</param>
     /// <returns>Task</returns>
     public async Task SetPasswordResetTokenAsync(Guid userId, string resetToken, DateTime expiresAt)
-    {        
+    {
         var user = await GetByIdAsync(userId);
         if (user != null)
         {
@@ -177,8 +177,8 @@ public class UserAccountsRepository(
     /// <param name="resetToken">Token de reset</param>
     /// <returns>Usuário encontrado ou null</returns>
     public async Task<UserAccountEntity?> GetByValidPasswordResetTokenAsync(string resetToken) =>
-        await FirstOrDefaultAsync(u => u.PasswordResetToken == resetToken && 
-                                             u.PasswordResetExpiresAt > DateTime.UtcNow && 
+        await FirstOrDefaultAsync(u => u.PasswordResetToken == resetToken &&
+                                             u.PasswordResetExpiresAt > DateTime.UtcNow &&
                                              u.DeletedAt == null);
 
     /// <summary>
@@ -187,7 +187,7 @@ public class UserAccountsRepository(
     /// <param name="userId">ID do usuário</param>
     /// <returns>Task</returns>
     public async Task ClearPasswordResetTokenAsync(Guid userId)
-    {        
+    {
         var user = await GetByIdAsync(userId);
         if (user != null)
         {
@@ -205,14 +205,14 @@ public class UserAccountsRepository(
     /// <param name="isActive">Status ativo</param>
     /// <returns>Task</returns>
     public async Task SetUserActiveStatusAsync(Guid userId, bool isActive)
-    {        
+    {
         var user = await GetByIdAsync(userId);
         if (user != null)
         {
             user.IsActive = isActive;
             user.UpdatedAt = DateTime.UtcNow;
             await UpdateAsync(user);
-            
+
             _cache.Remove($"user_email_{user.Email.ToLowerInvariant()}");
             _cache.Remove($"user_username_{user.Username.ToLowerInvariant()}");
         }
@@ -224,14 +224,14 @@ public class UserAccountsRepository(
     /// <param name="userId">ID do usuário</param>
     /// <returns>Task</returns>
     public async Task MarkEmailAsVerifiedAsync(Guid userId)
-    {        
+    {
         var user = await GetByIdAsync(userId);
         if (user != null)
         {
             user.IsEmailVerified = true;
             user.UpdatedAt = DateTime.UtcNow;
             await UpdateAsync(user);
-            
+
             // Invalidar cache
             _cache.Remove($"user_email_{user.Email.ToLowerInvariant()}");
             _cache.Remove($"user_username_{user.Username.ToLowerInvariant()}");

@@ -1,7 +1,7 @@
 ﻿using Authenticator.API.Core.Domain.AccessControl.Modules.DTOs;
 using Authenticator.API.Core.Domain.Api;
 
-namespace Authenticator.API.Core.Application.Interfaces.Module
+namespace Authenticator.API.Core.Application.Interfaces.AccessControl.Module
 {
     public interface IModuleTypeService
     {

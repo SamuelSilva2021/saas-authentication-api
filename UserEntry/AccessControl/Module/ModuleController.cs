@@ -1,4 +1,4 @@
-﻿using Authenticator.API.Core.Application.Interfaces.Module;
+﻿using Authenticator.API.Core.Application.Interfaces.AccessControl.Module;
 using Authenticator.API.Core.Domain.AccessControl.Modules.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
