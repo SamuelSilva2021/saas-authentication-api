@@ -8,6 +8,7 @@ using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
 using Authenticator.API.Infrastructure.Data;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
 using Authenticator.API.Core.Application.Interfaces.MultiTenant;
+using Authenticator.API.Infrastructure.Data.Context;
 
 namespace Authenticator.API.UserEntry.Register;
 

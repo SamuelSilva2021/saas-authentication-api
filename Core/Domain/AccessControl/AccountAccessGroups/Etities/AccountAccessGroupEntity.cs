@@ -1,7 +1,7 @@
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
 
-namespace Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups;
+namespace Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups.Etities;
 
 /// <summary>
 /// Relacionamento entre conta de usuário e grupo de acesso

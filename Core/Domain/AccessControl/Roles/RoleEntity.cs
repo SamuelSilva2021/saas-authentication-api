@@ -1,5 +1,8 @@
+using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 using Authenticator.API.Core.Domain.AccessControl.Permissions;
 using Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
+using Authenticator.API.Core.Domain.AccessControl.Roles.Entities;
+using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using System.ComponentModel.DataAnnotations;
 
 namespace Authenticator.API.Core.Domain.AccessControl.Roles;
@@ -39,15 +42,6 @@ public class RoleEntity
     public Guid? TenantId { get; set; }
 
     /// <summary>
-    /// ID do tipo de papel
-    /// </summary>
-    public Guid? RoleTypeId { get; set; }
-
-    /// <summary>
-    /// Tipo do papel
-    /// </summary>
-    public RoleTypeEntity RoleType { get; set; } = default!;
-    /// <summary>
     /// ID da aplicação
     /// </summary>
     public Guid? ApplicationId { get; set; }
@@ -68,6 +62,9 @@ public class RoleEntity
     public DateTime? UpdatedAt { get; set; }
 
     // Navigation properties
-    public virtual ICollection<PermissionEntity> Permissions { get; set; } = new List<PermissionEntity>();
-    public virtual ICollection<RoleAccessGroupEntity> RoleAccessGroups { get; set; } = new List<RoleAccessGroupEntity>();
+    public TenantEntity? Tenant { get; set; }
+    public ICollection<AccessGroupRoleEntity> AccessGroupRoles { get; set; } = new List<AccessGroupRoleEntity>();
+
+    public ICollection<RolePermissionEntity> RolePermissions { get; set; } = new List<RolePermissionEntity>();
+    public ICollection<RoleAccessGroupEntity> RoleAccessGroups { get; set; } = new List<RoleAccessGroupEntity>();
 }

@@ -1,6 +1,7 @@
 ﻿using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Application.Interfaces.MultiTenant;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
+using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
 using Authenticator.API.Core.Domain.Api;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
@@ -23,6 +24,11 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
         private readonly IUserAccountsRepository _userAccountsRepository = userAccountsRepository;
         private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
 
+        /// <summary>
+        /// Adiciona um novo tenant e cria o usuário administrador associado
+        /// </summary>
+        /// <param name="tenant"></param>
+        /// <returns></returns>
         public async Task<ResponseDTO<RegisterTenantResponseDTO>> AddTenantAsync(CreateTenantDTO tenant)
         {
             try
@@ -58,7 +64,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                     FirstName = tenant.FirstName.Trim(),
                     LastName = tenant.LastName.Trim(),
                     PhoneNumber = tenant.UserPhone?.Trim(),
-                    IsActive = true,
+                    Status = EUserAccountStatus.Ativo,
                     IsEmailVerified = false
                 };
                 await _userAccountsRepository.AddAsync(adminUser);
@@ -99,6 +105,11 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
             }
         }
 
+        /// <summary>
+        /// Gera um nome de usuário único baseado no email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         private async Task<string> GenerateUniqueUsernameAsync(string email)
         {
             var baseUsername = email.Split('@')[0].ToLower();
@@ -113,6 +124,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
 
             return username;
         }
+
         /// <summary>
         /// Gera um slug único para o tenant baseado no nome da empresa
         /// </summary>

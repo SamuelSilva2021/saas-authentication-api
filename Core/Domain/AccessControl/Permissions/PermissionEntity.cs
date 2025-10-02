@@ -1,6 +1,8 @@
 using Authenticator.API.Core.Domain.AccessControl.Modules;
 using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
 using Authenticator.API.Core.Domain.AccessControl.Roles;
+using Authenticator.API.Core.Domain.AccessControl.Roles.Entities;
+using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using System.ComponentModel.DataAnnotations;
 
 namespace Authenticator.API.Core.Domain.AccessControl.Permissions;
@@ -19,6 +21,11 @@ public class PermissionEntity
     /// Nome da permissão (derivado do módulo)
     /// </summary>
     public string Name => Module?.Name ?? $"Permission_{Id}";
+
+    /// <summary>
+    /// ID do tenant
+    /// </summary>
+    public Guid? TenantId { get; set; }
 
     /// <summary>
     /// Descrição da permissão (derivada do módulo)
@@ -56,6 +63,8 @@ public class PermissionEntity
     public DateTime? UpdatedAt { get; set; }
 
     // Navigation properties
+    public TenantEntity? Tenant { get; set; }
+    public ICollection<RolePermissionEntity> RolePermissions { get; set; } = new List<RolePermissionEntity>();
     public virtual RoleEntity? Role { get; set; }
     public virtual ModuleEntity? Module { get; set; }
     public virtual ICollection<PermissionOperationEntity> PermissionOperations { get; set; } = new List<PermissionOperationEntity>();

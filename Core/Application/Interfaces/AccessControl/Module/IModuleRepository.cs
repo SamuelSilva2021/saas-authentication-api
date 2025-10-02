@@ -2,7 +2,7 @@
 
 namespace Authenticator.API.Core.Application.Interfaces.AccessControl.Module
 {
-    public interface IModuleTypeRepository : IBaseRepository<ModuleTypeEntity>
+    public interface IModuleRepository : IBaseRepository<ModuleEntity>
     {
     }
 }

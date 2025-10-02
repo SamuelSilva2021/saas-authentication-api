@@ -1,7 +1,9 @@
 using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
+using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using Authenticator.API.Infrastructure.Data;
+using Authenticator.API.Infrastructure.Data.Context;
 using Authenticator.API.Infrastructure.Providers;
 using Authenticator.API.Infrastructure.Repositories;
 using FluentAssertions;
@@ -76,7 +78,7 @@ namespace Authenticator.API.Tests
                 PasswordHash = "hashedpassword",
                 FirstName = "Test",
                 LastName = "User",
-                IsActive = true,
+                Status = EUserAccountStatus.Ativo,
                 IsEmailVerified = false
             };
 
@@ -105,7 +107,7 @@ namespace Authenticator.API.Tests
                 Slug = "test-tenant",
                 Domain = "test.example.com",
                 Status = "active",
-                CnpjCpf = "12345678901",
+                Document = "12345678901",
                 RazaoSocial = "Test Company Ltd",
                 Email = "contact@test.example.com"
             };
@@ -137,7 +139,7 @@ namespace Authenticator.API.Tests
                 PasswordHash = "hash1",
                 FirstName = "User",
                 LastName = "One",
-                IsActive = true,
+                Status = EUserAccountStatus.Ativo,
                 IsEmailVerified = true
             };
 
@@ -150,7 +152,7 @@ namespace Authenticator.API.Tests
                 PasswordHash = "hash2",
                 FirstName = "User",
                 LastName = "Two",
-                IsActive = true,
+                Status = EUserAccountStatus.Ativo,
                 IsEmailVerified = false
             };
 
@@ -184,7 +186,7 @@ namespace Authenticator.API.Tests
                 PasswordHash = "hash",
                 FirstName = "Find",
                 LastName = "Me",
-                IsActive = true,
+                Status = EUserAccountStatus.Ativo,
                 IsEmailVerified = true
             };
 
@@ -216,7 +218,7 @@ namespace Authenticator.API.Tests
                 PasswordHash = "hash",
                 FirstName = "Update",
                 LastName = "Me",
-                IsActive = true,
+                Status = EUserAccountStatus.Ativo,
                 IsEmailVerified = false,
                 UpdatedAt = DateTime.Now
             };
@@ -254,7 +256,7 @@ namespace Authenticator.API.Tests
                 PasswordHash = "hash",
                 FirstName = "Delete",
                 LastName = "Me",
-                IsActive = true,
+                Status = EUserAccountStatus.Ativo,
                 IsEmailVerified = false
             };
 
@@ -286,7 +288,7 @@ namespace Authenticator.API.Tests
                 PasswordHash = "hash1",
                 FirstName = "Count",
                 LastName = "One",
-                IsActive = true,
+                Status = EUserAccountStatus.Ativo,
                 IsEmailVerified = true
             };
 
@@ -299,7 +301,7 @@ namespace Authenticator.API.Tests
                 PasswordHash = "hash2",
                 FirstName = "Count",
                 LastName = "Two",
-                IsActive = false,
+                Status = EUserAccountStatus.Inativo,
                 IsEmailVerified = false
             };
 
@@ -308,7 +310,7 @@ namespace Authenticator.API.Tests
 
             // Act
             var totalCount = await repository.CountAsync();
-            var activeCount = await repository.CountAsync(u => u.IsActive);
+            var activeCount = await repository.CountAsync(u => u.Status == EUserAccountStatus.Ativo);
 
             // Assert
             totalCount.Should().Be(2);
@@ -333,7 +335,7 @@ namespace Authenticator.API.Tests
                 PasswordHash = "hash",
                 FirstName = "Soft",
                 LastName = "Delete",
-                IsActive = true,
+                Status = EUserAccountStatus.Ativo,
                 IsEmailVerified = false
             };
 

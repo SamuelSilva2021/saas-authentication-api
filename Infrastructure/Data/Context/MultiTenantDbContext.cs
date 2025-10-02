@@ -32,7 +32,7 @@ public class MultiTenantDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.Slug).IsUnique();
             entity.HasIndex(e => e.Domain).IsUnique();
-            entity.HasIndex(e => e.CnpjCpf).IsUnique();
+            entity.HasIndex(e => e.Document).IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name).HasColumnName("name");
@@ -51,7 +51,7 @@ public class MultiTenantDbContext : DbContext
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
 
             // Campos corporativos
-            entity.Property(e => e.CnpjCpf).HasColumnName("cnpj_cpf");
+            entity.Property(e => e.Document).HasColumnName("document");
             entity.Property(e => e.RazaoSocial).HasColumnName("razao_social");
             entity.Property(e => e.InscricaoEstadual).HasColumnName("inscricao_estadual");
             entity.Property(e => e.InscricaoMunicipal).HasColumnName("inscricao_municipal");
@@ -91,6 +91,27 @@ public class MultiTenantDbContext : DbContext
             entity.HasOne(d => d.ActiveSubscription)
                 .WithMany()
                 .HasForeignKey(d => d.ActiveSubscriptionId);
+
+            // Relacionamentos 1:N
+            entity.HasMany(t => t.UserAccounts)
+                .WithOne(u => u.Tenant)
+                .HasForeignKey(u => u.TenantId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasMany(t => t.AccessGroups)
+                .WithOne(g => g.Tenant)
+                .HasForeignKey(g => g.TenantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(t => t.Roles)
+                .WithOne(r => r.Tenant)
+                .HasForeignKey(r => r.TenantId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasMany(t => t.Permissions)
+                .WithOne(p => p.Tenant)
+                .HasForeignKey(p => p.TenantId)
+                .OnDelete(DeleteBehavior.Restrict);
 
         });
 

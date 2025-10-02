@@ -6,6 +6,8 @@ using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Infrastructure.Data;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
+using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
+using Authenticator.API.Infrastructure.Data.Context;
 
 namespace Authenticator.API.Core.Application.Implementation;
 
@@ -55,7 +57,7 @@ public class AuthenticationService : IAuthenticationService
             _logger.LogInformation("Tentativa de login para: {UsernameOrEmail}", usernameOrEmail);
             var user = await _userAccountsRepository.FirstOrDefaultAsync(u =>
                 (u.Username.Equals(usernameOrEmail) || u.Email.Equals(usernameOrEmail)) &&
-                    u.IsActive && u.DeletedAt == null);
+                    u.Status == EUserAccountStatus.Ativo && u.DeletedAt == null);
 
             if (user == null)
             {
@@ -139,7 +141,7 @@ public class AuthenticationService : IAuthenticationService
             }
 
             var user = await _accessControlContext.UserAccounts
-                .Where(u => u.Id == tokenData.UserId && u.IsActive && u.DeletedAt == null)
+                .Where(u => u.Id == tokenData.UserId && u.Status == EUserAccountStatus.Ativo && u.DeletedAt == null)
                 .FirstOrDefaultAsync();
 
             if (user == null)
@@ -236,7 +238,7 @@ public class AuthenticationService : IAuthenticationService
                 return ResponseBuilder<UserInfo>.Ok(cachedUserInfo!).Build();
 
             var user = await _accessControlContext.UserAccounts
-                .Where(u => u.Id == userId && u.IsActive && u.DeletedAt == null)
+                .Where(u => u.Id == userId && u.Status == EUserAccountStatus.Ativo && u.DeletedAt == null)
                 .FirstOrDefaultAsync();
 
             if (user == null)

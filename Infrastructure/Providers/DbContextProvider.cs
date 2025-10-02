@@ -1,6 +1,6 @@
 using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
-using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups;
+using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups.Etities;
 using Authenticator.API.Core.Domain.AccessControl.Applications;
 using Authenticator.API.Core.Domain.AccessControl.Modules;
 using Authenticator.API.Core.Domain.AccessControl.Operations;
@@ -14,6 +14,7 @@ using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using Authenticator.API.Core.Domain.MultiTenant.TenantProduct;
 using Authenticator.API.Infrastructure.Data;
+using Authenticator.API.Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace Authenticator.API.Infrastructure.Providers;
@@ -87,8 +88,7 @@ public class DbContextProvider : IDbContextProvider
                entityType == typeof(OperationEntity) ||
                entityType == typeof(PermissionOperationEntity) ||
                entityType == typeof(ApplicationEntity) ||
-               entityType == typeof(ModuleEntity) ||
-               entityType == typeof(ModuleTypeEntity);
+               entityType == typeof(ModuleEntity);
     }
 
     /// <summary>

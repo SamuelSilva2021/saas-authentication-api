@@ -50,16 +50,6 @@ public class ModuleEntity
     public Guid? ApplicationId { get; set; }
 
     /// <summary>
-    /// ID do tipo de módulo
-    /// </summary>
-    public Guid? ModuleTypeId { get; set; }
-
-    /// <summary>
-    /// Tipo do módulo
-    /// </summary>
-    public ModuleTypeEntity ModuleType { get; set; } = null!;
-
-    /// <summary>
     /// Se o módulo está ativo
     /// </summary>
     public bool IsActive { get; set; } = true;

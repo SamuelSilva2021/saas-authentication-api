@@ -3,6 +3,9 @@ using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Domain.Api;
 using Authenticator.API.Infrastructure.Configurations;
 using Authenticator.API.Infrastructure.Data;
+using Authenticator.API.Infrastructure.Data.Context;
+using Authenticator.API.Infrastructure.Data.Interfaces;
+using Authenticator.API.Infrastructure.Data.Interceptors;
 using Authenticator.API.Infrastructure.Providers;
 using Authenticator.API.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -28,10 +31,15 @@ public static class ServiceCollectionExtensions
         accessControlDataSourceBuilder.EnableDynamicJson();
         var accessControlDataSource = accessControlDataSourceBuilder.Build();
 
-        services.AddDbContext<AccessControlDbContext>(options =>
+        services.AddDbContext<AccessControlDbContext>((sp, options) =>
+        {
             options.UseNpgsql(accessControlDataSource)
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-            );
+                   .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+
+            // Interceptor para garantir isolamento de tenant nas operações de escrita
+            var interceptor = sp.GetRequiredService<TenantSaveChangesInterceptor>();
+            options.AddInterceptors(interceptor);
+        });
 
         var multiTenantDataSourceBuilder = new NpgsqlDataSourceBuilder(configuration.GetConnectionString("MultiTenantDatabase"));
         multiTenantDataSourceBuilder.EnableDynamicJson();
@@ -102,6 +110,12 @@ public static class ServiceCollectionExtensions
         services.AddConfigureScrutor();
         services.AddAutoMapperConfig();
         services.AddMemoryCache();
+
+        // Contexto de Tenant por escopo de requisição
+        services.AddScoped<ITenantContext, TenantContext>();
+
+        // Interceptor de escrita por tenant
+        services.AddScoped<TenantSaveChangesInterceptor>();
 
         return services;
     }

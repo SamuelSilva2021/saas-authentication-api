@@ -1,3 +1,7 @@
+using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
+using Authenticator.API.Core.Domain.AccessControl.Permissions;
+using Authenticator.API.Core.Domain.AccessControl.Roles;
+using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
 using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
 using System.ComponentModel.DataAnnotations;
 
@@ -48,7 +52,7 @@ public class TenantEntity
     /// CNPJ para empresas ou CPF para MEI/pessoa física
     /// </summary>
     [MaxLength(18)]
-    public string? CnpjCpf { get; set; }
+    public string? Document { get; set; }
 
     /// <summary>
     /// Razão social da empresa (nome oficial)
@@ -223,6 +227,10 @@ public class TenantEntity
     public DateTime? UpdatedAt { get; set; }
 
     // Navigation properties
+    public ICollection<UserAccountEntity> UserAccounts { get; set; } = new List<UserAccountEntity>();
+    public ICollection<AccessGroupEntity> AccessGroups { get; set; } = new List<AccessGroupEntity>();
+    public ICollection<RoleEntity> Roles { get; set; } = new List<RoleEntity>();
+    public ICollection<PermissionEntity> Permissions { get; set; } = new List<PermissionEntity>();
     public virtual SubscriptionEnity? ActiveSubscription { get; set; }
     public virtual ICollection<SubscriptionEnity> Subscriptions { get; set; } = new List<SubscriptionEnity>();
 }

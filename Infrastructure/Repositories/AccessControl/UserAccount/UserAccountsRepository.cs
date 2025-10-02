@@ -1,10 +1,11 @@
 using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
+using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
 using Authenticator.API.Infrastructure.Providers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Authenticator.API.Infrastructure.Repositories.MultiTenant;
+namespace Authenticator.API.Infrastructure.Repositories.AccessControl.UserAccount;
 
 /// <summary>
 /// Implementação específica do repositório para contas de usuário
@@ -118,7 +119,7 @@ public class UserAccountsRepository(
     public async Task<IEnumerable<UserAccountEntity>> GetActiveUsersByTenantAsync(Guid tenantId)
     {
         return await FindAsync(u => u.TenantId == tenantId &&
-                                   u.IsActive &&
+                                   u.Status == EUserAccountStatus.Ativo &&
                                    u.DeletedAt == null);
     }
 
@@ -209,7 +210,7 @@ public class UserAccountsRepository(
         var user = await GetByIdAsync(userId);
         if (user != null)
         {
-            user.IsActive = isActive;
+            user.Status = EUserAccountStatus.Ativo;
             user.UpdatedAt = DateTime.UtcNow;
             await UpdateAsync(user);
 

@@ -2,6 +2,7 @@ using Authenticator.API.Core.Application.Interfaces.Infrastructure;
 using Authenticator.API.Infrastructure.Configurations;
 using Authenticator.API.Infrastructure.CrossCutting.Utils;
 using Authenticator.API.Infrastructure.Extensions;
+using Authenticator.API.Infrastructure.Middlewares;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -66,6 +67,8 @@ app.UseHttpsRedirection();
 app.UseCors("DefaultPolicy");
 
 app.UseAuthentication();
+// Popula o contexto de tenant após autenticação
+app.UseMiddleware<TenantContextMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

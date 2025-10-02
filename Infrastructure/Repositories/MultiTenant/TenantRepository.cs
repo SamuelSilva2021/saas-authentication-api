@@ -10,7 +10,7 @@ namespace Authenticator.API.Infrastructure.Repositories.MultiTenant
         ) : BaseRepository<TenantEntity>(dbContextProvider), ITenantRepository
     {
         public async Task<TenantEntity?> GetByDocumentAsync(string document) =>
-            await FirstOrDefaultAsync(t => t.CnpjCpf == document);
+            await FirstOrDefaultAsync(t => t.Document == document);
 
         public async Task<bool> ExistingSlug(string slug) =>
             await AnyAsync(t => t.Slug == slug);

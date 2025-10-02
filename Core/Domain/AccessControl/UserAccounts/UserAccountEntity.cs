@@ -1,4 +1,6 @@
-using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups;
+using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups.Etities;
+using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
+using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using System.ComponentModel.DataAnnotations;
 
 namespace Authenticator.API.Core.Domain.AccessControl.UserAccounts;
@@ -59,7 +61,7 @@ public class UserAccountEntity
     /// <summary>
     /// Se o usuário está ativo
     /// </summary>
-    public bool IsActive { get; set; } = true;
+    public EUserAccountStatus Status { get; set; } = EUserAccountStatus.Ativo;
 
     /// <summary>
     /// Se o email foi verificado
@@ -96,6 +98,10 @@ public class UserAccountEntity
     /// </summary>
     public DateTime? PasswordResetExpiresAt { get; set; }
 
+    /// <summary>
+    /// Tenant ao qual o usuário pertence
+    /// </summary>
+    public TenantEntity? Tenant { get; set; }
     // Navigation properties
     public virtual ICollection<AccountAccessGroupEntity> AccountAccessGroups { get; set; } = new List<AccountAccessGroupEntity>();
 }

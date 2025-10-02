@@ -4,7 +4,7 @@ using Authenticator.API.Core.Domain.AccessControl.AccessGroups.DTOs;
 using Authenticator.API.Core.Domain.Api;
 using AutoMapper;
 
-namespace Authenticator.API.Infrastructure.Mapper.AccessGroup
+namespace Authenticator.API.Infrastructure.Mapper.AccessControl.AccessGroup
 {
     public class AccessGroupProfile : Profile
     {
