@@ -1,6 +1,6 @@
 using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups.Etities;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
-using Authenticator.API.Core.Domain.MultiTenant.Tenant;
+// using Authenticator.API.Core.Domain.MultiTenant.Tenant; // Removido - tabela está em outro banco
 using System.ComponentModel.DataAnnotations;
 
 namespace Authenticator.API.Core.Domain.AccessControl.UserAccounts;
@@ -99,9 +99,9 @@ public class UserAccountEntity
     public DateTime? PasswordResetExpiresAt { get; set; }
 
     /// <summary>
-    /// Tenant ao qual o usuário pertence
+    /// Tenant ao qual o usuário pertence - removido navigation property (tabela está em outro banco)
     /// </summary>
-    public TenantEntity? Tenant { get; set; }
+    // public TenantEntity? Tenant { get; set; }
     // Navigation properties
     public virtual ICollection<AccountAccessGroupEntity> AccountAccessGroups { get; set; } = new List<AccountAccessGroupEntity>();
 }

@@ -18,7 +18,7 @@ public class CreateTenantDTO
     /// CNPJ para empresas ou CPF para MEI/pessoa física
     /// </summary>
     [MaxLength(18, ErrorMessage = "CNPJ/CPF não pode exceder 18 caracteres")]
-    public string? CnpjCpf { get; set; }
+    public string? Document { get; set; }
 
     /// <summary>
     /// Razão social da empresa

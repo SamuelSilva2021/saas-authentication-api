@@ -38,7 +38,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                     return ResponseBuilder<RegisterTenantResponseDTO>
                         .Fail(new ErrorDTO { Message = "Email já está em uso." }).WithCode(400).Build();
 
-                var existingDocument = await _tenantRepository.GetByDocumentAsync(tenant.CnpjCpf!);
+                var existingDocument = await _tenantRepository.GetByDocumentAsync(tenant.Document!);
                 if (existingDocument != null)
                     return ResponseBuilder<RegisterTenantResponseDTO>
                         .Fail(new ErrorDTO { Message = "CNPJ/CPF já está em uso." }).WithCode(400).Build();

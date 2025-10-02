@@ -1,6 +1,5 @@
 using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups.Etities;
 using Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
-using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using System.ComponentModel.DataAnnotations;
 
 namespace Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
@@ -65,7 +64,8 @@ public class AccessGroupEntity
     public DateTime? UpdatedAt { get; set; }
 
     // Navigation properties
-    public TenantEntity Tenant { get; set; } = null!;
+    // Removido navigation property para Tenant - tabela está em outro banco (multi_tenant_db)
+    // public TenantEntity Tenant { get; set; } = null!;
     public virtual ICollection<AccountAccessGroupEntity> AccountAccessGroups { get; set; } = new List<AccountAccessGroupEntity>();
     public virtual ICollection<RoleAccessGroupEntity> RoleAccessGroups { get; set; } = new List<RoleAccessGroupEntity>();
 

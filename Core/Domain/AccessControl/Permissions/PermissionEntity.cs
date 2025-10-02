@@ -2,7 +2,7 @@ using Authenticator.API.Core.Domain.AccessControl.Modules;
 using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
 using Authenticator.API.Core.Domain.AccessControl.Roles;
 using Authenticator.API.Core.Domain.AccessControl.Roles.Entities;
-using Authenticator.API.Core.Domain.MultiTenant.Tenant;
+// using Authenticator.API.Core.Domain.MultiTenant.Tenant; // Removido - tabela está em outro banco
 using System.ComponentModel.DataAnnotations;
 
 namespace Authenticator.API.Core.Domain.AccessControl.Permissions;
@@ -63,7 +63,8 @@ public class PermissionEntity
     public DateTime? UpdatedAt { get; set; }
 
     // Navigation properties
-    public TenantEntity? Tenant { get; set; }
+    // Removido navigation property para Tenant - tabela está em outro banco (multi_tenant_db)
+    // public TenantEntity? Tenant { get; set; }
     public ICollection<RolePermissionEntity> RolePermissions { get; set; } = new List<RolePermissionEntity>();
     public virtual RoleEntity? Role { get; set; }
     public virtual ModuleEntity? Module { get; set; }

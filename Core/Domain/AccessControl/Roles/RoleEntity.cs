@@ -2,7 +2,6 @@ using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 using Authenticator.API.Core.Domain.AccessControl.Permissions;
 using Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
 using Authenticator.API.Core.Domain.AccessControl.Roles.Entities;
-using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using System.ComponentModel.DataAnnotations;
 
 namespace Authenticator.API.Core.Domain.AccessControl.Roles;
@@ -62,7 +61,8 @@ public class RoleEntity
     public DateTime? UpdatedAt { get; set; }
 
     // Navigation properties
-    public TenantEntity? Tenant { get; set; }
+    // Removido navigation property para Tenant - tabela está em outro banco (multi_tenant_db)
+    // public TenantEntity? Tenant { get; set; }
     public ICollection<AccessGroupRoleEntity> AccessGroupRoles { get; set; } = new List<AccessGroupRoleEntity>();
 
     public ICollection<RolePermissionEntity> RolePermissions { get; set; } = new List<RolePermissionEntity>();
