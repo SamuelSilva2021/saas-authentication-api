@@ -1,4 +1,4 @@
-﻿using Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGroup;
+using Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGroup;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroups.DTOs;
 using Authenticator.API.Core.Domain.Api;
@@ -30,87 +30,78 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
 
         #region GET
         [HttpGet]
-        [SwaggerResponse(200, "Lista de grupos de acesso recuperada com sucesso", typeof(ResponseDTO<IEnumerable<AccessGroupDTO>>))]
-        [SwaggerResponse(404, "Grupos de acesso não encontrado", typeof(ResponseDTO<AccessGroupDTO>))]
-        [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<IEnumerable<AccessGroupDTO>>))]
-        [SwaggerResponse(500, "Erro interno do servidor", typeof(ResponseDTO<IEnumerable<AccessGroupDTO>>))]
-        public async Task<ActionResult<ResponseDTO<IEnumerable<AccessGroupDTO>>>> GetAllAccessGroups()
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ResponseDTO<IEnumerable<AccessGroupDTO>>>> GetAllAccessGroups([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
-            var accessGroups = await _accessGroupService.GetAllAsync();
-            if (accessGroups.Data == null || !accessGroups.Data.Any())
-                return NotFound(new ResponseDTO<IEnumerable<AccessGroupDTO>>());
-            return Ok(accessGroups);
+            var accessGroups = await _accessGroupService.GetPagedAsync(page, limit);
+            return StatusCode(accessGroups.Code, accessGroups);
         }
 
         [HttpGet("{id}")]
-        [SwaggerResponse(200, "Grupo de acesso recuperado com sucesso", typeof(ResponseDTO<AccessGroupDTO>))]
-        [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<AccessGroupDTO>))]
-        [SwaggerResponse(404, "Grupo de acesso não encontrado", typeof(ResponseDTO<AccessGroupDTO>))]
-        [SwaggerResponse(500, "Erro interno do servidor", typeof(ResponseDTO<AccessGroupDTO>))]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ResponseDTO<AccessGroupDTO>>> GetAccessGroupById([FromRoute] Guid id)
         {
             var accessGroup = await _accessGroupService.GetByIdAsync(id);
-            if (accessGroup == null)
-                return NotFound(new ResponseDTO<AccessGroupDTO>());
-            return Ok(accessGroup);
+            return StatusCode(accessGroup.Code, accessGroup);
         }
 
         [HttpGet("group-types")]
-        [SwaggerResponse(200, "Lista de tipos de grupo recuperada com sucesso", typeof(ResponseDTO<IEnumerable<GroupTypeDTO>>))]
-        [SwaggerResponse(404, "Tipos de grupo não encontrado", typeof(ResponseDTO<GroupTypeDTO>))]
-        [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<IEnumerable<GroupTypeDTO>>))]
-        [SwaggerResponse(500, "Erro interno do servidor", typeof(ResponseDTO<IEnumerable<GroupTypeDTO>>))]
-        public async Task<ActionResult<ResponseDTO<IEnumerable<GroupTypeDTO>>>> GetAllGroupTypes()
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ResponseDTO<PagedResponseDTO<GroupTypeDTO>>>> GetAllGroupTypes([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
-            var groupTypes = await _groupTypeService.GetAllAsync();
-            if (groupTypes.Data == null || !groupTypes.Data.Any())
-                return NotFound(new ResponseDTO<IEnumerable<GroupTypeDTO>>());
-            return Ok(groupTypes);
-
+            var response = await _groupTypeService.GetPagedAsync(page, limit);
+            return StatusCode(response.Code, response);
         }
 
         [HttpGet("group-types/{id:guid}")]
-        [SwaggerResponse(200, "Tipo de grupo recuperado com sucesso", typeof(ResponseDTO<GroupTypeDTO>))]
-        [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<GroupTypeDTO>))]
-        [SwaggerResponse(404, "Tipo de grupo não encontrado", typeof(ResponseDTO<GroupTypeDTO>))]
-        [SwaggerResponse(500, "Erro interno do servidor", typeof(ResponseDTO<GroupTypeDTO>))]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ResponseDTO<GroupTypeDTO>>> GetGroupTypeById([FromRoute] Guid id)
         {
             var groupType = await _groupTypeService.GetByIdAsync(id);
-            if (groupType == null)
-                return NotFound(new ResponseDTO<GroupTypeDTO>());
-            return Ok(groupType);
+            return StatusCode(groupType.Code, groupType);
         }
 
         #endregion GET
 
         #region POST
         [HttpPost]
-        [SwaggerResponse(200, "Grupo de acesso criado com sucesso", typeof(ResponseDTO<AccessGroupDTO>))]
-        [SwaggerResponse(400, "Dados de entrada inválidos", typeof(ResponseDTO<AccessGroupDTO>))]
-        [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<AccessGroupDTO>))]
-        [SwaggerResponse(500, "Erro interno do servidor", typeof(ResponseDTO<AccessGroupDTO>))]
-        [ProducesResponseType(typeof(ResponseDTO<AccessGroupDTO>), 200)]
-        [ProducesResponseType(typeof(ResponseDTO<AccessGroupDTO>), 400)]
-        [ProducesResponseType(typeof(ResponseDTO<AccessGroupDTO>), 401)]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ResponseDTO<AccessGroupDTO>>> CreateAccessGroup([FromBody] CreateAccessGroupDTO createAccessGroupDTO)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
             var response = await _accessGroupService.CreateAsync(createAccessGroupDTO);
-            if (!response.Succeeded)
-                return BadRequest(response);
-            return Ok(response);
+            return StatusCode(response.Code, response);
         }
 
         [HttpPost("group-types")]
-        [SwaggerResponse(200, "Tipo de grupo criado com sucesso", typeof(ResponseDTO<GroupTypeDTO>))]
-        [SwaggerResponse(400, "Dados de entrada inválidos", typeof(ResponseDTO<GroupTypeDTO>))]
-        [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<GroupTypeDTO>))]
-        [SwaggerResponse(500, "Erro interno do servidor", typeof(ResponseDTO<GroupTypeDTO>))]
-        [ProducesResponseType(typeof(ResponseDTO<GroupTypeDTO>), 200)]
-        [ProducesResponseType(typeof(ResponseDTO<GroupTypeDTO>), 400)]
-        [ProducesResponseType(typeof(ResponseDTO<GroupTypeDTO>), 401)]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ResponseDTO<GroupTypeDTO>>> CreateGroupType([FromBody] GroupTypeCreateDTO groupTypeCreateDTO)
         {
             if (!ModelState.IsValid)
@@ -123,11 +114,12 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
 
         #region PUT
         [HttpPut("{id}")]
-        [SwaggerResponse(200, "Grupo de acesso atualizado com sucesso", typeof(ResponseDTO<AccessGroupDTO>))]
-        [SwaggerResponse(400, "Dados de entrada inválidos", typeof(ResponseDTO<AccessGroupDTO>))]
-        [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<AccessGroupDTO>))]
-        [SwaggerResponse(404, "Grupo de acesso não encontrado", typeof(ResponseDTO<AccessGroupDTO>))]
-        [SwaggerResponse(500, "Erro interno do servidor", typeof(ResponseDTO<AccessGroupDTO>))]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ResponseDTO<AccessGroupDTO>>> UpdateAccessGroup([FromRoute] Guid id, [FromBody] UpdateAccessGroupDTO updateAccessGroupDTO)
         {
             if (!ModelState.IsValid)
@@ -139,11 +131,12 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
 
 
         [HttpPut("group-types/{id:guid}")]
-        [SwaggerResponse(200, "Tipo de grupo atualizado com sucesso", typeof(ResponseDTO<GroupTypeDTO>))]
-        [SwaggerResponse(400, "Dados de entrada inválidos", typeof(ResponseDTO<GroupTypeDTO>))]
-        [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<GroupTypeDTO>))]
-        [SwaggerResponse(404, "Tipo de grupo não encontrado", typeof(ResponseDTO<GroupTypeDTO>))]
-        [SwaggerResponse(500, "Erro interno do servidor", typeof(ResponseDTO<GroupTypeDTO>))]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ResponseDTO<GroupTypeDTO>>> UpdateGroupType([FromRoute] Guid id, [FromBody] GroupTypeUpdateDTO groupTypeUpdateDTO)
         {
             if (!ModelState.IsValid)
@@ -157,10 +150,12 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
 
         #region DELETE
         [HttpDelete("{id:guid}")]
-        [SwaggerResponse(200, "Grupo de acesso deletado com sucesso", typeof(ResponseDTO<bool>))]
-        [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<bool>))]
-        [SwaggerResponse(404, "Grupo de acesso não encontrado", typeof(ResponseDTO<bool>))]
-        [SwaggerResponse(500, "Erro interno do servidor", typeof(ResponseDTO<bool>))]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ResponseDTO<bool>>> DeleteAccessGroup([FromRoute] Guid id)
         {
             var response = await _accessGroupService.DeleteAsync(id);
@@ -168,10 +163,12 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
         }
 
         [HttpDelete("group-types/{id:guid}")]
-        [SwaggerResponse(200, "Tipo de grupo deletado com sucesso", typeof(ResponseDTO<bool>))]
-        [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<bool>))]
-        [SwaggerResponse(404, "Tipo de grupo não encontrado", typeof(ResponseDTO<bool>))]
-        [SwaggerResponse(500, "Erro interno do servidor", typeof(ResponseDTO<bool>))]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ResponseDTO<bool>>> DeleteGroupType([FromRoute] Guid id)
         {
             var response = await _groupTypeService.DeleteAsync(id);

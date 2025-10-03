@@ -210,7 +210,7 @@ public static class ServiceCollectionExtensions
         {
             options.AddPolicy("DefaultPolicy", builder =>
             {
-                var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? new[] { "*" };
+                var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? ["*"];
 
                 if (allowedOrigins.Contains("*"))
                 {

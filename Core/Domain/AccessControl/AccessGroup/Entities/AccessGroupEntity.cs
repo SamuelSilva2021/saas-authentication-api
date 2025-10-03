@@ -63,9 +63,6 @@ public class AccessGroupEntity
     /// </summary>
     public DateTime? UpdatedAt { get; set; }
 
-    // Navigation properties
-    // Removido navigation property para Tenant - tabela está em outro banco (multi_tenant_db)
-    // public TenantEntity Tenant { get; set; } = null!;
     public virtual ICollection<AccountAccessGroupEntity> AccountAccessGroups { get; set; } = new List<AccountAccessGroupEntity>();
     public virtual ICollection<RoleAccessGroupEntity> RoleAccessGroups { get; set; } = new List<RoleAccessGroupEntity>();
 

@@ -1,4 +1,6 @@
-﻿namespace Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs
+﻿using Authenticator.API.Core.Domain.AccessControl.AccessGroups.DTOs;
+
+namespace Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs
 {
     /// <summary>
     /// DTO de resposta para listagem/detalhes
@@ -15,5 +17,6 @@
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public GroupTypeDTO? GroupType { get; set; }
     }
 }

@@ -19,6 +19,7 @@ namespace Authenticator.API.Core.Application.Interfaces
 
         Task<IEnumerable<T>> GetPagedAsync(int pageNumber, int pageSize);
         Task<IEnumerable<T>> GetPagedAsync(Expression<Func<T, bool>> predicate, int pageNumber, int pageSize);
+        Task<IEnumerable<T>> GetPagedWithIncludesAsync(int pageNumber, int pageSize, params Expression<Func<T, object>>[] includes);
 
         Task<IEnumerable<T>> GetAllOrderedAsync<TKey>(Expression<Func<T, TKey>> orderBy, bool ascending = true);
         Task<IEnumerable<T>> FindOrderedAsync<TKey>(Expression<Func<T, bool>> predicate, Expression<Func<T, TKey>> orderBy, bool ascending = true);

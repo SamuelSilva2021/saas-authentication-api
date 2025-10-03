@@ -303,6 +303,23 @@ namespace Authenticator.API.Infrastructure.Repositories
         }
 
         /// <summary>
+        /// Obtém uma página de entidades incluindo propriedades de navegação relacionadas, com base no número da página e no tamanho da página especificados
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="includes"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<T>> GetPagedWithIncludesAsync(int pageNumber, int pageSize, params Expression<Func<T, object>>[] includes)
+        {
+            var query = includes.Aggregate(_dbSet.AsQueryable(), (current, include) => current.Include(include));
+
+            return await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        /// <summary>
         /// Calcula o valor máximo de uma propriedade especificada
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
@@ -317,10 +334,8 @@ namespace Authenticator.API.Infrastructure.Repositories
         /// <typeparam name="TResult"></typeparam>
         /// <param name="selector"></param>
         /// <returns></returns>
-        public async Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> selector)
-        {
-            return await _dbSet.MinAsync(selector);
-        }
+        public async Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> selector) =>
+            await _dbSet.MinAsync(selector);
 
         /// <summary>
         /// Calcula a soma de uma propriedade decimal especificada

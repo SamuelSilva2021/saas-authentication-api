@@ -1,4 +1,4 @@
-﻿using Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGroup;
+using Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGroup;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroups.DTOs;
@@ -33,9 +33,9 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Access
                 var groupTypeEntity = _mapper.Map<GroupTypeEntity>(groupType);
 
                 await _groupTypeRepository.AddAsync(groupTypeEntity);
-                var dto = _mapper.Map<ResponseDTO<GroupTypeDTO>>(groupTypeEntity);
+                var dto = _mapper.Map<GroupTypeDTO>(groupTypeEntity);
 
-                return ResponseBuilder<GroupTypeDTO>.Ok(dto.Data!).Build();
+                return ResponseBuilder<GroupTypeDTO>.Ok(dto).Build();
             }
             catch (Exception ex)
             {
@@ -96,6 +96,45 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Access
         }
 
         /// <summary>
+        /// Recupera tipos de grupo paginados
+        /// </summary>
+        /// <param name="page">Número da página (>=1)</param>
+        /// <param name="limit">Itens por página (1-100)</param>
+        /// <returns></returns>
+        public async Task<ResponseDTO<PagedResponseDTO<GroupTypeDTO>>> GetPagedAsync(int page, int limit)
+        {
+            try
+            {
+                // sane defaults and bounds
+                if (page < 1) page = 1;
+                if (limit < 1) limit = 10;
+                if (limit > 100) limit = 100;
+
+                var total = await _groupTypeRepository.CountAsync();
+                var entities = await _groupTypeRepository.GetPagedAsync(page, limit);
+                var items = _mapper.Map<IEnumerable<GroupTypeDTO>>(entities);
+
+                var totalPages = total == 0 ? 0 : (int)Math.Ceiling(total / (double)limit);
+
+                var payload = new PagedResponseDTO<GroupTypeDTO>
+                {
+                    Items = items,
+                    Page = page,
+                    Limit = limit,
+                    Total = total,
+                    TotalPages = totalPages
+                };
+
+                return ResponseBuilder<PagedResponseDTO<GroupTypeDTO>>.Ok(payload).Build();
+            }
+            catch (Exception ex)
+            {
+                return ResponseBuilder<PagedResponseDTO<GroupTypeDTO>>
+                    .Fail(new ErrorDTO { Message = ex.Message }).WithCode(500).Build();
+            }
+        }
+
+        /// <summary>
         /// Recupera um tipo de grupo pelo ID
         /// </summary>
         /// <param name="id"></param>
@@ -143,10 +182,10 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Access
                     return ResponseBuilder<GroupTypeDTO?>
                         .Fail(new ErrorDTO { Message = "Já existe um tipo de grupo com esse nome." }).WithCode(400).Build();
 
-                _mapper.Map(groupType, existingGroupType);
-                await _groupTypeRepository.UpdateAsync(existingGroupType);
+                var updatedGroupType = _mapper.Map(groupType, existingGroupType);
+                await _groupTypeRepository.UpdateAsync(updatedGroupType);
 
-                var dto = _mapper.Map<GroupTypeDTO>(existingGroupType);
+                var dto = _mapper.Map<GroupTypeDTO>(updatedGroupType);
                 return ResponseBuilder<GroupTypeDTO?>.Ok(dto).Build();
             }
             catch (Exception ex)

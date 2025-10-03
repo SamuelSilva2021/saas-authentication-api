@@ -142,6 +142,82 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Access
             return ResponseBuilder<AccessGroupDTO>.Ok(dto).Build();
         }
 
+        public async Task<ResponseDTO<PagedResponseDTO<AccessGroupDTO>>> GetPagedAsync(int page, int limit)
+        {
+            try
+            {
+                if (page < 1) page = 1;
+                if (limit < 1) limit = 10;
+                if (limit > 100) limit = 100;
+                var currentUser = _userContext.CurrentUser;
+                if (currentUser == null)
+                {
+                    _logger.LogWarning("Usuário não autenticado ao tentar buscar grupos de acesso");
+                    return ResponseBuilder<PagedResponseDTO<AccessGroupDTO>>
+                        .Fail(new ErrorDTO { Message = "Usuário não autenticado" })
+                        .WithCode(401)
+                        .Build();
+                }
+
+                PagedResponseDTO<AccessGroupDTO> pagedResult;
+                int total;
+                IEnumerable<AccessGroupEntity> entities;
+                IEnumerable<AccessGroupDTO> items;
+
+                if (currentUser.TenantId == Guid.Empty || currentUser.TenantId == null)
+                {
+                    total = await _accessGroupRepository.CountAsync();
+
+                    entities = await _accessGroupRepository.GetPagedWithIncludesAsync(page, limit, ag => ag.GroupType);
+
+                    items = _mapper.Map<IEnumerable<AccessGroupDTO>>(entities);
+
+                    var totalPages = total == 0 ? 0 : (int)Math.Ceiling(total / (double)limit);
+
+                    pagedResult = new PagedResponseDTO<AccessGroupDTO>
+                    {
+                        Items = items,
+                        Page = page,
+                        Limit = limit,
+                        Total = total,
+                        TotalPages = totalPages
+                    };
+
+                }
+                else
+                {
+                    total = await _accessGroupRepository.CountAsync(ag => ag.TenantId == currentUser.TenantId);
+
+                    entities = await _accessGroupRepository.GetPagedWithIncludesAsync(
+                        page, 
+                        limit,
+                        ag => ag.TenantId == currentUser.TenantId, 
+                        ag => ag.GroupType);
+
+                    items = _mapper.Map<IEnumerable<AccessGroupDTO>>(entities);
+
+                    var totalPages = total == 0 ? 0 : (int)Math.Ceiling(total / (double)limit);
+
+                    pagedResult = new PagedResponseDTO<AccessGroupDTO>
+                    {
+                        Items = items,
+                        Page = page,
+                        Limit = limit,
+                        Total = total,
+                        TotalPages = totalPages
+                    };
+
+                }
+                return ResponseBuilder<PagedResponseDTO<AccessGroupDTO>>.Ok(pagedResult).Build();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao buscar grupos de acesso paginados");
+                return ResponseBuilder<PagedResponseDTO<AccessGroupDTO>>
+                    .Fail(new ErrorDTO { Message = ex.Message }).WithException(ex).WithCode(500).Build();
+            }
+        }
+
         /// <summary>
         /// Atualiza um grupo de acesso
         /// </summary>

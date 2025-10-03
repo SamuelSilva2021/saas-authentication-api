@@ -22,8 +22,9 @@ namespace Authenticator.API.Infrastructure.Configurations
                 cfg.AddProfile(new TenantProfile());
                 cfg.AddProfile(new TenantProductProfile());
                 cfg.AddProfile(new PlanProfile());
-                cfg.AddProfile(new SubscriptionProfile());
+                cfg.AddProfile<SubscriptionProfile>();
                 cfg.AddProfile<AccessGroupProfile>();
+                cfg.AddProfile<GroupTypeProfile>();
                 cfg.AddProfile<PermissionProfile>();
                 cfg.AddProfile<PermissionOperationProfile>();
             });
