@@ -1,5 +1,6 @@
 ﻿using Authenticator.API.Core.Application.Interfaces.AccessControl.Module;
 using Authenticator.API.Core.Domain.AccessControl.Modules.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace Authenticator.API.UserEntry.AccessControl.Module
 {
     [Route("api/modules")]
     [ApiController]
+    [Authorize]
     public class ModuleController(IModuleService moduleTypeService) : ControllerBase
     {
         private readonly IModuleService _moduleTypeService = moduleTypeService;

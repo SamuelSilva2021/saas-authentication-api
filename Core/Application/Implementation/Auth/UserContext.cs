@@ -15,7 +15,7 @@ namespace Authenticator.API.Core.Application.Implementation.Auth
         /// <summary>
         /// Usuário autenticado atual
         /// </summary>
-        public AuthenticatedUser CurrentUser => 
+        public AuthenticatedUser? CurrentUser => 
             _httpContextAccessor.HttpContext?.User.ToAuthenticatedUser();
     }
 }

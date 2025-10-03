@@ -7,6 +7,6 @@ namespace Authenticator.API.Core.Application.Interfaces.Auth
     /// </summary>
     public interface IUserContext
     {
-        AuthenticatedUser CurrentUser { get; }
+        AuthenticatedUser? CurrentUser { get; }
     }
 }

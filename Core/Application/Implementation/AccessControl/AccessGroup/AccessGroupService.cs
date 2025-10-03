@@ -84,11 +84,40 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Access
         {
             try
             {
-                var entities = await _accessGroupRepository.GetAllAsyncByTenantId(_userContext.CurrentUser.TenantId);
-                if (entities == null || !entities.Any())
+                var currentUser = _userContext.CurrentUser;
+                if (currentUser == null)
+                {
+                    _logger.LogWarning("Usuário não autenticado ao tentar buscar grupos de acesso");
                     return ResponseBuilder<IEnumerable<AccessGroupDTO>>
-                        .Ok(Enumerable.Empty<AccessGroupDTO>())
+                        .Fail(new ErrorDTO { Message = "Usuário não autenticado" })
+                        .WithCode(401)
                         .Build();
+                }
+
+                IEnumerable<AccessGroupEntity> entities;
+
+                if (currentUser.TenantId == Guid.Empty || currentUser.TenantId == null)
+                {
+                    entities = await _accessGroupRepository.GetAllAsync();
+                    if (entities == null || !entities.Any())
+                        return ResponseBuilder<IEnumerable<AccessGroupDTO>>
+                            .Ok(Enumerable.Empty<AccessGroupDTO>())
+                            .Build();
+                    //_logger.LogWarning("TenantId não encontrado para o usuário: {UserId}", currentUser.UserId);
+                    //return ResponseBuilder<IEnumerable<AccessGroupDTO>>
+                    //    .Fail(new ErrorDTO { Message = "Tenant não identificado" })
+                    //    .WithCode(400)
+                    //    .Build();
+                }
+                else
+                {
+                    // Filtra grupos de acesso pelo TenantId do usuário
+                    entities = await _accessGroupRepository.GetAllAsyncByTenantId(currentUser.TenantId);
+                    if (entities == null || !entities.Any())
+                        return ResponseBuilder<IEnumerable<AccessGroupDTO>>
+                            .Ok(Enumerable.Empty<AccessGroupDTO>())
+                            .Build();
+                }
 
                 var dto = _mapper.Map<IEnumerable<AccessGroupDTO>>(entities);
                 return ResponseBuilder<IEnumerable<AccessGroupDTO>>.Ok(dto).Build();

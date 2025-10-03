@@ -48,8 +48,8 @@ public class AccessControlDbContext : DbContext
     public DbSet<RoleAccessGroupEntity> RoleAccessGroups { get; set; }
     public DbSet<RolePermissionEntity> RolePermissions { get; set; }
     public DbSet<PermissionEntity> Permissions { get; set; }
-    public DbSet<OperationEntity> Operations { get; set; }
     public DbSet<PermissionOperationEntity> PermissionOperations { get; set; }
+    public DbSet<OperationEntity> Operations { get; set; }
     public DbSet<ApplicationEntity> Applications { get; set; }
     public DbSet<ModuleEntity> Modules { get; set; }
 

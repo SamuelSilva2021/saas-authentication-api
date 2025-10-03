@@ -43,7 +43,6 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
         [SwaggerResponse(200, "Grupo de acesso recuperado com sucesso", typeof(ResponseDTO<AccessGroupDTO>))]
         [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<AccessGroupDTO>))]
         [SwaggerResponse(404, "Grupo de acesso não encontrado", typeof(ResponseDTO<AccessGroupDTO>))]
@@ -57,7 +56,6 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
         }
 
         [HttpGet("group-types")]
-        [AllowAnonymous]
         [SwaggerResponse(200, "Lista de tipos de grupo recuperada com sucesso", typeof(ResponseDTO<IEnumerable<GroupTypeDTO>>))]
         [SwaggerResponse(404, "Tipos de grupo não encontrado", typeof(ResponseDTO<GroupTypeDTO>))]
         [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<IEnumerable<GroupTypeDTO>>))]
@@ -72,7 +70,6 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
         }
 
         [HttpGet("group-types/{id:guid}")]
-        [AllowAnonymous]
         [SwaggerResponse(200, "Tipo de grupo recuperado com sucesso", typeof(ResponseDTO<GroupTypeDTO>))]
         [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<GroupTypeDTO>))]
         [SwaggerResponse(404, "Tipo de grupo não encontrado", typeof(ResponseDTO<GroupTypeDTO>))]
@@ -89,7 +86,6 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
 
         #region POST
         [HttpPost]
-        [AllowAnonymous]
         [SwaggerResponse(200, "Grupo de acesso criado com sucesso", typeof(ResponseDTO<AccessGroupDTO>))]
         [SwaggerResponse(400, "Dados de entrada inválidos", typeof(ResponseDTO<AccessGroupDTO>))]
         [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<AccessGroupDTO>))]
@@ -108,7 +104,6 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
         }
 
         [HttpPost("group-types")]
-        [AllowAnonymous]
         [SwaggerResponse(200, "Tipo de grupo criado com sucesso", typeof(ResponseDTO<GroupTypeDTO>))]
         [SwaggerResponse(400, "Dados de entrada inválidos", typeof(ResponseDTO<GroupTypeDTO>))]
         [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<GroupTypeDTO>))]
@@ -128,7 +123,6 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
 
         #region PUT
         [HttpPut("{id}")]
-        [AllowAnonymous]
         [SwaggerResponse(200, "Grupo de acesso atualizado com sucesso", typeof(ResponseDTO<AccessGroupDTO>))]
         [SwaggerResponse(400, "Dados de entrada inválidos", typeof(ResponseDTO<AccessGroupDTO>))]
         [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<AccessGroupDTO>))]
@@ -145,7 +139,6 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
 
 
         [HttpPut("group-types/{id:guid}")]
-        [AllowAnonymous]
         [SwaggerResponse(200, "Tipo de grupo atualizado com sucesso", typeof(ResponseDTO<GroupTypeDTO>))]
         [SwaggerResponse(400, "Dados de entrada inválidos", typeof(ResponseDTO<GroupTypeDTO>))]
         [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<GroupTypeDTO>))]
@@ -164,7 +157,6 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
 
         #region DELETE
         [HttpDelete("{id:guid}")]
-        [AllowAnonymous]
         [SwaggerResponse(200, "Grupo de acesso deletado com sucesso", typeof(ResponseDTO<bool>))]
         [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<bool>))]
         [SwaggerResponse(404, "Grupo de acesso não encontrado", typeof(ResponseDTO<bool>))]
@@ -176,7 +168,6 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
         }
 
         [HttpDelete("group-types/{id:guid}")]
-        [AllowAnonymous]
         [SwaggerResponse(200, "Tipo de grupo deletado com sucesso", typeof(ResponseDTO<bool>))]
         [SwaggerResponse(401, "Credenciais inválidas", typeof(ResponseDTO<bool>))]
         [SwaggerResponse(404, "Tipo de grupo não encontrado", typeof(ResponseDTO<bool>))]

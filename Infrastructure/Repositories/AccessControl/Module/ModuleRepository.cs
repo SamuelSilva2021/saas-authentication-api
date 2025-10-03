@@ -11,8 +11,7 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Module
     /// <param name="dbContextProvider"></param>
     /// <param name="logger"></param>
     public class ModuleRepository(
-        IDbContextProvider dbContextProvider,
-        ILogger<GroupTypeRepository> logger
+        IDbContextProvider dbContextProvider
         ) : BaseRepository<ModuleEntity>(dbContextProvider), IModuleRepository
     {
 

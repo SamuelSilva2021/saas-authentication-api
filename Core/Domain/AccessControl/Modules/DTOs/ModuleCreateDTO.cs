@@ -43,11 +43,6 @@ namespace Authenticator.API.Core.Domain.AccessControl.Modules.DTOs
         public Guid? ApplicationId { get; set; }
 
         /// <summary>
-        /// ID do tipo de módulo
-        /// </summary>
-        public Guid? ModuleTypeId { get; set; }
-
-        /// <summary>
         /// Se o módulo está ativo
         /// </summary>
         public bool IsActive { get; set; } = true;
