@@ -61,10 +61,6 @@ public class RoleEntity
     public DateTime? UpdatedAt { get; set; }
 
     // Navigation properties
-    // Removido navigation property para Tenant - tabela está em outro banco (multi_tenant_db)
-    // public TenantEntity? Tenant { get; set; }
-    public ICollection<AccessGroupRoleEntity> AccessGroupRoles { get; set; } = new List<AccessGroupRoleEntity>();
-
     public ICollection<RolePermissionEntity> RolePermissions { get; set; } = new List<RolePermissionEntity>();
     public ICollection<RoleAccessGroupEntity> RoleAccessGroups { get; set; } = new List<RoleAccessGroupEntity>();
 }

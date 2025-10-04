@@ -151,14 +151,6 @@ public class AccessControlDbContext : DbContext
                 .HasForeignKey(gr => gr.AccessGroupId);
         });
 
-        modelBuilder.Entity<AccessGroupRoleEntity>(entity =>
-        {
-            entity.ToTable("access_group_roles");
-            entity.HasKey(e => new { e.GroupId, e.RoleId });
-            entity.Property(e => e.GroupId).HasColumnName("group_id");
-            entity.Property(e => e.RoleId).HasColumnName("role_id");
-        });
-
         modelBuilder.Entity<GroupTypeEntity>(entity =>
         {
             entity.ToTable("group_type");
@@ -222,13 +214,7 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
 
-            // Removido foreign key para Tenant - tabela está em outro banco (multi_tenant_db)
-            // entity.HasOne(r => r.Tenant)
-            //     .WithMany()
-            //     .HasForeignKey(r => r.TenantId)
-            //     .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasMany(r => r.AccessGroupRoles)
+            entity.HasMany(r => r.RoleAccessGroups)
                 .WithOne(gr => gr.Role)
                 .HasForeignKey(gr => gr.RoleId);
 
@@ -393,9 +379,6 @@ public class AccessControlDbContext : DbContext
 
         modelBuilder.Entity<RoleAccessGroupEntity>().HasQueryFilter(e =>
             !_tenantContext.HasTenant || e.AccessGroup.TenantId == _tenantContext.TenantId);
-
-        modelBuilder.Entity<AccessGroupRoleEntity>().HasQueryFilter(e =>
-            !_tenantContext.HasTenant || e.Role.TenantId == _tenantContext.TenantId);
 
         modelBuilder.Entity<RolePermissionEntity>().HasQueryFilter(e =>
             !_tenantContext.HasTenant || e.Permission.TenantId == _tenantContext.TenantId);

@@ -31,7 +31,6 @@ public class MultiTenantDbContext : DbContext
     {
         modelBuilder.Ignore<UserAccountEntity>();
         modelBuilder.Ignore<AccessGroupEntity>();
-        modelBuilder.Ignore<AccessGroupRoleEntity>();
         modelBuilder.Ignore<RoleEntity>();
         modelBuilder.Ignore<PermissionEntity>();
 
