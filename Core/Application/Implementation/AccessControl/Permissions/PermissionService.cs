@@ -259,9 +259,9 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
                         var operationId = change.Keys.First();
                         var action = change.Values.First();
                         if (action == "add")
-                            await AssignOperationsToPermissionInternalAsync(id, new List<Guid> { operationId });
+                            await AddOrRemoveOperationsFromPermissionInternal(id, new List<Guid> { operationId }, existingEntity.PermissionOperations);
                         else if (action == "remove")
-                            await RemoveOperationsFromPermissionInternalAsync(id, new List<Guid> { operationId }, existingEntity.PermissionOperations);
+                            await AddOrRemoveOperationsFromPermissionInternal(id, new List<Guid> { operationId }, existingEntity.PermissionOperations);
                     }
                     await _permissionOperationRepository.UpdateRangeAsync(existingEntity.PermissionOperations);
                 }
@@ -418,12 +418,13 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Método interno para remover operações de uma permissão
+        /// Método interno para adicionar ou remover operações de uma permissão
         /// </summary>
         /// <param name="permissionId"></param>
         /// <param name="operationIds"></param>
+        /// <param name="permissionOperations"></param>
         /// <returns></returns>
-        private async Task<IEnumerable<PermissionOperationEntity>> RemoveOperationsFromPermissionInternalAsync(Guid permissionId, List<Guid> operationIds, 
+        private async Task<IEnumerable<PermissionOperationEntity>> AddOrRemoveOperationsFromPermissionInternal(Guid permissionId, List<Guid> operationIds,
             IEnumerable<PermissionOperationEntity> permissionOperations)
         {
             try
@@ -436,6 +437,14 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
                     {
                         permissionOperation.IsActive = false;
                         permissionOperation.UpdatedAt = DateTime.Now;
+                        continue;
+                    }
+                    permissionOperation = permissionOperations
+                        .FirstOrDefault(po => po.OperationId == operationId && !po.IsActive);
+                    if (permissionOperation != null)
+                    {
+                        permissionOperation.IsActive = true;
+                        permissionOperation.UpdatedAt = DateTime.Now;
                     }
                 }
                 return permissionOperations;
@@ -444,7 +453,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
             {
                 return permissionOperations;
             }
-            
+
         }
 
         /// <summary>
