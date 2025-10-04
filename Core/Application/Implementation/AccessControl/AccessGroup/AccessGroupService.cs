@@ -149,15 +149,8 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Access
                 if (page < 1) page = 1;
                 if (limit < 1) limit = 10;
                 if (limit > 100) limit = 100;
+
                 var currentUser = _userContext.CurrentUser;
-                if (currentUser == null)
-                {
-                    _logger.LogWarning("Usuário não autenticado ao tentar buscar grupos de acesso");
-                    return ResponseBuilder<PagedResponseDTO<AccessGroupDTO>>
-                        .Fail(new ErrorDTO { Message = "Usuário não autenticado" })
-                        .WithCode(401)
-                        .Build();
-                }
 
                 PagedResponseDTO<AccessGroupDTO> pagedResult;
                 int total;
@@ -186,13 +179,12 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Access
                 }
                 else
                 {
-                    total = await _accessGroupRepository.CountAsync(ag => ag.TenantId == currentUser.TenantId);
-
                     entities = await _accessGroupRepository.GetPagedWithIncludesAsync(
                         page, 
                         limit,
                         ag => ag.TenantId == currentUser.TenantId, 
                         ag => ag.GroupType);
+                    total = entities.Count();
 
                     items = _mapper.Map<IEnumerable<AccessGroupDTO>>(entities);
 

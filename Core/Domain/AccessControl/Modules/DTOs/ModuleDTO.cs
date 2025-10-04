@@ -1,4 +1,6 @@
-﻿namespace Authenticator.API.Core.Domain.AccessControl.Modules.DTOs
+﻿using Authenticator.API.Core.Domain.AccessControl.Permissions.DTOs;
+
+namespace Authenticator.API.Core.Domain.AccessControl.Modules.DTOs
 {
     /// <summary>
     /// DTO para resposta de módulo
@@ -69,5 +71,7 @@
         /// Data de atualização
         /// </summary>
         public DateTime? UpdatedAt { get; set; }
+
+        public IEnumerable<PermissionDTO> Permissions { get; set; }
     }
 }

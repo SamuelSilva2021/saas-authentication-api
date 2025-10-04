@@ -11,7 +11,7 @@ namespace Authenticator.API.UserEntry.AccessControl.Module
     [Authorize]
     public class ModuleController(IModuleService moduleTypeService) : ControllerBase
     {
-        private readonly IModuleService _moduleTypeService = moduleTypeService;
+        private readonly IModuleService _moduleService = moduleTypeService;
 
         [HttpGet]
         [Produces("application/json")]
@@ -19,10 +19,10 @@ namespace Authenticator.API.UserEntry.AccessControl.Module
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<ModuleDTO>>> GetAllModuleAsync()
+        public async Task<ActionResult<IEnumerable<ModuleDTO>>> GetAllModulePagedAsync([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
-            var response = await _moduleTypeService.GetAllModuleAsync();
-            return StatusCode(response.Code, response);
+            var response = await _moduleService.GetAllModulePagedAsync(page, limit);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -34,7 +34,7 @@ namespace Authenticator.API.UserEntry.AccessControl.Module
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ModuleDTO>> GetModuleByIdAsync([FromRoute] Guid id)
         {
-            var response = await _moduleTypeService.GetModuleByIdAsync(id);
+            var response = await _moduleService.GetModuleByIdAsync(id);
             return StatusCode(response.Code, response);
         }
 
@@ -44,9 +44,9 @@ namespace Authenticator.API.UserEntry.AccessControl.Module
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ModuleDTO>> AddModuleTypeAsync([FromBody] ModuleCreateDTO moduleType)
+        public async Task<ActionResult<ModuleDTO>> AddModuleAsync([FromBody] ModuleCreateDTO moduleType)
         {
-            var response = await _moduleTypeService.AddModuleAsync(moduleType);
+            var response = await _moduleService.AddModuleAsync(moduleType);
             return StatusCode(response.Code, response);
         }
         [HttpPut]
@@ -58,7 +58,7 @@ namespace Authenticator.API.UserEntry.AccessControl.Module
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ModuleDTO>> UpdateModuleTypeAsync([FromRoute] Guid id, [FromBody] ModuleUpdateDTO moduleType)
         {
-            var response = await _moduleTypeService.UpdateModuleAsync(id, moduleType);
+            var response = await _moduleService.UpdateModuleAsync(id, moduleType);
             return StatusCode(response.Code, response);
         }
         [HttpDelete]
@@ -70,7 +70,7 @@ namespace Authenticator.API.UserEntry.AccessControl.Module
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<bool>> DeleteModuleTypeAsync([FromRoute] Guid id)
         {
-            var response = await _moduleTypeService.DeleteModuleAsync(id);
+            var response = await _moduleService.DeleteModuleAsync(id);
             return StatusCode(response.Code, response);
         }
     }

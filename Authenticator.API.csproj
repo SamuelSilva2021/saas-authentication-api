@@ -66,6 +66,7 @@
 
   <ItemGroup>
     <Folder Include="Core\Domain\AccessControl\AccountAccessGroups\DTOs\" />
+    <Folder Include="UserEntry\Users\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

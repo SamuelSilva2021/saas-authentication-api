@@ -6,6 +6,7 @@ namespace Authenticator.API.Core.Application.Interfaces.AccessControl.Module
     public interface IModuleService
     {
         Task<ResponseDTO<IEnumerable<ModuleDTO>>> GetAllModuleAsync();
+        Task<ResponseDTO<PagedResponseDTO<ModuleDTO>>> GetAllModulePagedAsync(int page, int limit);
         Task<ResponseDTO<ModuleDTO>> GetModuleByIdAsync(Guid id);
         Task<ResponseDTO<ModuleDTO>> AddModuleAsync(ModuleCreateDTO moduleType);
         Task<ResponseDTO<ModuleDTO>> UpdateModuleAsync(Guid id, ModuleUpdateDTO moduleType);

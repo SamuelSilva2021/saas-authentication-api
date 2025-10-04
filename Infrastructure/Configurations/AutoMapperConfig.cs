@@ -1,4 +1,6 @@
 ﻿using Authenticator.API.Infrastructure.Mapper.AccessControl.AccessGroup;
+using Authenticator.API.Infrastructure.Mapper.AccessControl.Module;
+using Authenticator.API.Infrastructure.Mapper.AccessControl.Operation;
 using Authenticator.API.Infrastructure.Mapper.AccessControl.Permissions;
 using Authenticator.API.Infrastructure.Mapper.AccessControl.UserAccount;
 using Authenticator.API.Infrastructure.Mapper.MultiTenant;
@@ -18,15 +20,17 @@ namespace Authenticator.API.Infrastructure.Configurations
         {
             services.AddAutoMapper(cfg =>
             {
-                cfg.AddProfile(new UserAccountProfile());
-                cfg.AddProfile(new TenantProfile());
-                cfg.AddProfile(new TenantProductProfile());
-                cfg.AddProfile(new PlanProfile());
+                cfg.AddProfile<UserAccountProfile>();
+                cfg.AddProfile<TenantProfile>();
+                cfg.AddProfile<TenantProductProfile>();
+                cfg.AddProfile<PlanProfile>();
                 cfg.AddProfile<SubscriptionProfile>();
                 cfg.AddProfile<AccessGroupProfile>();
                 cfg.AddProfile<GroupTypeProfile>();
                 cfg.AddProfile<PermissionProfile>();
                 cfg.AddProfile<PermissionOperationProfile>();
+                cfg.AddProfile<ModuleProfile>();
+                cfg.AddProfile<OperationProfile>();
             });
         }
     }
