@@ -234,7 +234,11 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         {
             try
             {
-                var existingEntity = await _permissionRepository.GetByIdAsync(id);
+                var existingEntity = await _permissionRepository.GetByIdAsync(id, include: p => p
+                    .Include(x => x.Module)
+                    .Include(x => x.PermissionOperations)
+                        .ThenInclude(po => po.Operation));
+
                 if (existingEntity == null)
                     return ResponseBuilder<PermissionDTO>
                         .Fail(new ErrorDTO { Message = "Permissão não encontrada" })
@@ -243,29 +247,26 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
 
                 _mapper.Map(permission, existingEntity);
                 existingEntity.UpdatedAt = DateTime.Now;
-
                 await _permissionRepository.UpdateAsync(existingEntity);
 
-                // Atualizar operações se fornecidas
-                if (permission.OperationIds != null)
+
+                var operationsChanges = PermissionsOperationsCompare(existingEntity.PermissionOperations, permission);
+
+                if (operationsChanges.Count > 0)
                 {
-                    // Remover todas as operações atuais
-                    await RemoveAllOperationsFromPermissionInternalAsync(id);
-                    
-                    // Adicionar as novas operações
-                    if (permission.OperationIds.Any())
+                    foreach (var change in operationsChanges)
                     {
-                        await AssignOperationsToPermissionInternalAsync(id, permission.OperationIds);
+                        var operationId = change.Keys.First();
+                        var action = change.Values.First();
+                        if (action == "add")
+                            await AssignOperationsToPermissionInternalAsync(id, new List<Guid> { operationId });
+                        else if (action == "remove")
+                            await RemoveOperationsFromPermissionInternalAsync(id, new List<Guid> { operationId }, existingEntity.PermissionOperations);
                     }
+                    await _permissionOperationRepository.UpdateRangeAsync(existingEntity.PermissionOperations);
                 }
 
-                // Recarregar a entidade com includes
-                var entityWithIncludes = await _permissionRepository.GetByIdAsync(id, include: p => p
-                    .Include(x => x.Module)
-                    .Include(x => x.PermissionOperations)
-                        .ThenInclude(po => po.Operation));
-
-                var dto = _mapper.Map<PermissionDTO>(entityWithIncludes);
+                var dto = _mapper.Map<PermissionDTO>(existingEntity);
                 return ResponseBuilder<PermissionDTO>.Ok(dto).Build();
             }
             catch (Exception ex)
@@ -343,8 +344,9 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         {
             try
             {
-                var result = await RemoveOperationsFromPermissionInternalAsync(permissionId, operationIds);
-                return ResponseBuilder<bool>.Ok(result).Build();
+                //var result = await RemoveOperationsFromPermissionInternalAsync(permissionId, operationIds);
+                //return ResponseBuilder<bool>.Ok(result).Build();
+                return ResponseBuilder<bool>.Ok(true).Build();
             }
             catch (Exception ex)
             {
@@ -383,7 +385,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
 
                 var existingOperationIds = existingPermissionOperations
                     .SelectMany(p => p.PermissionOperations)
-                    .Where(po => po.IsActive && po.DeletedAt == null)
+                    .Where(po => po.IsActive)
                     .Select(po => po.OperationId)
                     .ToList();
 
@@ -421,27 +423,28 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         /// <param name="permissionId"></param>
         /// <param name="operationIds"></param>
         /// <returns></returns>
-        private async Task<bool> RemoveOperationsFromPermissionInternalAsync(Guid permissionId, List<Guid> operationIds)
+        private async Task<IEnumerable<PermissionOperationEntity>> RemoveOperationsFromPermissionInternalAsync(Guid permissionId, List<Guid> operationIds, 
+            IEnumerable<PermissionOperationEntity> permissionOperations)
         {
-            var permission = await _permissionRepository.GetByIdAsync(permissionId, include: p => p
-                .Include(x => x.PermissionOperations));
-
-            if (permission == null)
-                throw new ArgumentException("Permissão não encontrada");
-
-            var permissionOperationsToRemove = permission.PermissionOperations
-                .Where(po => operationIds.Contains(po.OperationId) && po.IsActive && po.DeletedAt == null)
-                .ToList();
-
-            foreach (var permissionOperation in permissionOperationsToRemove)
+            try
             {
-                permissionOperation.IsActive = false;
-                permissionOperation.DeletedAt = DateTime.Now;
-                permissionOperation.UpdatedAt = DateTime.Now;
+                foreach (var operationId in operationIds)
+                {
+                    var permissionOperation = permissionOperations
+                        .FirstOrDefault(po => po.OperationId == operationId && po.IsActive);
+                    if (permissionOperation != null)
+                    {
+                        permissionOperation.IsActive = false;
+                        permissionOperation.UpdatedAt = DateTime.Now;
+                    }
+                }
+                return permissionOperations;
             }
-
-            await _permissionRepository.UpdateAsync(permission);
-            return true;
+            catch (Exception ex)
+            {
+                return permissionOperations;
+            }
+            
         }
 
         /// <summary>
@@ -458,18 +461,38 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
                 return false;
 
             var activePermissionOperations = permission.PermissionOperations
-                .Where(po => po.IsActive && po.DeletedAt == null)
+                .Where(po => po.IsActive)
                 .ToList();
 
             foreach (var permissionOperation in activePermissionOperations)
             {
                 permissionOperation.IsActive = false;
-                permissionOperation.DeletedAt = DateTime.Now;
                 permissionOperation.UpdatedAt = DateTime.Now;
             }
 
             await _permissionRepository.UpdateAsync(permission);
             return true;
+
+        }
+        private List<Dictionary<Guid, string>> PermissionsOperationsCompare(IEnumerable<PermissionOperationEntity> permissionOperations, PermissionUpdateDTO newPermission)
+        {
+            List<Dictionary<Guid, string>> operationsCompare = new List<Dictionary<Guid, string>>();
+
+            foreach (var op in newPermission.OperationIds!)
+            {
+                if (!permissionOperations.Any(po => po.OperationId == op && po.IsActive))
+                {
+                    operationsCompare.Add(new Dictionary<Guid, string> { { op, "add" } });
+                }
+            }
+            foreach (var op in permissionOperations)
+            {
+                if (!newPermission.OperationIds.Any(po => po == op.OperationId) && op.IsActive)
+                {
+                    operationsCompare.Add(new Dictionary<Guid, string> { { op.OperationId, "remove" } });
+                }
+            }
+            return operationsCompare;
         }
     }
 }

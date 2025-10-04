@@ -289,7 +289,6 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
                         .Build();
 
                 existingEntity.IsActive = false;
-                existingEntity.DeletedAt = DateTime.Now;
                 existingEntity.UpdatedAt = DateTime.Now;
 
                 await _permissionOperationRepository.UpdateAsync(existingEntity);

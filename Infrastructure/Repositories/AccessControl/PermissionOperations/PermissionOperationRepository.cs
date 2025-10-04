@@ -27,7 +27,7 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Permission
             try
             {
                 return await GetAllAsync(
-                    filter: po => po.PermissionId == permissionId && po.IsActive && po.DeletedAt == null,
+                    filter: po => po.PermissionId == permissionId && po.IsActive,
                     include: query => query
                         .Include(po => po.Permission)
                         .Include(po => po.Operation)
@@ -50,7 +50,7 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Permission
             try
             {
                 return await GetAllAsync(
-                    filter: po => po.OperationId == operationId && po.IsActive && po.DeletedAt == null,
+                    filter: po => po.OperationId == operationId && po.IsActive,
                     include: query => query
                         .Include(po => po.Permission)
                         .Include(po => po.Operation)
@@ -76,8 +76,7 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Permission
                 var relations = await GetAllAsync(
                     filter: po => po.PermissionId == permissionId && 
                                   po.OperationId == operationId && 
-                                  po.IsActive && 
-                                  po.DeletedAt == null,
+                                  po.IsActive, 
                     include: query => query
                         .Include(po => po.Permission)
                         .Include(po => po.Operation)
@@ -104,14 +103,12 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Permission
             {
                 var relations = await GetAllAsync(
                     filter: po => po.PermissionId == permissionId 
-                        && po.IsActive 
-                        && po.DeletedAt == null
+                        && po.IsActive
                 );
 
                 foreach (var relation in relations)
                 {
                     relation.IsActive = false;
-                    relation.DeletedAt = DateTime.Now;
                     relation.UpdatedAt = DateTime.Now;
                     await UpdateAsync(relation);
                 }
@@ -138,14 +135,12 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Permission
                 var relations = await GetAllAsync(
                     filter: po => po.PermissionId == permissionId && 
                                   operationIds.Contains(po.OperationId) && 
-                                  po.IsActive && 
-                                  po.DeletedAt == null
+                                  po.IsActive
                 );
 
                 foreach (var relation in relations)
                 {
                     relation.IsActive = false;
-                    relation.DeletedAt = DateTime.Now;
                     relation.UpdatedAt = DateTime.Now;
                     await UpdateAsync(relation);
                 }

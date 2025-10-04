@@ -39,11 +39,6 @@ public class PermissionOperationEntity
     /// </summary>
     public DateTime? UpdatedAt { get; set; }
 
-    /// <summary>
-    /// Data de exclusão (soft delete)
-    /// </summary>
-    public DateTime? DeletedAt { get; set; }
-
     // Navigation properties
     /// <summary>
     /// Permissão relacionada
