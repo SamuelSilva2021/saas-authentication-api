@@ -14,11 +14,31 @@ namespace Authenticator.API.Core.Application.Interfaces
         /// <returns></returns>
         Task<IEnumerable<T>> GetAllAsync();
         /// <summary>
+        /// Obtém todas as entidades incluindo propriedades de navegação especificadas por meio de uma função de inclusão.
+        /// </summary>
+        /// <param name="include"></param>
+        /// <returns></returns>
+        Task<IEnumerable<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>> include);
+        /// <summary>
+        /// Obtém todas as entidades que correspondem ao filtro especificado.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="include"></param>
+        /// <returns></returns>
+        Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter, Func<IQueryable<T>, IQueryable<T>> include);
+        /// <summary>
         /// Obtém uma entidade por seu ID.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         Task<T?> GetByIdAsync(Guid id);
+        /// <summary>
+        /// Obtém uma entidade por seu ID incluindo propriedades de navegação especificadas por meio de uma função de inclusão.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="include"></param>
+        /// <returns></returns>
+        Task<T?> GetByIdAsync(Guid id, Func<IQueryable<T>, IQueryable<T>> include);
         /// <summary>
         /// Agrega uma nova entidade.
         /// </summary>
@@ -96,6 +116,14 @@ namespace Authenticator.API.Core.Application.Interfaces
         /// <param name="includes"></param>
         /// <returns></returns>
         Task<IEnumerable<T>> GetPagedWithIncludesAsync(int pageNumber, int pageSize, params Expression<Func<T, object>>[] includes);
+        /// <summary>
+        /// Obtém uma página de entidades incluindo propriedades de navegação especificadas por meio de uma função de inclusão.
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="include"></param>
+        /// <returns></returns>
+        Task<IEnumerable<T>> GetPagedAsync(int page, int pageSize, Func<IQueryable<T>, IQueryable<T>> include);
         /// <summary>
         /// Obtém uma página de entidades que correspondem ao predicado e incluem propriedades de navegação especificadas.
         /// </summary>

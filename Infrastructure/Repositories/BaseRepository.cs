@@ -1,4 +1,4 @@
-﻿using Authenticator.API.Core.Application.Interfaces;
+using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Infrastructure.Providers;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -197,6 +197,42 @@ namespace Authenticator.API.Infrastructure.Repositories
             await _dbSet.ToListAsync();
 
         /// <summary>
+        /// Obtém todas as entidades do banco de dados com includes customizados usando uma função de configuração
+        /// </summary>
+        /// <param name="include"></param>
+        /// <returns></returns>
+        public virtual async Task<IEnumerable<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>> include)
+        {
+            var query = include(_dbSet.AsQueryable());
+            return await query.ToListAsync();
+        }
+        /// <summary>
+        /// Obtém todas as entidades que satisfazem o filtro especificado
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public virtual async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter)
+        {
+            return await _dbSet
+                .Where(filter)
+                .ToListAsync();
+        }
+        /// <summary>
+        /// Obtém todas as entidades que satisfazem o filtro especificado com includes customizados
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="include"></param>
+        /// <returns></returns>
+        public virtual async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter,Func<IQueryable<T>, IQueryable<T>> include)
+        {
+            var query = include(_dbSet.AsQueryable());
+
+            return await query
+                .Where(filter)
+                .ToListAsync();
+        }
+
+        /// <summary>
         /// Obtém todas as entidades do banco de dados ordenadas pela chave especificada
         /// </summary>
         /// <typeparam name="TKey"></typeparam>
@@ -273,6 +309,30 @@ namespace Authenticator.API.Infrastructure.Repositories
         }
 
         /// <summary>
+        /// Obtém uma entidade pelo seu ID com includes customizados usando uma função de configuração
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="include"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public async Task<T?> GetByIdAsync(Guid id, Func<IQueryable<T>, IQueryable<T>> include)
+        {
+            var query = include(_dbSet.AsQueryable());
+
+            var idProperty = typeof(T).GetProperty("Id");
+            if (idProperty == null)
+                throw new InvalidOperationException($"Entity {typeof(T).Name} does not have an Id property");
+
+            var parameter = Expression.Parameter(typeof(T), "x");
+            var property = Expression.Property(parameter, idProperty);
+            var constant = Expression.Constant(id);
+            var equal = Expression.Equal(property, constant);
+            var lambda = Expression.Lambda<Func<T, bool>>(equal, parameter);
+
+            return await query.FirstOrDefaultAsync(lambda);
+        }
+
+        /// <summary>
         /// Obtém uma página de entidades com base no número da página e no tamanho da página especificados
         /// </summary>
         /// <param name="pageNumber"></param>
@@ -320,6 +380,23 @@ namespace Authenticator.API.Infrastructure.Repositories
         }
 
         /// <summary>
+        /// Obtém uma página de entidades com includes customizados usando uma função de configuração
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="include"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<T>> GetPagedAsync(int page, int pageSize, Func<IQueryable<T>, IQueryable<T>> include)
+        {
+            var query = include(_dbSet.AsQueryable());
+
+            return await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        /// <summary>
         /// Calcula o valor máximo de uma propriedade especificada
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
@@ -352,6 +429,26 @@ namespace Authenticator.API.Infrastructure.Repositories
         /// <returns></returns>
         public async Task UpdateAsync(T entity)
         {
+            // Evita conflito de rastreamento quando outra instância com o mesmo Id já está sendo rastreada pelo DbContext
+            var idProperty = typeof(T).GetProperty("Id");
+            if (idProperty == null)
+                throw new InvalidOperationException($"Entity {typeof(T).Name} does not have an Id property");
+
+            var idValue = idProperty.GetValue(entity);
+
+            // Procura no ChangeTracker uma entidade local com o mesmo Id
+            var localTracked = _dbSet.Local.FirstOrDefault(e =>
+            {
+                var localId = idProperty.GetValue(e);
+                return localId != null && localId.Equals(idValue);
+            });
+
+            // Se existir outra instância rastreada diferente da atual, desprende-a para evitar conflito
+            if (localTracked != null && !ReferenceEquals(localTracked, entity))
+            {
+                _context.Entry(localTracked).State = EntityState.Detached;
+            }
+
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();
         }

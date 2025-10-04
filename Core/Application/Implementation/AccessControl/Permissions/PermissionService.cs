@@ -6,6 +6,7 @@ using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
 using Authenticator.API.Core.Domain.Api;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Authenticator.API.Core.Application.Interfaces.AccessControl.PermissionOperations;
 
 namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permissions
 {
@@ -18,10 +19,12 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
     public class PermissionService(
         IPermissionRepository permissionRepository,
         IOperationRepository operationRepository,
+        IPermissionOperationRepository permissionOperationRepository,
         IMapper mapper) : IPermissionService
     {
         private readonly IPermissionRepository _permissionRepository = permissionRepository;
         private readonly IOperationRepository _operationRepository = operationRepository;
+        private readonly IPermissionOperationRepository _permissionOperationRepository = permissionOperationRepository;
         private readonly IMapper _mapper = mapper;
 
         /// <summary>
@@ -68,15 +71,15 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
                         .Include(x => x.PermissionOperations)
                             .ThenInclude(po => po.Operation));
 
-                var dtos = _mapper.Map<IEnumerable<PermissionDTO>>(entities.Items);
+                var dtos = _mapper.Map<IEnumerable<PermissionDTO>>(entities);
 
                 var pagedResponse = new PagedResponseDTO<PermissionDTO>
                 {
                     Items = dtos,
-                    TotalCount = entities.TotalCount,
-                    Page = entities.Page,
-                    PageSize = entities.PageSize,
-                    TotalPages = entities.TotalPages
+                    Page = page,
+                    Limit = limit,
+                    Total = entities.Count(),
+                    TotalPages = (int)Math.Ceiling((double)entities.Count() / limit)
                 };
 
                 return ResponseBuilder<PagedResponseDTO<PermissionDTO>>.Ok(pagedResponse).Build();
@@ -294,8 +297,8 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
                 // Remover todas as operações associadas antes de deletar
                 await RemoveAllOperationsFromPermissionInternalAsync(id);
 
-                var result = await _permissionRepository.DeleteAsync(id);
-                return ResponseBuilder<bool>.Ok(result).Build();
+                await _permissionRepository.DeleteAsync(existingEntity);
+                return ResponseBuilder<bool>.Ok(true).Build();
             }
             catch (Exception ex)
             {
@@ -361,52 +364,55 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         /// <returns></returns>
         private async Task<bool> AssignOperationsToPermissionInternalAsync(Guid permissionId, List<Guid> operationIds)
         {
-            // Verificar se a permissão existe
-            var permission = await _permissionRepository.GetByIdAsync(permissionId);
-            if (permission == null)
-                throw new ArgumentException("Permissão não encontrada");
-
-            // Verificar se todas as operações existem
-            foreach (var operationId in operationIds)
+            try
             {
-                var operation = await _operationRepository.GetByIdAsync(operationId);
-                if (operation == null)
-                    throw new ArgumentException($"Operação com ID {operationId} não encontrada");
-            }
+                var permission = await _permissionRepository.GetByIdAsync(permissionId);
+                if (permission == null)
+                    throw new ArgumentException("Permissão não encontrada");
 
-            // Obter operações já associadas para evitar duplicatas
-            var existingPermissionOperations = await _permissionRepository.GetAllAsync(
-                filter: po => po.Id == permissionId,
-                include: p => p.Include(x => x.PermissionOperations));
-
-            var existingOperationIds = existingPermissionOperations
-                .SelectMany(p => p.PermissionOperations)
-                .Where(po => po.IsActive && po.DeletedAt == null)
-                .Select(po => po.OperationId)
-                .ToList();
-
-            // Filtrar operações que já não estão associadas
-            var newOperationIds = operationIds.Except(existingOperationIds).ToList();
-
-            // Criar novos relacionamentos
-            foreach (var operationId in newOperationIds)
-            {
-                var permissionOperation = new PermissionOperationEntity
+                foreach (var operationId in operationIds)
                 {
-                    Id = Guid.NewGuid(),
-                    PermissionId = permissionId,
-                    OperationId = operationId,
-                    IsActive = true,
-                    CreatedAt = DateTime.Now
-                };
+                    var operation = await _operationRepository.GetByIdAsync(operationId);
+                    if (operation == null)
+                        throw new ArgumentException($"Operação com ID {operationId} não encontrada");
+                }
 
-                // Assumindo que existe um repositório ou método para adicionar PermissionOperation
-                // Como não foi implementado, vou usar uma abordagem através do contexto
-                permission.PermissionOperations.Add(permissionOperation);
+                var existingPermissionOperations = await _permissionRepository.GetAllAsync(
+                    filter: po => po.Id == permissionId,
+                    include: p => p.Include(x => x.PermissionOperations));
+
+                var existingOperationIds = existingPermissionOperations
+                    .SelectMany(p => p.PermissionOperations)
+                    .Where(po => po.IsActive && po.DeletedAt == null)
+                    .Select(po => po.OperationId)
+                    .ToList();
+
+                var newOperationIds = operationIds.Except(existingOperationIds).ToList();
+
+                List<PermissionOperationEntity> permissionOperations = new List<PermissionOperationEntity>();
+
+                foreach (var operationId in newOperationIds)
+                {
+                    var permissionOperation = new PermissionOperationEntity
+                    {
+                        Id = Guid.NewGuid(),
+                        PermissionId = permissionId,
+                        OperationId = operationId,
+                        IsActive = true,
+                        CreatedAt = DateTime.Now
+                    };
+
+                    permissionOperations.Add(permissionOperation);
+
+                }
+                await _permissionOperationRepository.AddRangeAsync(permissionOperations);
+                return true;
             }
-
-            await _permissionRepository.UpdateAsync(permission);
-            return true;
+            catch (Exception ex)
+            {
+                return false;
+            }
+            
         }
 
         /// <summary>

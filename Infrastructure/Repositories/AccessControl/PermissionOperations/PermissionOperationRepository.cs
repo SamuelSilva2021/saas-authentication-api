@@ -103,7 +103,9 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Permission
             try
             {
                 var relations = await GetAllAsync(
-                    filter: po => po.PermissionId == permissionId && po.IsActive && po.DeletedAt == null
+                    filter: po => po.PermissionId == permissionId 
+                        && po.IsActive 
+                        && po.DeletedAt == null
                 );
 
                 foreach (var relation in relations)
