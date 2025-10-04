@@ -9,6 +9,12 @@ using AutoMapper;
 
 namespace Authenticator.API.Core.Application.Implementation.AccessControl.Module
 {
+    /// <summary>
+    /// Serviço para gerenciar operações relacionadas a módulos
+    /// </summary>
+    /// <param name="moduleRepository"></param>
+    /// <param name="mapper"></param>
+    /// <param name="userContext"></param>
     public class ModuleService(
         IModuleRepository moduleRepository,
         IMapper mapper,
@@ -18,7 +24,11 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Module
         private readonly IModuleRepository _moduleRepository = moduleRepository;
         private readonly IMapper _mapper = mapper;
         private readonly IUserContext _userContext = userContext;
-
+        /// <summary>
+        /// Adiciona um novo módulo
+        /// </summary>
+        /// <param name="module"></param>
+        /// <returns></returns>
         public async Task<ResponseDTO<ModuleDTO>> AddModuleAsync(ModuleCreateDTO module)
         {
             try
@@ -37,7 +47,11 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Module
                     .Fail(new ErrorDTO { Message = ex.Message }).WithException(ex).WithCode(500).Build();
             }
         }
-
+        /// <summary>
+        /// Deleta um módulo pelo ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<ResponseDTO<bool>> DeleteModuleAsync(Guid id)
         {
             try
@@ -60,7 +74,10 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Module
                     .Build();
             }
         }
-
+        /// <summary>
+        /// Obtém todos os módulos
+        /// </summary>
+        /// <returns></returns>
         public async Task<ResponseDTO<IEnumerable<ModuleDTO>>> GetAllModuleAsync()
         {
             try
@@ -84,7 +101,12 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Module
                     .Build();
             }
         }
-
+        /// <summary>
+        /// Obtém módulos paginados
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
         public async Task<ResponseDTO<PagedResponseDTO<ModuleDTO>>> GetAllModulePagedAsync(int page, int limit)
         {
             try
@@ -121,7 +143,11 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Module
             }
             
         }
-
+        /// <summary>
+        /// Obtém um módulo pelo ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<ResponseDTO<ModuleDTO>> GetModuleByIdAsync(Guid id)
         {
             try
@@ -145,7 +171,12 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Module
                     .Build();
             }
         }
-
+        /// <summary>
+        /// Atualiza um módulo pelo ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="moduleType"></param>
+        /// <returns></returns>
         public async Task<ResponseDTO<ModuleDTO>> UpdateModuleAsync(Guid id, ModuleUpdateDTO moduleType)
         {
             try

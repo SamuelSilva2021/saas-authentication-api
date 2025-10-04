@@ -49,7 +49,6 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Access
                     .Fail(new ErrorDTO { Message = ex.Message }).WithException(ex).WithCode(500).Build();
             }
         }
-
         /// <summary>
         /// Deleta um grupo de acesso por ID
         /// </summary>
@@ -75,7 +74,6 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Access
                 return ResponseBuilder<bool>.Fail(new ErrorDTO { Message = ex.Message }).WithException(ex).WithCode(500).Build();
             }
         }
-
         /// <summary>
         /// Recupera todos os grupos de acesso
         /// </summary>
@@ -130,7 +128,11 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Access
             }
 
         }
-
+        /// <summary>
+        /// Recupera um grupo de acesso por ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<ResponseDTO<AccessGroupDTO>> GetByIdAsync(Guid id)
         {
             var entity = await _accessGroupRepository.GetByIdAsync(id);
@@ -141,7 +143,12 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Access
             var dto = _mapper.Map<AccessGroupDTO>(entity);
             return ResponseBuilder<AccessGroupDTO>.Ok(dto).Build();
         }
-
+        /// <summary>
+        /// Recupera grupos de acesso paginados
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
         public async Task<ResponseDTO<PagedResponseDTO<AccessGroupDTO>>> GetPagedAsync(int page, int limit)
         {
             try
@@ -209,7 +216,6 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Access
                     .Fail(new ErrorDTO { Message = ex.Message }).WithException(ex).WithCode(500).Build();
             }
         }
-
         /// <summary>
         /// Atualiza um grupo de acesso
         /// </summary>

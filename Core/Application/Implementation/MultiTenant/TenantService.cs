@@ -10,6 +10,14 @@ using System.Text.RegularExpressions;
 
 namespace Authenticator.API.Core.Application.Implementation.MultiTenant
 {
+    /// <summary>
+    /// Serviço para gerenciamento de tenants (empresas)
+    /// </summary>
+    /// <param name="tenantRepository"></param>
+    /// <param name="mapper"></param>
+    /// <param name="logger"></param>
+    /// <param name="userAccountsRepository"></param>
+    /// <param name="jwtTokenService"></param>
     public class TenantService(
         ITenantRepository tenantRepository,
         IMapper mapper,

@@ -23,7 +23,6 @@ public class AuthenticationService : IAuthenticationService
     private readonly ILogger<AuthenticationService> _logger;
     private readonly IUserAccountsRepository _userAccountsRepository;
 
-    // Chaves para cache
     private const string REFRESH_TOKENS_CACHE_KEY = "refresh_tokens";
     private const string USER_CACHE_KEY_PREFIX = "user_";
 
@@ -277,7 +276,6 @@ public class AuthenticationService : IAuthenticationService
                 } : null
             };
 
-            // Armazena no cache por 15 minutos
             _cache.Set(cacheKey, userInfo, TimeSpan.FromMinutes(15));
 
             return ResponseBuilder<UserInfo>.Ok(userInfo).Build();
@@ -360,7 +358,7 @@ public class AuthenticationService : IAuthenticationService
             UserId = userId,
             TenantId = tenantId,
             CreatedAt = DateTime.UtcNow,
-            ExpiresAt = DateTime.UtcNow.AddDays(7) // 7 dias de validade
+            ExpiresAt = DateTime.UtcNow.AddDays(7)
         };
 
         if (!_cache.TryGetValue(REFRESH_TOKENS_CACHE_KEY, out Dictionary<string, RefreshTokenData>? tokens))
@@ -390,7 +388,6 @@ public class AuthenticationService : IAuthenticationService
                     return await Task.FromResult(tokenData);
                 }
 
-                // Remove token expirado
                 tokens.Remove(refreshToken);
                 _cache.Set(REFRESH_TOKENS_CACHE_KEY, tokens, TimeSpan.FromDays(7));
             }

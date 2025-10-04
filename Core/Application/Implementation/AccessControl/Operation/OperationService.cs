@@ -6,11 +6,20 @@ using AutoMapper;
 
 namespace Authenticator.API.Core.Application.Implementation.AccessControl.Operation
 {
+    /// <summary>
+    /// Serviço para gerenciar operações
+    /// </summary>
+    /// <param name="operationRepository"></param>
+    /// <param name="mapper"></param>
     public class OperationService(IOperationRepository operationRepository, IMapper mapper) : IOperationService
     {
         private readonly IOperationRepository _operationRepository = operationRepository;
         private readonly IMapper _mapper = mapper;
-
+        /// <summary>
+        /// Adiciona uma nova operação
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <returns></returns>
         public async Task<ResponseDTO<OperationDTO>> AddOperationAsync(OperationCreateDTO operation)
         {
             try
@@ -27,7 +36,11 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Operat
             }
             
         }
-
+        /// <summary>
+        /// Deleta uma operação por ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<ResponseDTO<bool>> DeleteOperationAsync(Guid id)
         {
             try
@@ -50,7 +63,10 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Operat
                     .Build();
             }
         }
-
+        /// <summary>
+        /// Obtém todas as operações
+        /// </summary>
+        /// <returns></returns>
         public async Task<ResponseDTO<IEnumerable<OperationDTO>>> GetAllOperationAsync()
         {
             try
@@ -65,12 +81,22 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Operat
                     .Fail(new ErrorDTO { Message = ex.Message }).WithException(ex).WithCode(500).Build();
             }
         }
-
+        /// <summary>
+        /// Obtém todas as operações paginadas
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public async Task<ResponseDTO<PagedResponseDTO<OperationDTO>>> GetAllOperationPagedAsync(int page, int limit)
         {
             throw new NotImplementedException();
         }
-
+        /// <summary>
+        /// Obtém uma operação por ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<ResponseDTO<OperationDTO>> GetOperationByIdAsync(Guid id)
         {
             try
@@ -90,7 +116,12 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Operat
                     .Fail(new ErrorDTO { Message = ex.Message }).WithException(ex).WithCode(500).Build();
             }
         }
-
+        /// <summary>
+        /// Atualiza uma operação por ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="operation"></param>
+        /// <returns></returns>
         public async Task<ResponseDTO<OperationDTO>> UpdateOperationAsync(Guid id, OperationUpdateDTO operation)
         {
             try

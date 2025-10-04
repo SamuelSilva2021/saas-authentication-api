@@ -117,7 +117,7 @@ public class JwtTokenService : IJwtTokenService
                 ValidIssuer = _jwtSettings.Issuer,
                 ValidateAudience = true,
                 ValidAudience = _jwtSettings.Audience,
-                ValidateLifetime = false, // Não validar expiração aqui
+                ValidateLifetime = false,
                 ClockSkew = TimeSpan.Zero
             };
 
