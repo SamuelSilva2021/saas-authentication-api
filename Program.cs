@@ -4,6 +4,7 @@ using Authenticator.API.Infrastructure.CrossCutting.Utils;
 using Authenticator.API.Infrastructure.Extensions;
 using Authenticator.API.Infrastructure.Middlewares;
 using Serilog;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Configuração dos serviços
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Serializa enums como strings (ex.: Ativo, Inativo) ao invés de números
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.AddAutoMapperConfig();
 

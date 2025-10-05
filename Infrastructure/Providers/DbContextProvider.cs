@@ -8,6 +8,7 @@ using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
 using Authenticator.API.Core.Domain.AccessControl.Permissions;
 using Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
 using Authenticator.API.Core.Domain.AccessControl.Roles;
+using Authenticator.API.Core.Domain.AccessControl.Roles.Entities;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
 using Authenticator.API.Core.Domain.MultiTenant.Plan;
 using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
@@ -84,6 +85,7 @@ public class DbContextProvider : IDbContextProvider
                entityType == typeof(RoleTypeEntity) ||
                entityType == typeof(RoleEntity) ||
                entityType == typeof(RoleAccessGroupEntity) ||
+               entityType == typeof(RolePermissionEntity) ||
                entityType == typeof(PermissionEntity) ||
                entityType == typeof(OperationEntity) ||
                entityType == typeof(PermissionOperationEntity) ||

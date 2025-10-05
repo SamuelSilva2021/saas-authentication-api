@@ -8,13 +8,6 @@ namespace Authenticator.API.Core.Domain.AccessControl.UserAccounts.DTOs
     public class UserAccountCreateDTO
     {
         /// <summary>
-        /// Nome de usuário único para login
-        /// </summary>
-        [Required(ErrorMessage = "O nome de usuário é obrigatório")]
-        [MaxLength(100, ErrorMessage = "O nome de usuário não pode exceder 100 caracteres")]
-        public string Username { get; set; } = string.Empty;
-
-        /// <summary>
         /// Email do usuário
         /// </summary>
         [Required(ErrorMessage = "O email é obrigatório")]
@@ -58,7 +51,6 @@ namespace Authenticator.API.Core.Domain.AccessControl.UserAccounts.DTOs
         /// <summary>
         /// ID do tenant associado
         /// </summary>
-        [Required(ErrorMessage = "O ID do tenant é obrigatório")]
         public Guid TenantId { get; set; }
     }
 }
