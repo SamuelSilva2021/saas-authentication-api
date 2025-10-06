@@ -51,9 +51,11 @@ public class ResponseDTO<T> : IResponseDTO
     /// Dados retornados na resposta
     /// </summary>
     [JsonPropertyName("data")]
-    public T? Data { 
-        get => _data; 
-        set => _data = value!; 
+    public T? Data {
+        // Em respostas de erro, _data pode permanecer null. Para tipos valor (ex.: bool),
+        // retornar default(T) evita exceções de conversão durante a serialização JSON.
+        get => _data is null ? default : (T?)_data;
+        set => _data = value!;
     }
 
     /// <summary>

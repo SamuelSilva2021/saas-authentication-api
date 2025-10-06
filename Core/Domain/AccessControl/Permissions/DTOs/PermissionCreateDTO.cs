@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Authenticator.API.Core.Domain.AccessControl.Permissions.DTOs
 {
@@ -11,11 +11,6 @@ namespace Authenticator.API.Core.Domain.AccessControl.Permissions.DTOs
         /// ID do tenant (opcional)
         /// </summary>
         public Guid? TenantId { get; set; }
-
-        /// <summary>
-        /// ID do papel que possui esta permissão (opcional)
-        /// </summary>
-        public Guid? RoleId { get; set; }
 
         /// <summary>
         /// ID do módulo ao qual a permissão se aplica

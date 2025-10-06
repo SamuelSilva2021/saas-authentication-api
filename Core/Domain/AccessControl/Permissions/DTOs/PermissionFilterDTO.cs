@@ -1,4 +1,4 @@
-﻿namespace Authenticator.API.Core.Domain.AccessControl.Permissions.DTOs
+namespace Authenticator.API.Core.Domain.AccessControl.Permissions.DTOs
 {
     /// <summary>
     /// DTO para filtro de permissões
@@ -9,11 +9,6 @@
         /// ID do tenant para filtrar
         /// </summary>
         public Guid? TenantId { get; set; }
-
-        /// <summary>
-        /// ID do papel para filtrar
-        /// </summary>
-        public Guid? RoleId { get; set; }
 
         /// <summary>
         /// ID do módulo para filtrar

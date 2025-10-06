@@ -335,11 +335,13 @@ public class AuthenticationService : IAuthenticationService
     /// <returns></returns>
     private async Task<List<string>> GetUserPermissionsAsync(List<string> roles)
     {
-        return await _accessControlContext.Permissions
-            .Where(p => roles.Contains(p.Role!.Name) && p.IsActive)
-            .Include(p => p.Role)
-            .Where(p => p.Role!.IsActive)
-            .Select(p => p.Name)
+        // Resolver permissões via relações RolePermission (N:N), evitando dependência de Permission.RoleId
+        return await _accessControlContext.RolePermissions
+            .Where(rp => roles.Contains(rp.Role!.Name) && rp.IsActive)
+            .Include(rp => rp.Role)
+            .Include(rp => rp.Permission)
+            .Where(rp => rp.Role!.IsActive && rp.Permission!.IsActive)
+            .Select(rp => rp.Permission!.Name)
             .Distinct()
             .ToListAsync();
     }

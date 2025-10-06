@@ -166,7 +166,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
             try
             {
                 var entities = await _permissionRepository.GetAllAsync(
-                    filter: p => p.RoleId == roleId,
+                    filter: p => p.RolePermissions.Any(rp => rp.RoleId == roleId && rp.IsActive) && p.IsActive,
                     include: p => p
                         .Include(x => x.Module)
                         .Include(x => x.PermissionOperations)

@@ -1,10 +1,11 @@
-﻿using Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGroup;
+using Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGroup;
 using Authenticator.API.Core.Application.Interfaces.Auth;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 using Authenticator.API.Core.Domain.AccessControl.Modules.DTOs;
 using Authenticator.API.Core.Domain.Api;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Authenticator.API.Core.Application.Implementation.AccessControl.AccessGroup
 {
@@ -186,12 +187,15 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Access
                 }
                 else
                 {
-                    entities = await _accessGroupRepository.GetPagedWithIncludesAsync(
-                        page, 
+                    // Filtra por tenant e inclui GroupType corretamente (Where + Include)
+                    total = await _accessGroupRepository.CountAsync(ag => ag.TenantId == currentUser.TenantId);
+
+                    entities = await _accessGroupRepository.GetPagedAsync(
+                        page,
                         limit,
-                        ag => ag.TenantId == currentUser.TenantId, 
-                        ag => ag.GroupType);
-                    total = entities.Count();
+                        include: q => q
+                            .Where(ag => ag.TenantId == currentUser.TenantId)
+                            .Include(ag => ag.GroupType));
 
                     items = _mapper.Map<IEnumerable<AccessGroupDTO>>(entities);
 

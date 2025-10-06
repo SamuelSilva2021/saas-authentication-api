@@ -252,11 +252,23 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Roles
         {
             try
             {
-                var permissions = await _permissionRepository.GetAllAsync(
-                    filter: p => p.RoleId == roleId,
-                    include: p => p
-                        .Include(x => x.Module)
-                        .Include(x => x.PermissionOperations)!.ThenInclude(po => po.Operation));
+                // Buscar relações Role↔Permission e projetar permissões
+                var relations = await _rolePermissionRepository.GetByRoleIdAsync(roleId);
+                var permissionIds = relations
+                    .Where(rp => rp.IsActive)
+                    .Select(rp => rp.PermissionId)
+                    .Distinct()
+                    .ToList();
+
+                IEnumerable<PermissionEntity> permissions = Enumerable.Empty<PermissionEntity>();
+                if (permissionIds.Any())
+                {
+                    permissions = await _permissionRepository.GetAllAsync(
+                        filter: p => permissionIds.Contains(p.Id),
+                        include: p => p
+                            .Include(x => x.Module)
+                            .Include(x => x.PermissionOperations)!.ThenInclude(po => po.Operation));
+                }
 
                 var dtos = _mapper.Map<IEnumerable<PermissionDTO>>(permissions);
                 return ResponseBuilder<IEnumerable<PermissionDTO>>.Ok(dtos).Build();

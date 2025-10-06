@@ -1,4 +1,4 @@
-﻿namespace Authenticator.API.Core.Domain.AccessControl.Permissions.DTOs
+namespace Authenticator.API.Core.Domain.AccessControl.Permissions.DTOs
 {
     /// <summary>
     /// DTO para resposta de permissão
@@ -29,11 +29,6 @@
         /// Código da permissão
         /// </summary>
         public string? Code { get; set; }
-
-        /// <summary>
-        /// ID do papel que possui esta permissão
-        /// </summary>
-        public Guid? RoleId { get; set; }
 
         /// <summary>
         /// ID do módulo ao qual a permissão se aplica

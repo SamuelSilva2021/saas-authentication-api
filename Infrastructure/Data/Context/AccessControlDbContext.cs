@@ -120,7 +120,6 @@ public class AccessControlDbContext : DbContext
         {
             entity.ToTable("access_group");
             entity.HasKey(e => e.Id);
-            entity.HasIndex(e => e.Code).IsUnique();
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(255).IsRequired();
             entity.Property(e => e.Description).HasColumnName("description").HasMaxLength(500);
@@ -135,12 +134,6 @@ public class AccessControlDbContext : DbContext
                 .WithMany(gt => gt.AccessGroups)
                 .HasForeignKey(e => e.GroupTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // Removido foreign key para Tenant - tabela está em outro banco (multi_tenant_db)
-            // entity.HasOne(g => g.Tenant)
-            //     .WithMany()
-            //     .HasForeignKey(g => g.TenantId)
-            //     .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasMany(g => g.AccountAccessGroups)
                 .WithOne(ag => ag.AccessGroup)
@@ -182,10 +175,10 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.AccessGroupId).HasColumnName("access_group_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active").IsRequired().HasDefaultValue(true);
             entity.Property(e => e.GrantedBy).HasColumnName("granted_by");
-            entity.Property(e => e.GrantedAt).HasColumnName("granted_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.GrantedAt).HasColumnName("granted_at").HasColumnType("timestamp with time zone").HasDefaultValueSql("NOW()");
             entity.Property(e => e.ExpiresAt).HasColumnName("expires_at");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp with time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp with time zone");
 
             entity.HasOne(x => x.UserAccount)
                 .WithMany(x => x.AccountAccessGroups)
@@ -305,22 +298,15 @@ public class AccessControlDbContext : DbContext
         {
             entity.ToTable("permission");
             entity.HasKey(e => e.Id);
-            entity.HasIndex(e => new { e.RoleId, e.ModuleId }).IsUnique();
+            // Índices ajustados: relação Permission↔Role agora é exclusiva via RolePermission (N:N)
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.ModuleId).HasColumnName("module_id");
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
-
-            // Removido foreign key para Tenant - tabela está em outro banco (multi_tenant_db)
-            // entity.HasOne(p => p.Tenant)
-            //     .WithMany()
-            //     .HasForeignKey(p => p.TenantId)
-            //     .OnDelete(DeleteBehavior.Restrict);
-
+            
             entity.HasMany(p => p.RolePermissions)
                 .WithOne(rp => rp.Permission)
                 .HasForeignKey(rp => rp.PermissionId);

@@ -1,4 +1,4 @@
-﻿using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
+using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
 using Authenticator.API.Core.Domain.AccessControl.Permissions.DTOs;
 using Authenticator.API.Core.Domain.AccessControl.Permissions;
 using AutoMapper;
@@ -18,9 +18,8 @@ namespace Authenticator.API.Infrastructure.Mapper.AccessControl.Permissions
                 .ForMember(dest => dest.Name, opt => opt.Ignore()) 
                 .ForMember(dest => dest.Description, opt => opt.Ignore()) 
                 .ForMember(dest => dest.Code, opt => opt.Ignore()) 
-                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.Now))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-                .ForMember(dest => dest.Role, opt => opt.Ignore())
                 .ForMember(dest => dest.Module, opt => opt.Ignore())
                 .ForMember(dest => dest.RolePermissions, opt => opt.Ignore())
                 .ForMember(dest => dest.PermissionOperations, opt => opt.Ignore());
@@ -32,8 +31,7 @@ namespace Authenticator.API.Infrastructure.Mapper.AccessControl.Permissions
                 .ForMember(dest => dest.Description, opt => opt.Ignore()) 
                 .ForMember(dest => dest.Code, opt => opt.Ignore()) 
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTime.Now))
-                .ForMember(dest => dest.Role, opt => opt.Ignore())
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
                 .ForMember(dest => dest.Module, opt => opt.Ignore())
                 .ForMember(dest => dest.RolePermissions, opt => opt.Ignore())
                 .ForMember(dest => dest.PermissionOperations, opt => opt.Ignore());
