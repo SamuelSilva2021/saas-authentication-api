@@ -62,3 +62,5 @@ nunit-*.xml
 /.vs/ProjectEvaluation
 /.vs/Authenticator.API/copilot-chat/3edba54d/sessions/09573ff7-3597-48be-a7b6-f6bb35371f3b
 /Infrastructure/Data/Migrations/MultiTenant
+/.vs/Authenticator.API/v18
+/.vs/Authenticator.API/CopilotIndices/18.0.813.4205
