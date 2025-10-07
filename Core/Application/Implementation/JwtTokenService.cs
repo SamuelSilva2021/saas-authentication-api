@@ -26,15 +26,12 @@ public class JwtTokenService : IJwtTokenService
     }
 
     /// <summary>
-    /// Gera um token JWT para o usuário
+    /// Gera um token de acesso JWT para o usuário e tenant informados
     /// </summary>
     /// <param name="user"></param>
     /// <param name="tenant"></param>
-    /// <param name="accessGroups"></param>
-    /// <param name="roles"></param>
-    /// <param name="permissions"></param>
     /// <returns></returns>
-    public string GenerateAccessToken(UserAccountEntity user, TenantEntity? tenant, List<string> accessGroups, List<string> roles, List<string> permissions)
+    public string GenerateAccessToken(UserAccountEntity user, TenantEntity? tenant)
     {
         try
         {
@@ -55,15 +52,6 @@ public class JwtTokenService : IJwtTokenService
                 claims.Add(new Claim("tenant_slug", tenant.Slug));
                 claims.Add(new Claim("tenant_name", tenant.Name));
             }
-
-            foreach (var group in accessGroups)
-                claims.Add(new Claim("access_group", group));            
-
-            foreach (var role in roles)
-                claims.Add(new Claim(ClaimTypes.Role, role));
-
-            foreach (var permission in permissions)
-                claims.Add(new Claim("permission", permission));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

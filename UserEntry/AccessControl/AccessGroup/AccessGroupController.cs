@@ -2,6 +2,7 @@ using Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGroup;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroups.DTOs;
 using Authenticator.API.Core.Domain.Api;
+using Authenticator.API.Infrastructure.Configurations;
 using Authenticator.API.Infrastructure.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -22,7 +23,7 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
         ILogger<AccessGroupController> logger,
         IGroupTypeService groupTypeService,
         IAccessGroupService accessGroupService
-        ) : ControllerBase
+        ) : BusinessControleBase
     {
         private readonly ILogger<AccessGroupController> _logger = logger;
         private readonly IGroupTypeService _groupTypeService = groupTypeService;
@@ -31,6 +32,7 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
         #region GET
         [HttpGet]
         [Produces("application/json")]
+        [MapPermission(MODULE_ACCESS_GROUP, OPERATION_SELECT)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -43,6 +45,7 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
 
         [HttpGet("{id}")]
         [Produces("application/json")]
+        [MapPermission(MODULE_ACCESS_GROUP, OPERATION_SELECT)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -56,6 +59,7 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
 
         [HttpGet("group-types")]
         [Produces("application/json")]
+        [MapPermission(MODULE_ACCESS_GROUP, OPERATION_SELECT)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -68,6 +72,7 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
 
         [HttpGet("group-types/{id:guid}")]
         [Produces("application/json")]
+        [MapPermission(MODULE_ACCESS_GROUP, OPERATION_SELECT)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -84,6 +89,7 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
         #region POST
         [HttpPost]
         [Produces("application/json")]
+        [MapPermission(MODULE_ACCESS_GROUP, OPERATION_INSERT)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -98,6 +104,7 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
 
         [HttpPost("group-types")]
         [Produces("application/json")]
+        [MapPermission(MODULE_ACCESS_GROUP, OPERATION_INSERT)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -115,6 +122,7 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
         #region PUT
         [HttpPut("{id}")]
         [Produces("application/json")]
+        [MapPermission(MODULE_ACCESS_GROUP, OPERATION_UPDATE)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -132,6 +140,7 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
 
         [HttpPut("group-types/{id:guid}")]
         [Produces("application/json")]
+        [MapPermission(MODULE_ACCESS_GROUP, OPERATION_UPDATE)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -151,6 +160,7 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
         #region DELETE
         [HttpDelete("{id:guid}")]
         [Produces("application/json")]
+        [MapPermission(MODULE_ACCESS_GROUP, OPERATION_DELETE)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -164,6 +174,7 @@ namespace Authenticator.API.UserEntry.AccessControl.AccessGroup
 
         [HttpDelete("group-types/{id:guid}")]
         [Produces("application/json")]
+        [MapPermission(MODULE_ACCESS_GROUP, OPERATION_DELETE)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

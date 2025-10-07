@@ -42,7 +42,7 @@ namespace Authenticator.API.Infrastructure.Mapper.AccessControl.Permissions
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src =>
                 src.Module != null ? src.Module.Description : string.Empty))
             .ForMember(dest => dest.Code, opt => opt.MapFrom(src =>
-                src.Module != null ? src.Module.ModuleKey : null))
+                src.Module != null ? src.Module.Key : null))
             .ForMember(dest => dest.ModuleName, opt => opt.MapFrom(src =>
                 src.Module != null ? src.Module.Name : null))
             .ForMember(dest => dest.Operations, opt => opt.MapFrom(src =>

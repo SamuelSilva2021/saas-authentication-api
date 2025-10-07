@@ -1,7 +1,6 @@
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups.Etities;
 using Authenticator.API.Core.Domain.AccessControl.Applications;
-using Authenticator.API.Core.Domain.AccessControl.Modules;
 using Authenticator.API.Core.Domain.AccessControl.Operations;
 using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
 using Authenticator.API.Core.Domain.AccessControl.Permissions;
@@ -17,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Authenticator.API.Infrastructure.Data.Interfaces;
+using Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
 
 namespace Authenticator.API.Infrastructure.Data.Context;
 
@@ -275,13 +275,13 @@ public class AccessControlDbContext : DbContext
         {
             entity.ToTable("module");
             entity.HasKey(e => e.Id);
-            entity.HasIndex(e => e.ModuleKey);
+            entity.HasIndex(e => e.Key);
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(255);
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Url).HasColumnName("url");
-            entity.Property(e => e.ModuleKey).HasColumnName("module_key").HasMaxLength(100);
+            entity.Property(e => e.Key).HasColumnName("key").HasMaxLength(100);
             entity.Property(e => e.Code).HasColumnName("code");
             entity.Property(e => e.ApplicationId).HasColumnName("application_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");

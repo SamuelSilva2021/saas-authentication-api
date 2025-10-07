@@ -1,8 +1,9 @@
 using Authenticator.API.Core.Domain.AccessControl.Applications;
 using Authenticator.API.Core.Domain.AccessControl.Permissions;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
-namespace Authenticator.API.Core.Domain.AccessControl.Modules;
+namespace Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
 
 /// <summary>
 /// Módulo/funcionalidade do sistema
@@ -37,7 +38,7 @@ public class ModuleEntity
     /// Chave única do módulo para identificação
     /// </summary>
     [MaxLength(100)]
-    public string? ModuleKey { get; set; }
+    public string? Key { get; set; }
 
     /// <summary>
     /// Código numérico do módulo

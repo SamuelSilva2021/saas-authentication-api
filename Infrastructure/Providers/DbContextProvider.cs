@@ -2,7 +2,7 @@ using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
 using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups.Etities;
 using Authenticator.API.Core.Domain.AccessControl.Applications;
-using Authenticator.API.Core.Domain.AccessControl.Modules;
+using Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
 using Authenticator.API.Core.Domain.AccessControl.Operations;
 using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
 using Authenticator.API.Core.Domain.AccessControl.Permissions;

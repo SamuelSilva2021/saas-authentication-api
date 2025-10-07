@@ -1,3 +1,5 @@
+using Authenticator.API.Core.Domain.AccessControl.Modules.DTOs;
+using Authenticator.API.Core.Domain.AccessControl.UserAccounts.DTOs;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
 
 namespace Authenticator.API.Core.Domain.Api;
@@ -28,19 +30,9 @@ public class UserInfo
     public string FullName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Grupos de acesso do usuário
-    /// </summary>
-    public List<string> AccessGroups { get; set; } = new();
-
-    /// <summary>
-    /// Roles do usuário
-    /// </summary>
-    public List<string> Roles { get; set; } = new();
-
-    /// <summary>
     /// Permissões do usuário
     /// </summary>
-    public List<string> Permissions { get; set; } = new();
+    public UserPermissionsDTO Permissions { get; set; } = new UserPermissionsDTO();
 
     /// <summary>
     /// Informações do tenant (se aplicável)

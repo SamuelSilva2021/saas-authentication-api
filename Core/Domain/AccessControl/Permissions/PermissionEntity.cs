@@ -1,4 +1,4 @@
-using Authenticator.API.Core.Domain.AccessControl.Modules;
+using Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
 using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
 using Authenticator.API.Core.Domain.AccessControl.Roles.Entities;
 // using Authenticator.API.Core.Domain.MultiTenant.Tenant; // Removido - tabela está em outro banco
@@ -34,7 +34,7 @@ public class PermissionEntity
     /// <summary>
     /// Código da permissão (derivado do módulo)
     /// </summary>
-    public string? Code => Module?.ModuleKey;
+    public string? Code => Module?.Key;
 
     /// <summary>
     /// ID do módulo ao qual a permissão se aplica

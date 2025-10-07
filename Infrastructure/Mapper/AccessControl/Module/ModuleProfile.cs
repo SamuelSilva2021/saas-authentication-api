@@ -1,5 +1,5 @@
-﻿using Authenticator.API.Core.Domain.AccessControl.Modules;
-using Authenticator.API.Core.Domain.AccessControl.Modules.DTOs;
+﻿using Authenticator.API.Core.Domain.AccessControl.Modules.DTOs;
+using Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
 using Authenticator.API.Core.Domain.Api;
 using AutoMapper;
 

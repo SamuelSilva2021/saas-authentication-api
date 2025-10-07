@@ -8,40 +8,36 @@ using Authenticator.API.Infrastructure.Data;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
 using Authenticator.API.Infrastructure.Data.Context;
+using Authenticator.API.Core.Application.Interfaces.AccessControl.Module;
+using Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
+using Authenticator.API.Core.Domain.AccessControl.Modules.DTOs;
+using Authenticator.API.Core.Domain.AccessControl.UserAccounts.DTOs;
 
 namespace Authenticator.API.Core.Application.Implementation;
 
 /// <summary>
 /// Implementação do serviço de autenticação
 /// </summary>
-public class AuthenticationService : IAuthenticationService
+public class AuthenticationService(
+    AccessControlDbContext accessControlContext,
+    MultiTenantDbContext multiTenantContext,
+    IJwtTokenService jwtTokenService,
+    IMemoryCache cache,
+    ILogger<AuthenticationService> logger,
+    IUserAccountsRepository userAccountsRepository,
+    IModuleRepository moduleRepository
+        ) : IAuthenticationService
 {
-    private readonly AccessControlDbContext _accessControlContext;
-    private readonly MultiTenantDbContext _multiTenantContext;
-    private readonly IJwtTokenService _jwtTokenService;
-    private readonly IMemoryCache _cache;
-    private readonly ILogger<AuthenticationService> _logger;
-    private readonly IUserAccountsRepository _userAccountsRepository;
+    private readonly AccessControlDbContext _accessControlContext = accessControlContext;
+    private readonly MultiTenantDbContext _multiTenantContext = multiTenantContext;
+    private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
+    private readonly IMemoryCache _cache = cache;
+    private readonly ILogger<AuthenticationService> _logger = logger;
+    private readonly IUserAccountsRepository _userAccountsRepository = userAccountsRepository;
+    private readonly IModuleRepository _moduleRepository = moduleRepository;
 
     private const string REFRESH_TOKENS_CACHE_KEY = "refresh_tokens";
     private const string USER_CACHE_KEY_PREFIX = "user_";
-
-    public AuthenticationService(
-        AccessControlDbContext accessControlContext,
-        MultiTenantDbContext multiTenantContext,
-        IJwtTokenService jwtTokenService,
-        IMemoryCache cache,
-        ILogger<AuthenticationService> logger,
-        IUserAccountsRepository userAccountsRepository
-        )
-    {
-        _accessControlContext = accessControlContext;
-        _multiTenantContext = multiTenantContext;
-        _jwtTokenService = jwtTokenService;
-        _cache = cache;
-        _logger = logger;
-        _userAccountsRepository = userAccountsRepository;
-    }
 
     /// <summary>
     /// Autentica um usuário com username/email e senha
@@ -77,7 +73,7 @@ public class AuthenticationService : IAuthenticationService
             var roles = await GetUserRolesAsync(accessGroups);
             var permissions = await GetUserPermissionsAsync(roles);
 
-            var accessToken = _jwtTokenService.GenerateAccessToken(user, tenant, accessGroups, roles, permissions);
+            var accessToken = _jwtTokenService.GenerateAccessToken(user, tenant);
             var refreshToken = _jwtTokenService.GenerateRefreshToken();
 
             await StoreRefreshTokenAsync(refreshToken, user.Id, tenant?.Id);
@@ -90,24 +86,7 @@ public class AuthenticationService : IAuthenticationService
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
-                ExpiresIn = _jwtTokenService.GetTokenExpirationTime(),
-                User = new UserInfo
-                {
-                    Id = user.Id,
-                    Username = user.Username,
-                    Email = user.Email,
-                    FullName = $"{user.FirstName} {user.LastName}".Trim(),
-                    AccessGroups = accessGroups,
-                    Roles = roles,
-                    Permissions = permissions,
-                    Tenant = tenant != null ? new TenantInfoDTO
-                    {
-                        Id = tenant.Id,
-                        Name = tenant.Name,
-                        Slug = tenant.Slug,
-                        CustomDomain = tenant.Domain
-                    } : null
-                }
+                ExpiresIn = _jwtTokenService.GetTokenExpirationTime()
             };
 
             _logger.LogInformation("Login bem-sucedido para usuário: {UserId}", user.Id);
@@ -157,11 +136,9 @@ public class AuthenticationService : IAuthenticationService
                     .FirstOrDefaultAsync();
             }
 
-            var accessGroups = await GetUserAccessGroupsAsync(user.Id);
-            var roles = await GetUserRolesAsync(accessGroups);
-            var permissions = await GetUserPermissionsAsync(roles);
+            var permissions = await GetUserPermissionsAsync(user.Id);
 
-            var newAccessToken = _jwtTokenService.GenerateAccessToken(user, tenant, accessGroups, roles, permissions);
+            var newAccessToken = _jwtTokenService.GenerateAccessToken(user, tenant);
             var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
 
             await RevokeRefreshTokenAsync(refreshToken);
@@ -172,23 +149,6 @@ public class AuthenticationService : IAuthenticationService
                 AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken,
                 ExpiresIn = _jwtTokenService.GetTokenExpirationTime(),
-                User = new UserInfo
-                {
-                    Id = user.Id,
-                    Username = user.Username,
-                    Email = user.Email,
-                    FullName = $"{user.FirstName} {user.LastName}".Trim(),
-                    AccessGroups = accessGroups,
-                    Roles = roles,
-                    Permissions = permissions,
-                    Tenant = tenant != null ? new TenantInfoDTO
-                    {
-                        Id = tenant.Id,
-                        Name = tenant.Name,
-                        Slug = tenant.Slug,
-                        CustomDomain = tenant.Domain
-                    } : null
-                }
             };
 
             _logger.LogInformation("Token renovado com sucesso para usuário: {UserId}", user.Id);
@@ -254,9 +214,7 @@ public class AuthenticationService : IAuthenticationService
                     .FirstOrDefaultAsync();
             }
 
-            var accessGroups = await GetUserAccessGroupsAsync(user.Id);
-            var roles = await GetUserRolesAsync(accessGroups);
-            var permissions = await GetUserPermissionsAsync(roles);
+            var userPermissions = await GetUserPermissionsAsync(user.Id);
 
             var userInfo = new UserInfo
             {
@@ -264,9 +222,7 @@ public class AuthenticationService : IAuthenticationService
                 Username = user.Username,
                 Email = user.Email,
                 FullName = $"{user.FirstName} {user.LastName}".Trim(),
-                AccessGroups = accessGroups,
-                Roles = roles,
-                Permissions = permissions,
+                Permissions = userPermissions,
                 Tenant = tenant != null ? new TenantInfoDTO
                 {
                     Id = tenant.Id,
@@ -345,6 +301,14 @@ public class AuthenticationService : IAuthenticationService
             .Distinct()
             .ToListAsync();
     }
+
+    /// <summary>
+    /// Obtém as permissões detalhadas do usuário (módulos e operações)
+    /// </summary>
+    /// <param name="UserId"></param>
+    /// <returns></returns>
+    private async Task<UserPermissionsDTO> GetUserPermissionsAsync(Guid UserId) => 
+        await _moduleRepository.GetModulesByUserAsync(UserId);
 
     /// <summary>
     /// Armazena o refresh token em cache

@@ -78,7 +78,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                 await _userAccountsRepository.AddAsync(adminUser);
                 _logger.LogInformation("Usuário administrador criado com sucesso: {UserId}", adminUser.Id);
 
-                var accessToken = _jwtTokenService.GenerateAccessToken(adminUser, createdTenant, new List<string>(), new List<string>(), new List<string>());
+                var accessToken = _jwtTokenService.GenerateAccessToken(adminUser, createdTenant);
                 var refreshToken = _jwtTokenService.GenerateRefreshToken();
                 var expiresIn = _jwtTokenService.GetTokenExpirationTime();
 

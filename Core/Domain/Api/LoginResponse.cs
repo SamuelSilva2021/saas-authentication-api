@@ -24,9 +24,4 @@ public class LoginResponse
     /// Tempo de expiração do token em segundos
     /// </summary>
     public int ExpiresIn { get; set; }
-
-    /// <summary>
-    /// Informações do usuário autenticado
-    /// </summary>
-    public UserInfo User { get; set; } = null!;
 }

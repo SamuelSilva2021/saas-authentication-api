@@ -1,4 +1,4 @@
-using Authenticator.API.Core.Domain.AccessControl.Modules;
+using Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace Authenticator.API.Core.Domain.AccessControl.Applications;

@@ -3,6 +3,7 @@ using Authenticator.API.Infrastructure.Configurations;
 using Authenticator.API.Infrastructure.CrossCutting.Utils;
 using Authenticator.API.Infrastructure.Extensions;
 using Authenticator.API.Infrastructure.Middlewares;
+using Authenticator.API.Infrastructure.Filters;
 using Serilog;
 using System.Text.Json.Serialization;
 
@@ -20,7 +21,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Configuração dos serviços
-builder.Services.AddControllers()
+builder.Services.AddControllers(options =>
+{
+    // Filtro global de autorização baseado em [MapPermission]
+    options.Filters.Add<PermissionAuthorizationFilter>();
+})
     .AddJsonOptions(options =>
     {
         // Serializa enums como strings (ex.: Ativo, Inativo) ao invés de números
