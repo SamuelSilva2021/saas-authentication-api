@@ -28,7 +28,7 @@
         /// <summary>
         /// Chave única do módulo para identificação
         /// </summary>
-        public string? ModuleKey { get; set; }
+        public string? Key { get; set; }
 
         /// <summary>
         /// Código numérico do módulo

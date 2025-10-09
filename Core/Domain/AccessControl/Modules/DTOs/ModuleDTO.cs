@@ -30,7 +30,7 @@ namespace Authenticator.API.Core.Domain.AccessControl.Modules.DTOs
         /// <summary>
         /// Chave única do módulo para identificação
         /// </summary>
-        public string? ModuleKey { get; set; }
+        public string? Key { get; set; } 
 
         /// <summary>
         /// Código numérico do módulo

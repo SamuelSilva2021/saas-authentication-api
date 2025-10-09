@@ -252,8 +252,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Roles
         {
             try
             {
-                // Buscar relações Role↔Permission e projetar permissões
-                var relations = await _rolePermissionRepository.GetByRoleIdAsync(roleId);
+                var relations = await _rolePermissionRepository.GetAllRolePermissionsByRoleIdAsync(roleId);
                 var permissionIds = relations
                     .Where(rp => rp.IsActive)
                     .Select(rp => rp.PermissionId)
@@ -382,9 +381,25 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Roles
                     throw new ArgumentException($"Permissão com ID {permissionId} não encontrada");
             }
 
-            var existing = await _rolePermissionRepository.GetByRoleIdAsync(roleId);
-            var existingIds = existing.Where(rp => rp.IsActive).Select(rp => rp.PermissionId).ToList();
-            var newIds = permissionIds.Except(existingIds).ToList();
+            var existing = await _rolePermissionRepository.GetAllRolePermissionsByRoleIdAsync(roleId);
+            var existingIdsActive = existing.Where(rp => rp.IsActive).Select(rp => rp.PermissionId).ToList();
+            var existingInactive = existing.Where(rp => !rp.IsActive).ToList();
+
+            // Reativar relações inativas caso existam
+            if (existingInactive.Any())
+            {
+                foreach (var rel in existingInactive)
+                {
+                    if (permissionIds.Contains(rel.PermissionId))
+                    {
+                        rel.IsActive = true;
+                        rel.UpdatedAt = DateTime.Now;
+                    }
+                }
+                await _rolePermissionRepository.UpdateRangeAsync(existingInactive);
+            }
+
+            var newIds = permissionIds.Except(existingIdsActive).Except(existingInactive.Select(p => p.PermissionId)).ToList();
 
             var relations = new List<RolePermissionEntity>();
             foreach (var pid in newIds)
@@ -444,7 +459,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Roles
 
         private async Task<bool> SyncRolePermissionsInternalAsync(Guid roleId, List<Guid> permissionIds)
         {
-            var existing = await _rolePermissionRepository.GetByRoleIdAsync(roleId);
+            var existing = await _rolePermissionRepository.GetAllRolePermissionsByRoleIdAsync(roleId);
             var toAdd = permissionIds.Except(existing.Where(rp => rp.IsActive).Select(rp => rp.PermissionId)).ToList();
             var toRemove = existing.Where(rp => rp.IsActive && !permissionIds.Contains(rp.PermissionId)).Select(rp => rp.PermissionId).ToList();
 

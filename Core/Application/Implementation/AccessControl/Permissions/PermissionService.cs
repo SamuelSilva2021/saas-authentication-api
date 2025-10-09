@@ -468,18 +468,10 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
 
             if (permission == null)
                 return false;
+            
+            await _permissionOperationRepository.DeleteRangeAsync(permission.PermissionOperations);
 
-            var activePermissionOperations = permission.PermissionOperations
-                .Where(po => po.IsActive)
-                .ToList();
-
-            foreach (var permissionOperation in activePermissionOperations)
-            {
-                permissionOperation.IsActive = false;
-                permissionOperation.UpdatedAt = DateTime.Now;
-            }
-
-            await _permissionRepository.UpdateAsync(permission);
+            await _permissionRepository.DeleteAsync(permission);
             return true;
 
         }

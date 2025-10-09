@@ -17,12 +17,12 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.RolePermis
     {
         private readonly ILogger<RolePermissionRepository> _logger = logger;
 
-        public async Task<IEnumerable<RolePermissionEntity>> GetByRoleIdAsync(Guid roleId)
+        public async Task<IEnumerable<RolePermissionEntity>> GetAllRolePermissionsByRoleIdAsync(Guid roleId)
         {
             try
             {
                 return await GetAllAsync(
-                    filter: rp => rp.RoleId == roleId && rp.IsActive,
+                    filter: rp => rp.RoleId == roleId,
                     include: query => query
                         .Include(rp => rp.Role)
                         .Include(rp => rp.Permission)

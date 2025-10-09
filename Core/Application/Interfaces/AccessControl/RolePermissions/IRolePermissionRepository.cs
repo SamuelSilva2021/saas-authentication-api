@@ -11,7 +11,7 @@ namespace Authenticator.API.Core.Application.Interfaces.AccessControl.RolePermis
         /// <summary>
         /// Busca relações por ID do role
         /// </summary>
-        Task<IEnumerable<RolePermissionEntity>> GetByRoleIdAsync(Guid roleId);
+        Task<IEnumerable<RolePermissionEntity>> GetAllRolePermissionsByRoleIdAsync(Guid roleId);
 
         /// <summary>
         /// Busca relações por ID da permissão

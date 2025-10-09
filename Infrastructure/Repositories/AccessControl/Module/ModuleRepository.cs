@@ -49,13 +49,19 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Module
 	                            o.value as Operations
                             FROM public.access_group ag
                             JOIN public.account_access_group aag ON ag.id = aag.access_group_id
-                            JOIN public.role_access_group rag ON ag.id = rag.access_group_id
+                                and aag.is_active = true
+                            JOIN public.role_access_group rag ON aag.access_group_id = rag.access_group_id
+                                and rag.is_active = true
                             JOIN public.role r ON rag.role_id = r.id
+                                and r.is_active = true
                             JOIN public.role_permission rp ON r.id = rp.role_id
+                                and rp.is_active = true
                             JOIN public.permission p ON rp.permission_id = p.id
+                                and p.is_active = true
                             JOIN public.permission_operation po ON p.id = po.permission_id
                                 and po.is_active = true
                             JOIN public.module m ON p.module_id = m.id
+                                and m.is_active = true
                             JOIN public.operation o ON po.operation_id = o.id
                             WHERE aag.user_account_id = @UserId
                               AND aag.is_active = true";

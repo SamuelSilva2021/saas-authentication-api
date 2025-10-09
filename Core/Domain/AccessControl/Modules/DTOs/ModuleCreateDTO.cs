@@ -30,7 +30,8 @@ namespace Authenticator.API.Core.Domain.AccessControl.Modules.DTOs
         /// Chave única do módulo para identificação
         /// </summary>
         [MaxLength(100, ErrorMessage = "A chave do módulo não pode exceder 100 caracteres")]
-        public string? ModuleKey { get; set; }
+        [Required(ErrorMessage = "A chave do módulo é obrigatória")]
+        public string Key { get; set; } = string.Empty;
 
         /// <summary>
         /// Código numérico do módulo

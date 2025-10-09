@@ -16,6 +16,7 @@ namespace Authenticator.API.Infrastructure.Mapper.AccessControl.Module
                 .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.Application, opt => opt.Ignore())
                 .ForMember(dest => dest.Permissions, opt => opt.Ignore());
+               
 
             // UpdateDTO para Entity
             CreateMap<ModuleUpdateDTO, ModuleEntity>()
