@@ -134,19 +134,19 @@ public static class ServiceCollectionExtensions
             {
                 Title = "Authentication API",
                 Version = "1.0.0",
-                Description = "API de autenticação e autorização com JWT e RBAC para o ecossistema Pedeja",
+                Description = "API de autenticação e autorização com JWT e RBAC para o ecossistema Opa Menu",
                 Contact = new OpenApiContact
                 {
-                    Name = "Equipe Pedeja",
-                    Email = "contato@pedeja.com",
-                    Url = new Uri("https://pedeja.com")
+                    Name = "Equipe Opa Menu",
+                    Email = "contato@opamenu.com",
+                    Url = new Uri("https://opamenu.com")
                 },
                 License = new OpenApiLicense
                 {
                     Name = "Proprietário",
-                    Url = new Uri("https://pedeja.com/licenca")
+                    Url = new Uri("https://opamenu.com/licenca")
                 },
-                TermsOfService = new Uri("https://pedeja.com/termos")
+                TermsOfService = new Uri("https://opamenu.com/termos")
             });
 
             // Configuração para autenticação JWT no Swagger

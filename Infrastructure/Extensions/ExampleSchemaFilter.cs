@@ -16,8 +16,8 @@ public class ExampleSchemaFilter : ISchemaFilter
         {
             schema.Example = new OpenApiObject
             {
-                ["usernameOrEmail"] = new OpenApiString("admin@pedeja.com"),
-                ["password"] = new OpenApiString("senha123"),
+                ["usernameOrEmail"] = new OpenApiString("admin@opamenu.com.br"),
+                ["password"] = new OpenApiString("Abc@123"),
             };
         }
         else if (context.Type == typeof(RefreshTokenRequest))
@@ -42,8 +42,8 @@ public class ExampleSchemaFilter : ISchemaFilter
             schema.Example = new OpenApiObject
             {
                 ["id"] = new OpenApiString("12345678-1234-1234-1234-123456789abc"),
-                ["username"] = new OpenApiString("usuario@pedeja.com"),
-                ["email"] = new OpenApiString("usuario@pedeja.com"),
+                ["username"] = new OpenApiString("usuario@opamenu.com"),
+                ["email"] = new OpenApiString("usuario@opamenu.com"),
                 ["fullName"] = new OpenApiString("João da Silva"),
                 ["accessGroups"] = new OpenApiArray { new OpenApiString("Operacionais") },
                 ["roles"] = new OpenApiArray { new OpenApiString("User"), new OpenApiString("Cashier") },
