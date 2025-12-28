@@ -64,3 +64,4 @@ nunit-*.xml
 /Infrastructure/Data/Migrations/MultiTenant
 /.vs/Authenticator.API/v18
 /.vs/Authenticator.API/CopilotIndices/18.0.813.4205
+/appsettings.json
