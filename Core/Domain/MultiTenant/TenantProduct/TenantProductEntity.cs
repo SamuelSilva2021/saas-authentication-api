@@ -83,5 +83,5 @@ public class TenantProductEntity
     public DateTime? UpdatedAt { get; set; }
 
     // Navigation properties
-    public virtual ICollection<SubscriptionEnity> Subscriptions { get; set; } = new List<SubscriptionEnity>();
+    public virtual ICollection<SubscriptionEntity> Subscriptions { get; set; } = new List<SubscriptionEntity>();
 }

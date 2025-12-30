@@ -57,7 +57,7 @@ public class AccessControlDbContext : DbContext
     {
         modelBuilder.Ignore<TenantProductEntity>();
         modelBuilder.Ignore<PlanEntity>();
-        modelBuilder.Ignore<SubscriptionEnity>();
+        modelBuilder.Ignore<SubscriptionEntity>();
 
         modelBuilder.Entity<TenantEntity>(entity =>
         {

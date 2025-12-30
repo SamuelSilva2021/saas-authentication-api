@@ -227,10 +227,12 @@ public class TenantEntity
     public DateTime? UpdatedAt { get; set; }
 
     // Navigation properties
-    public ICollection<UserAccountEntity> UserAccounts { get; set; } = new List<UserAccountEntity>();
-    public ICollection<AccessGroupEntity> AccessGroups { get; set; } = new List<AccessGroupEntity>();
-    public ICollection<RoleEntity> Roles { get; set; } = new List<RoleEntity>();
-    public ICollection<PermissionEntity> Permissions { get; set; } = new List<PermissionEntity>();
-    public virtual SubscriptionEnity? ActiveSubscription { get; set; }
-    public virtual ICollection<SubscriptionEnity> Subscriptions { get; set; } = new List<SubscriptionEnity>();
+    public ICollection<UserAccountEntity> UserAccounts { get; set; } = [];
+    public ICollection<AccessGroupEntity> AccessGroups { get; set; } = [];
+    public ICollection<RoleEntity> Roles { get; set; } = [];
+    public ICollection<PermissionEntity> Permissions { get; set; } = [];
+    public virtual SubscriptionEntity? ActiveSubscription { get; set; }
+    public virtual ICollection<SubscriptionEntity> Subscriptions { get; set; } = [];
+    public virtual TenantBusinessEntity? BusinessInfo { get; set; }
+
 }

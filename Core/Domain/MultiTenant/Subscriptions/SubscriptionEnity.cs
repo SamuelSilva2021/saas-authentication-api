@@ -8,7 +8,7 @@ namespace Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
 /// <summary>
 /// Representa uma assinatura/plano de um tenant
 /// </summary>
-public class SubscriptionEnity
+public class SubscriptionEntity
 {
     /// <summary>
     /// ID único da assinatura

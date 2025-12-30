@@ -16,16 +16,13 @@ namespace Authenticator.API.Infrastructure.Data;
 /// Contexto do banco de dados multi-tenant
 /// Conecta ao banco multi_tenant_db
 /// </summary>
-public class MultiTenantDbContext : DbContext
+public class MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options) : DbContext(options)
 {
-    public MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options) : base(options)
-    {
-    }
-
     public DbSet<TenantEntity> Tenants { get; set; }
     public DbSet<TenantProductEntity> Products { get; set; }
     public DbSet<PlanEntity> Plans { get; set; }
-    public DbSet<SubscriptionEnity> Subscriptions { get; set; }
+    public DbSet<SubscriptionEntity> Subscriptions { get; set; }
+    public DbSet<TenantBusinessEntity> TenantBusinessInfos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -161,7 +158,7 @@ public class MultiTenantDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
-        modelBuilder.Entity<SubscriptionEnity>(entity =>
+        modelBuilder.Entity<SubscriptionEntity>(entity =>
         {
             entity.ToTable("subscriptions");
             entity.HasKey(e => e.Id);
@@ -197,6 +194,32 @@ public class MultiTenantDbContext : DbContext
                 .WithMany(p => p.Subscriptions)
                 .HasForeignKey(d => d.PlanId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<TenantBusinessEntity>(entity =>
+        {
+            entity.ToTable("tenant_business_infos");
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(e => e.LogoUrl).HasColumnName("logo_url").HasMaxLength(500);
+            entity.Property(e => e.BannerUrl).HasColumnName("banner_url").HasMaxLength(500);
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.InstagramUrl).HasColumnName("instagram_url").HasMaxLength(255);
+            entity.Property(e => e.FacebookUrl).HasColumnName("facebook_url").HasMaxLength(255);
+            entity.Property(e => e.WhatsappNumber).HasColumnName("whatsapp_number").HasMaxLength(20);
+
+            entity.Property(e => e.OpeningHours).HasColumnName("opening_hours").HasColumnType("jsonb");
+            entity.Property(e => e.PaymentMethods).HasColumnName("payment_methods").HasColumnType("jsonb");
+
+            entity.Property(e => e.Latitude).HasColumnName("latitude");
+            entity.Property(e => e.Longitude).HasColumnName("longitude");
+
+            entity.HasOne(e => e.Tenant)
+                .WithOne(t => t.BusinessInfo)
+                .HasForeignKey<TenantBusinessEntity>(e => e.TenantId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         base.OnModelCreating(modelBuilder);

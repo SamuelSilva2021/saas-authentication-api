@@ -101,8 +101,9 @@ public class DbContextProvider : IDbContextProvider
     private static bool IsMultiTenantEntity(Type entityType)
     {
         return entityType == typeof(TenantEntity) ||
+               entityType == typeof(TenantBusinessEntity) ||
                entityType == typeof(TenantProductEntity) ||
                entityType == typeof(PlanEntity) ||
-               entityType == typeof(SubscriptionEnity);
+               entityType == typeof(SubscriptionEntity);
     }
 }

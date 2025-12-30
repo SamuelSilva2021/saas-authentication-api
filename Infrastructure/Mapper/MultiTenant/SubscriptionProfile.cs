@@ -9,13 +9,13 @@ namespace Authenticator.API.Infrastructure.Mapper.MultiTenant
         public SubscriptionProfile()
         {
             // SubscriptionEntity -> SubscriptionDto
-            CreateMap<SubscriptionEnity, SubscriptionDTO>();
+            CreateMap<SubscriptionEntity, SubscriptionDTO>();
 
             // SubscriptionEntity -> SubscriptionSummaryDto
-            CreateMap<SubscriptionEnity, SubscriptionSummaryDTO>();
+            CreateMap<SubscriptionEntity, SubscriptionSummaryDTO>();
 
             // CreateSubscriptionDto -> SubscriptionEntity
-            CreateMap<CreateSubscriptionDTO, SubscriptionEnity>()
+            CreateMap<CreateSubscriptionDTO, SubscriptionEntity>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CancelledAt, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now))
@@ -25,7 +25,7 @@ namespace Authenticator.API.Infrastructure.Mapper.MultiTenant
                 .ForMember(dest => dest.Plan, opt => opt.Ignore());
 
             // UpdateSubscriptionDto -> SubscriptionEnity
-            CreateMap<UpdateSubscriptionDTO, SubscriptionEnity>()
+            CreateMap<UpdateSubscriptionDTO, SubscriptionEntity>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.TenantId, opt => opt.Ignore())
                 .ForMember(dest => dest.ProductId, opt => opt.Ignore())

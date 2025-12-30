@@ -4,10 +4,7 @@ using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 
 namespace Authenticator.API.Infrastructure.Repositories.MultiTenant
 {
-    public class TenantRepository(
-        IDbContextProvider dbContextProvider
-
-        ) : BaseRepository<TenantEntity>(dbContextProvider), ITenantRepository
+    public class TenantRepository(IDbContextProvider dbContextProvider) : BaseRepository<TenantEntity>(dbContextProvider), ITenantRepository
     {
         public async Task<TenantEntity?> GetByDocumentAsync(string document) =>
             await FirstOrDefaultAsync(t => t.Document == document);

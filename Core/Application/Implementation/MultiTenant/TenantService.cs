@@ -23,7 +23,8 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
         IMapper mapper,
         ILogger<TenantService> logger,
         IUserAccountsRepository userAccountsRepository,
-        IJwtTokenService jwtTokenService
+        IJwtTokenService jwtTokenService,
+        ITenantBusinessRepository tenantBusinessRepository
         ) : ITenantService
     {
         private readonly ITenantRepository _tenantRepository = tenantRepository;
@@ -31,6 +32,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
         private readonly ILogger<TenantService> _logger = logger;
         private readonly IUserAccountsRepository _userAccountsRepository = userAccountsRepository;
         private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
+        private readonly ITenantBusinessRepository _tenantBusinessRepository = tenantBusinessRepository;
 
         /// <summary>
         /// Adiciona um novo tenant e cria o usuário administrador associado
@@ -55,6 +57,15 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                 tenantEntity.Slug = await GenerateUniqueSlugAsync(tenant.CompanyName);
 
                 var createdTenant = await _tenantRepository.AddAsync(tenantEntity);
+
+                var tenantBusinessEntity = new TenantBusinessEntity
+                {
+                    Id = Guid.NewGuid(),
+                    TenantId = createdTenant.Id,
+                };
+
+                await _tenantBusinessRepository.AddAsync(tenantBusinessEntity);
+
                 var tenantDTO = _mapper.Map<TenantDTO>(createdTenant);
                 _logger.LogInformation("Tenant criado com sucesso: {TenantId}", createdTenant.Id);
 
@@ -141,7 +152,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
             // Remover caracteres especiais e normalizar
             var slug = Regex.Replace(companyName.ToLower(), @"[^a-z0-9\s-]", "")
                            .Trim()
-                           .Replace(' ', '-')
+                           .Replace(' ', '_')
                            .Substring(0, Math.Min(companyName.Length, 50));
 
             var originalSlug = slug;
@@ -150,7 +161,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
             // Verificar se o slug já existe
             while (await _tenantRepository.ExistingSlug(slug))
             {
-                slug = $"{originalSlug}-{counter}";
+                slug = $"{originalSlug}_{counter}";
                 counter++;
             }
 
