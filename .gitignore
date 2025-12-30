@@ -66,3 +66,4 @@ nunit-*.xml
 /.vs/Authenticator.API/CopilotIndices/18.0.813.4205
 /appsettings.json
 /appsettings.Production.json
+/appsettings.Development.json
