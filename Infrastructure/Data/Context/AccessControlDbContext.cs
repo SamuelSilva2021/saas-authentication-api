@@ -68,7 +68,7 @@ public class AccessControlDbContext : DbContext
             entity.Property(e => e.Name).HasColumnName("name");
             entity.Property(e => e.Slug).HasColumnName("slug");
             entity.Property(e => e.Domain).HasColumnName("domain");
-            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(50).IsRequired();
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 

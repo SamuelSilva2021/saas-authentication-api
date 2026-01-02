@@ -24,4 +24,19 @@ public class LoginResponse
     /// Tempo de expiração do token em segundos
     /// </summary>
     public int ExpiresIn { get; set; }
+
+    /// <summary>
+    /// Status atual do tenant
+    /// </summary>
+    public string? TenantStatus { get; set; }
+
+    /// <summary>
+    /// Status da assinatura
+    /// </summary>
+    public string? SubscriptionStatus { get; set; }
+
+    /// <summary>
+    /// Indica se é necessário realizar pagamento/assinatura
+    /// </summary>
+    public bool RequiresPayment { get; set; }
 }

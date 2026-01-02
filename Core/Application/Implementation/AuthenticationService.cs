@@ -12,6 +12,8 @@ using Authenticator.API.Core.Application.Interfaces.AccessControl.Module;
 using Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
 using Authenticator.API.Core.Domain.AccessControl.Modules.DTOs;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts.DTOs;
+using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
+using Authenticator.API.Core.Application.Interfaces.MultiTenant;
 
 namespace Authenticator.API.Core.Application.Implementation;
 
@@ -25,7 +27,8 @@ public class AuthenticationService(
     IMemoryCache cache,
     ILogger<AuthenticationService> logger,
     IUserAccountsRepository userAccountsRepository,
-    IModuleRepository moduleRepository
+    IModuleRepository moduleRepository,
+    ISubscriptionRepository subscriptionRepository
         ) : IAuthenticationService
 {
     private readonly AccessControlDbContext _accessControlContext = accessControlContext;
@@ -35,6 +38,7 @@ public class AuthenticationService(
     private readonly ILogger<AuthenticationService> _logger = logger;
     private readonly IUserAccountsRepository _userAccountsRepository = userAccountsRepository;
     private readonly IModuleRepository _moduleRepository = moduleRepository;
+    private readonly ISubscriptionRepository _subscriptionRepository = subscriptionRepository;
 
     private const string REFRESH_TOKENS_CACHE_KEY = "refresh_tokens";
     private const string USER_CACHE_KEY_PREFIX = "user_";
@@ -82,11 +86,24 @@ public class AuthenticationService(
             user.UpdatedAt = DateTime.UtcNow;
             await _accessControlContext.SaveChangesAsync();
 
+            // Verificar assinatura
+            SubscriptionEntity? subscription = null;
+            if (tenant != null)
+            {
+                subscription = await _subscriptionRepository.GetActiveByTenantIdAsync(tenant.Id);
+            }
+
             var loginResponse = new LoginResponse
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
-                ExpiresIn = _jwtTokenService.GetTokenExpirationTime()
+                ExpiresIn = _jwtTokenService.GetTokenExpirationTime(),
+                TenantStatus = tenant?.Status.ToString(),
+                SubscriptionStatus = subscription?.Status,
+                // Requer pagamento se status for pendente ou suspenso, ou se assinatura não estiver ativa/trial
+                RequiresPayment = tenant?.Status == ETenantStatus.Pending || 
+                                  tenant?.Status == ETenantStatus.Suspended ||
+                                  (subscription != null && subscription.Status != "active" && subscription.Status != "trialing")
             };
 
             _logger.LogInformation("Login bem-sucedido para usuário: {UserId}", user.Id);
@@ -131,8 +148,9 @@ public class AuthenticationService(
             TenantEntity? tenant = null;
             if (tokenData.TenantId.HasValue)
             {
+                // Permite renovar token mesmo se status for pendente, para permitir acesso à área de pagamento
                 tenant = await _multiTenantContext.Tenants
-                    .Where(t => t.Id == tokenData.TenantId && t.Status == "active")
+                    .Where(t => t.Id == tokenData.TenantId)
                     .FirstOrDefaultAsync();
             }
 
@@ -144,11 +162,23 @@ public class AuthenticationService(
             await RevokeRefreshTokenAsync(refreshToken);
             await StoreRefreshTokenAsync(newRefreshToken, user.Id, tenant?.Id);
 
+            // Verificar assinatura
+            SubscriptionEntity? subscription = null;
+            if (tenant != null)
+            {
+                subscription = await _subscriptionRepository.GetActiveByTenantIdAsync(tenant.Id);
+            }
+
             var loginResponse = new LoginResponse
             {
                 AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken,
                 ExpiresIn = _jwtTokenService.GetTokenExpirationTime(),
+                TenantStatus = tenant?.Status.ToString(),
+                SubscriptionStatus = subscription?.Status,
+                RequiresPayment = tenant?.Status == ETenantStatus.Pending || 
+                                  tenant?.Status == ETenantStatus.Suspended ||
+                                  (subscription != null && subscription.Status != "active" && subscription.Status != "trialing")
             };
 
             _logger.LogInformation("Token renovado com sucesso para usuário: {UserId}", user.Id);
@@ -210,7 +240,7 @@ public class AuthenticationService(
             if (!string.IsNullOrEmpty(tenantSlug))
             {
                 tenant = await _multiTenantContext.Tenants
-                    .Where(t => t.Slug == tenantSlug && t.Status == "active")
+                    .Where(t => t.Slug == tenantSlug)
                     .FirstOrDefaultAsync();
             }
 

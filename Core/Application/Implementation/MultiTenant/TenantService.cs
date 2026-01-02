@@ -1,4 +1,4 @@
-﻿using Authenticator.API.Core.Application.Interfaces;
+using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Application.Interfaces.MultiTenant;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
@@ -7,6 +7,7 @@ using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
 using AutoMapper;
 using System.Text.RegularExpressions;
+using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
 
 namespace Authenticator.API.Core.Application.Implementation.MultiTenant
 {
@@ -24,7 +25,10 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
         ILogger<TenantService> logger,
         IUserAccountsRepository userAccountsRepository,
         IJwtTokenService jwtTokenService,
-        ITenantBusinessRepository tenantBusinessRepository
+        ITenantBusinessRepository tenantBusinessRepository,
+        ISubscriptionRepository subscriptionRepository,
+        IPlanRepository planRepository,
+        ITenantProductRepository tenantProductRepository
         ) : ITenantService
     {
         private readonly ITenantRepository _tenantRepository = tenantRepository;
@@ -33,6 +37,9 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
         private readonly IUserAccountsRepository _userAccountsRepository = userAccountsRepository;
         private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
         private readonly ITenantBusinessRepository _tenantBusinessRepository = tenantBusinessRepository;
+        private readonly ISubscriptionRepository _subscriptionRepository = subscriptionRepository;
+        private readonly IPlanRepository _planRepository = planRepository;
+        private readonly ITenantProductRepository _tenantProductRepository = tenantProductRepository;
 
         /// <summary>
         /// Adiciona um novo tenant e cria o usuário administrador associado
@@ -53,8 +60,22 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                     return ResponseBuilder<RegisterTenantResponseDTO>
                         .Fail(new ErrorDTO { Message = "CNPJ/CPF já está em uso." }).WithCode(400).Build();
 
+                // Busca Produto e Plano Padrão
+                var product = await _tenantProductRepository.GetDefaultProductAsync();
+                if (product == null)
+                    return ResponseBuilder<RegisterTenantResponseDTO>
+                        .Fail(new ErrorDTO { Message = "Produto padrão não configurado no sistema." }).WithCode(500).Build();
+
+                var plan = await _planRepository.GetDefaultPlanAsync();
+                if (plan == null)
+                    return ResponseBuilder<RegisterTenantResponseDTO>
+                        .Fail(new ErrorDTO { Message = "Plano padrão não configurado no sistema." }).WithCode(500).Build();
+
                 var tenantEntity = _mapper.Map<TenantEntity>(tenant);
                 tenantEntity.Slug = await GenerateUniqueSlugAsync(tenant.CompanyName);
+                // Define como pendente até que o fluxo de pagamento/trial seja resolvido
+                // Se o plano for gratuito ou trial, poderia ser Active. Vamos assumir Pending para forçar verificação.
+                tenantEntity.Status = ETenantStatus.Pending; 
 
                 var createdTenant = await _tenantRepository.AddAsync(tenantEntity);
 
@@ -65,6 +86,21 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                 };
 
                 await _tenantBusinessRepository.AddAsync(tenantBusinessEntity);
+
+                // Criar Assinatura (Subscription)
+                var now = DateTime.UtcNow;
+                var subscription = new SubscriptionEntity
+                {
+                    Id = Guid.NewGuid(),
+                    TenantId = createdTenant.Id,
+                    ProductId = product.Id,
+                    PlanId = plan.Id,
+                    Status = "active", // Assinatura criada como ativa (Trial) inicialmente
+                    TrialEndsAt = now.AddDays(14), // 14 dias de Trial
+                    CurrentPeriodStart = now,
+                    CurrentPeriodEnd = now.AddDays(30),
+                };
+                await _subscriptionRepository.AddAsync(subscription);
 
                 var tenantDTO = _mapper.Map<TenantDTO>(createdTenant);
                 _logger.LogInformation("Tenant criado com sucesso: {TenantId}", createdTenant.Id);

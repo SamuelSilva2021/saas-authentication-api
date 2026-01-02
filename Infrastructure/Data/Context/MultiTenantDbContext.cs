@@ -43,7 +43,9 @@ public class MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options
             entity.Property(e => e.Name).HasColumnName("name").IsRequired();
             entity.Property(e => e.Slug).HasColumnName("slug").IsRequired();
             entity.Property(e => e.Domain).HasColumnName("domain");
-            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.Status)
+                .HasColumnName("status")
+                .HasConversion<string>();
 
             entity.Property(e => e.Settings)
                 .HasColumnName("settings")
@@ -169,15 +171,15 @@ public class MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options
             entity.Property(e => e.ProductId).HasColumnName("product_id").IsRequired();
             entity.Property(e => e.PlanId).HasColumnName("plan_id");
             entity.Property(e => e.Status).HasColumnName("status");
-            entity.Property(e => e.TrialEndsAt).HasColumnName("trial_ends_at").HasColumnType("timestamp without time zone");
-            entity.Property(e => e.CurrentPeriodStart).HasColumnName("current_period_start").HasColumnType("timestamp without time zone");
-            entity.Property(e => e.CurrentPeriodEnd).HasColumnName("current_period_end").HasColumnType("timestamp without time zone");
+            entity.Property(e => e.TrialEndsAt).HasColumnName("trial_ends_at").HasColumnType("timestamp with time zone");
+            entity.Property(e => e.CurrentPeriodStart).HasColumnName("current_period_start").HasColumnType("timestamp with time zone");
+            entity.Property(e => e.CurrentPeriodEnd).HasColumnName("current_period_end").HasColumnType("timestamp with time zone");
             entity.Property(e => e.CancelAtPeriodEnd).HasColumnName("cancel_at_period_end").HasDefaultValue(false);
-            entity.Property(e => e.CancelledAt).HasColumnName("cancelled_at").HasColumnType("timestamp without time zone");
+            entity.Property(e => e.CancelledAt).HasColumnName("cancelled_at").HasColumnType("timestamp with time zone");
             entity.Property(e => e.CustomPricing).HasColumnName("custom_pricing").HasPrecision(10, 2);
             entity.Property(e => e.UsageLimits).HasColumnName("usage_limits").HasColumnType("jsonb");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp with time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp with time zone");
 
             // Relacionamentos
             entity.HasOne(d => d.Tenant)

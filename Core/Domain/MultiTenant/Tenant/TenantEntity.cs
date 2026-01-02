@@ -41,7 +41,7 @@ public class TenantEntity
     /// Status do tenant
     /// </summary>
     [MaxLength(20)]
-    public string Status { get; set; } = "active";
+    public ETenantStatus Status { get; set; } = ETenantStatus.Pending;
 
     /// <summary>
     /// Configurações específicas do tenant em JSON
