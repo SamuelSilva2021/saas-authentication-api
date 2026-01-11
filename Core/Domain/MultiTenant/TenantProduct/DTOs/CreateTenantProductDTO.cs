@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Authenticator.API.Core.Domain.MultiTenant.TenantProduct.DTOs
 {
@@ -21,8 +21,7 @@ namespace Authenticator.API.Core.Domain.MultiTenant.TenantProduct.DTOs
         [MaxLength(20)]
         public string Version { get; set; } = "1.0.0";
 
-        [MaxLength(20)]
-        public string Status { get; set; } = "active";
+        public EProductStatus Status { get; set; } = EProductStatus.Ativo;
 
         public string? ConfigurationSchema { get; set; }
 

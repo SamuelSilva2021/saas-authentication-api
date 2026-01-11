@@ -15,8 +15,7 @@ namespace Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs
         [Range(0, double.MaxValue)]
         public decimal? Price { get; set; }
 
-        [MaxLength(20)]
-        public string? BillingCycle { get; set; }
+        public EBillingCycle? BillingCycle { get; set; }
 
         [Range(1, int.MaxValue)]
         public int? MaxUsers { get; set; }
@@ -26,11 +25,10 @@ namespace Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs
 
         public string? Features { get; set; }
 
-        [MaxLength(20)]
-        public string? Status { get; set; }
+        public EPlanStatus? Status { get; set; }
 
-        public int? SortOrder { get; set; }
+        public bool? IsTrial { get; set; } 
 
-        public bool? IsActive { get; set; }
+        public int? TrialPeriodDays { get; set; }
     }
 }

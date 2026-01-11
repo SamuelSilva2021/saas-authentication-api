@@ -2,10 +2,10 @@
 {
     public enum ETenantStatus
     {
-        Active,
-        Pending,
-        Inactive,
-        Suspended,
-        Canceled
+        Ativo,
+        Pendente,
+        Suspenso,
+        Inativo,
+        Cancelado
     }
 }

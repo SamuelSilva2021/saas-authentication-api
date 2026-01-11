@@ -5,8 +5,8 @@ namespace Authenticator.API.Core.Application.Interfaces.MultiTenant;
 
 public interface ISubscriptionService
 {
-    Task<ResponseDTO<string>> CreateCheckoutSessionAsync();
-    Task<ResponseDTO<string>> ActivateTrialAsync();
+    Task<ResponseDTO<string>> CreateCheckoutSessionAsync(Guid planId);
+    Task<ResponseDTO<string>> ActivatePlanAsync(Guid planId);
     Task<ResponseDTO<SubscriptionDTO>> GetCurrentSubscriptionAsync();
     Task<ResponseDTO<SubscriptionDTO>> CreateAsync(CreateSubscriptionDTO dto);
     Task<ResponseDTO<SubscriptionDTO>> UpdateAsync(Guid id, UpdateSubscriptionDTO dto);

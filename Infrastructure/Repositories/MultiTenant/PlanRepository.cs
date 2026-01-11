@@ -8,8 +8,6 @@ namespace Authenticator.API.Infrastructure.Repositories.MultiTenant
     {
         public async Task<PlanEntity?> GetDefaultPlanAsync()
         {
-            // Busca o plano padrão. Se não houver lógica de default específica, pega o primeiro.
-            // Idealmente teria um campo IsDefault na entidade PlanEntity.
             return await FirstOrDefaultAsync(p => true);
         }
     }

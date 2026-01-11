@@ -2,6 +2,7 @@ using Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs;
 using Authenticator.API.Core.Domain.MultiTenant.Plan;
 using AutoMapper;
 using System.Text.Json;
+using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
 
 namespace Authenticator.API.Infrastructure.Mapper.MultiTenant
 {
@@ -31,12 +32,16 @@ namespace Authenticator.API.Infrastructure.Mapper.MultiTenant
             CreateMap<PlanEntity, PlanDTO>()
                 .ForMember(dest => dest.TotalSubscriptions, opt => opt.MapFrom(src => src.Subscriptions.Count))
                 .ForMember(dest => dest.ActiveSubscriptions, opt => opt.MapFrom(src =>
-                    src.Subscriptions.Count(s => s.Status == "active")))
+                    src.Subscriptions.Count(s => s.Status == ESubscriptionStatus.Ativo)))
                 .ForMember(dest => dest.MonthlyRecurringRevenue, opt => opt.MapFrom(src =>
-                    src.Subscriptions.Where(s => s.Status == "active").Sum(s => s.CustomPricing ?? src.Price)));
+                    src.Subscriptions.Where(s => s.Status == ESubscriptionStatus.Ativo).Sum(s => s.CustomPricing ?? src.Price)));
 
             // PlanEntity -> PlanSummaryDto  
-            CreateMap<PlanEntity, PlanSummaryDTO>();
+            CreateMap<PlanEntity, PlanSummaryDTO>()
+                .ForMember(dest => dest.Features, opt => opt.MapFrom(src =>
+                    string.IsNullOrEmpty(src.Features)
+                        ? new List<string>()
+                        : JsonSerializer.Deserialize<List<string>>(src.Features, new JsonSerializerOptions()).ToList() ?? new List<string>()));
 
             // PlanEntity -> PlanWithFeaturesDto  
             CreateMap<PlanEntity, PlanWithFeaturesDTO>()

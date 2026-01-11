@@ -103,7 +103,7 @@ public class TenantProductService(
     {
         try
         {
-            var active = await productRepository.FindAsync(p => p.Status == EStatusProduct.Active);
+            var active = await productRepository.FindAsync(p => p.Status == EProductStatus.Ativo);
             var resultDto = mapper.Map<List<TenantProductSummaryDTO>>(active);
             return StaticResponseBuilder<List<TenantProductSummaryDTO>>.BuildOk(resultDto);
         }

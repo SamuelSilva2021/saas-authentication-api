@@ -8,7 +8,7 @@
         public string? Description { get; set; }
         public string Category { get; set; } = string.Empty;
         public string Version { get; set; } = "1.0.0";
-        public string Status { get; set; } = "active";
+        public EProductStatus Status { get; set; } = EProductStatus.Ativo;
         public string? ConfigurationSchema { get; set; }
         public string PricingModel { get; set; } = "subscription";
         public decimal BasePrice { get; set; } = 0.00m;

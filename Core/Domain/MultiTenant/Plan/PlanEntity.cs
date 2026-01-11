@@ -40,8 +40,7 @@ public class PlanEntity
     /// <summary>
     /// Ciclo de cobrança
     /// </summary>
-    [MaxLength(20)]
-    public string BillingCycle { get; set; } = "monthly";
+    public EBillingCycle BillingCycle { get; set; } = EBillingCycle.Mensal;
 
     /// <summary>
     /// Máximo de usuários
@@ -61,8 +60,7 @@ public class PlanEntity
     /// <summary>
     /// Status do plano
     /// </summary>
-    [MaxLength(20)]
-    public string Status { get; set; } = "active";
+    public EPlanStatus Status { get; set; } = EPlanStatus.Ativo;
 
     /// <summary>
     /// Ordem de exibição
@@ -70,9 +68,14 @@ public class PlanEntity
     public int SortOrder { get; set; } = 0;
 
     /// <summary>
-    /// Se o plano está ativo
+    /// Se o plano é um trial
     /// </summary>
-    public bool IsActive { get; set; } = true;
+    public bool IsTrial { get; set; } = false;
+
+    /// <summary>
+    /// Dias de trial
+    /// </summary>
+    public int TrialPeriodDays { get; set; } = 0;
 
     /// <summary>
     /// Data de criação

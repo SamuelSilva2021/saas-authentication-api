@@ -1,6 +1,8 @@
 using Authenticator.API.Core.Domain.MultiTenant.TenantProduct.DTOs;
 using Authenticator.API.Core.Domain.MultiTenant.TenantProduct;
 using AutoMapper;
+using Authenticator.API.Core.Domain.MultiTenant.Tenant;
+using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
 
 namespace Authenticator.API.Infrastructure.Mapper.MultiTenant
 {
@@ -39,7 +41,7 @@ namespace Authenticator.API.Infrastructure.Mapper.MultiTenant
             CreateMap<TenantProductEntity, TenantProductDTO>()
                 .ForMember(dest => dest.TotalSubscriptions, opt => opt.MapFrom(src => src.Subscriptions.Count))
                 .ForMember(dest => dest.ActiveSubscriptions, opt => opt.MapFrom(src =>
-                    src.Subscriptions.Count(s => s.Status == "active")));
+                    src.Subscriptions.Count(s => s.Status == ESubscriptionStatus.Ativo)));
 
             // TenantProductEntity -> TenantProductConfigurationDto
             CreateMap<TenantProductEntity, TenantProductConfigurationDTO>()

@@ -8,14 +8,14 @@ namespace Authenticator.API.UserEntry.MultiTenant;
 
 [Route("api/tenant-products")]
 [ApiController]
-public class TenantProductController(ITenantProductService productService) : ControllerBase
+public class TenantProductController(ITenantProductService productService) : BaseController
 {
     [HttpPost]
     [Authorize(Roles = "ADMIN,SUPER_ADMIN")]
     public async Task<ActionResult<ResponseDTO<TenantProductDTO>>> Create([FromBody] CreateTenantProductDTO dto)
     {
         var result = await productService.CreateAsync(dto);
-        return StatusCode(result.Code, result);
+        return BuildResponse(result);
     }
 
     [HttpPut("{id:guid}")]
@@ -23,7 +23,7 @@ public class TenantProductController(ITenantProductService productService) : Con
     public async Task<ActionResult<ResponseDTO<TenantProductDTO>>> Update(Guid id, [FromBody] UpdateTenantProductDTO dto)
     {
         var result = await productService.UpdateAsync(id, dto);
-        return StatusCode(result.Code, result);
+        return BuildResponse(result);
     }
 
     [HttpDelete("{id:guid}")]
@@ -31,7 +31,7 @@ public class TenantProductController(ITenantProductService productService) : Con
     public async Task<ActionResult<ResponseDTO<bool>>> Delete(Guid id)
     {
         var result = await productService.DeleteAsync(id);
-        return StatusCode(result.Code, result);
+        return BuildResponse(result);
     }
 
     [HttpGet("{id:guid}")]
@@ -39,7 +39,7 @@ public class TenantProductController(ITenantProductService productService) : Con
     public async Task<ActionResult<ResponseDTO<TenantProductDTO>>> GetById(Guid id)
     {
         var result = await productService.GetByIdAsync(id);
-        return StatusCode(result.Code, result);
+        return BuildResponse(result);
     }
 
     [HttpGet]
@@ -47,7 +47,7 @@ public class TenantProductController(ITenantProductService productService) : Con
     public async Task<ActionResult<ResponseDTO<List<TenantProductDTO>>>> GetAll()
     {
         var result = await productService.GetAllAsync();
-        return StatusCode(result.Code, result);
+        return BuildResponse(result);
     }
 
     [HttpGet("active")]
@@ -55,6 +55,6 @@ public class TenantProductController(ITenantProductService productService) : Con
     public async Task<ActionResult<ResponseDTO<List<TenantProductSummaryDTO>>>> GetActive()
     {
         var result = await productService.GetActiveProductsAsync();
-        return StatusCode(result.Code, result);
+        return BuildResponse(result);
     }
 }

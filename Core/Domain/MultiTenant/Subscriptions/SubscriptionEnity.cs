@@ -34,8 +34,7 @@ public class SubscriptionEntity
     /// Status da assinatura
     /// </summary>
     [Required]
-    [MaxLength(20)]
-    public string Status { get; set; } = "active";
+    public ESubscriptionStatus Status { get; set; } = ESubscriptionStatus.Ativo;
 
     /// <summary>
     /// Data de fim do período de teste

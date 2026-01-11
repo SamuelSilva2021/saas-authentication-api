@@ -5,7 +5,7 @@ namespace Authenticator.API.Core.Domain.MultiTenant.Subscriptions.DTOs
     public class UpdateSubscriptionDTO
     {
         [MaxLength(20)]
-        public string? Status { get; set; }
+        public ESubscriptionStatus Status { get; set; }
 
         public DateTime? TrialEndsAt { get; set; }
 

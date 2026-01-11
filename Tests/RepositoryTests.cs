@@ -106,7 +106,7 @@ namespace Authenticator.API.Tests
                 Name = "Test Tenant",
                 Slug = "test-tenant",
                 Domain = "test.example.com",
-                Status = ETenantStatus.Active,
+                Status = ETenantStatus.Ativo,
                 Document = "12345678901",
                 RazaoSocial = "Test Company Ltd",
                 Email = "contact@test.example.com"

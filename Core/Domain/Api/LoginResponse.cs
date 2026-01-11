@@ -1,3 +1,5 @@
+using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
+
 namespace Authenticator.API.Core.Domain.Api;
 
 /// <summary>
@@ -33,7 +35,7 @@ public class LoginResponse
     /// <summary>
     /// Status da assinatura
     /// </summary>
-    public string? SubscriptionStatus { get; set; }
+    public ESubscriptionStatus SubscriptionStatus { get; set; }
 
     /// <summary>
     /// Indica se é necessário realizar pagamento/assinatura

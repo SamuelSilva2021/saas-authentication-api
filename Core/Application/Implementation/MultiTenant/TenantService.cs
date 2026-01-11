@@ -78,22 +78,10 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                     return ResponseBuilder<RegisterTenantResponseDTO>
                         .Fail(new ErrorDTO { Message = "CNPJ/CPF já está em uso." }).WithCode(400).Build();
 
-                // Busca Produto e Plano Padrão
-                var product = await _tenantProductRepository.GetDefaultProductAsync();
-                if (product == null)
-                    return ResponseBuilder<RegisterTenantResponseDTO>
-                        .Fail(new ErrorDTO { Message = "Produto padrão não configurado no sistema." }).WithCode(500).Build();
-
-                var plan = await _planRepository.GetDefaultPlanAsync();
-                if (plan == null)
-                    return ResponseBuilder<RegisterTenantResponseDTO>
-                        .Fail(new ErrorDTO { Message = "Plano padrão não configurado no sistema." }).WithCode(500).Build();
-
+                
                 var tenantEntity = _mapper.Map<TenantEntity>(tenant);
                 tenantEntity.Slug = await GenerateUniqueSlugAsync(tenant.CompanyName);
-                // Define como pendente até que o fluxo de pagamento/trial seja resolvido
-                // Se o plano for gratuito ou trial, poderia ser Active. Vamos assumir Pending para forçar verificação.
-                tenantEntity.Status = ETenantStatus.Pending; 
+                tenantEntity.Status = ETenantStatus.Pendente;
 
                 var createdTenant = await _tenantRepository.AddAsync(tenantEntity);
 
@@ -104,21 +92,6 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                 };
 
                 await _tenantBusinessRepository.AddAsync(tenantBusinessEntity);
-
-                // Criar Assinatura (Subscription)
-                var now = DateTime.UtcNow;
-                var subscription = new SubscriptionEntity
-                {
-                    Id = Guid.NewGuid(),
-                    TenantId = createdTenant.Id,
-                    ProductId = product.Id,
-                    PlanId = plan.Id,
-                    Status = "active", // Assinatura criada como ativa (Trial) inicialmente
-                    TrialEndsAt = now.AddDays(14), // 14 dias de Trial
-                    CurrentPeriodStart = now,
-                    CurrentPeriodEnd = now.AddDays(30),
-                };
-                await _subscriptionRepository.AddAsync(subscription);
 
                 var tenantDTO = _mapper.Map<TenantDTO>(createdTenant);
                 _logger.LogInformation("Tenant criado com sucesso: {TenantId}", createdTenant.Id);
@@ -137,7 +110,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                     FirstName = tenant.FirstName.Trim(),
                     LastName = tenant.LastName.Trim(),
                     PhoneNumber = tenant.UserPhone?.Trim(),
-                    Status = EUserAccountStatus.Ativo,
+                    Status = EUserAccountStatus.Inativo,
                     IsEmailVerified = false
                 };
                 await _userAccountsRepository.AddAsync(adminUser);
@@ -164,8 +137,6 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                     };
                     await _accessGroupRepository.AddAsync(adminGroup);
 
-                    // Criar Role "Admin" para o Tenant (cópia da role base ou nova)
-                    // Como o sistema filtra por TenantId, precisamos criar uma role Admin para este tenant
                     var adminRole = new RoleEntity
                     {
                         Id = Guid.NewGuid(),
@@ -197,7 +168,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                         AccessGroupId = adminGroup.Id,
                         IsActive = true,
                         CreatedAt = DateTime.UtcNow,
-                        GrantedBy = adminUser.Id // Auto-concedido na criação
+                        GrantedBy = adminUser.Id 
                     };
                     await _accountAccessGroupRepository.AddAsync(userGroup);
 
@@ -206,7 +177,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Erro ao configurar permissões iniciais para o tenant {TenantId}", createdTenant.Id);
-                    // Não falhar o processo todo, mas logar o erro. O usuário pode precisar de ajuste manual ou retry.
+                    //Fazer rollback das operações anteriores
                 }
 
                 var accessToken = _jwtTokenService.GenerateAccessToken(adminUser, createdTenant, new List<string> { "Admin" });

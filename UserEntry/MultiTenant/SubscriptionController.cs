@@ -12,19 +12,19 @@ namespace Authenticator.API.UserEntry.MultiTenant
         ISubscriptionService subscriptionService
         ) : ControllerBase
     {
-        [HttpPost("checkout")]
+        [HttpPost("checkout/{planId}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDTO<string>>> CreateCheckoutSession()
+        public async Task<ActionResult<ResponseDTO<string>>> CreateCheckoutSession(Guid planId)
         {
-            var result = await subscriptionService.CreateCheckoutSessionAsync();
+            var result = await subscriptionService.CreateCheckoutSessionAsync(planId);
             return StatusCode(result.Code, result);
         }
 
-        [HttpPost("activate-trial")]
+        [HttpPost("activate-trial/{planId}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDTO<string>>> ActivateTrial()
+        public async Task<ActionResult<ResponseDTO<string>>> ActivatePlan(Guid planId)
         {
-            var result = await subscriptionService.ActivateTrialAsync();
+            var result = await subscriptionService.ActivatePlanAsync(planId);
             return StatusCode(result.Code, result);
         }
 

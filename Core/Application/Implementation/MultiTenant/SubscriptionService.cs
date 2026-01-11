@@ -1,172 +1,214 @@
-//using Authenticator.API.Core.Application.Interfaces.Auth;
-//using Authenticator.API.Core.Application.Interfaces.MultiTenant;
-//using Authenticator.API.Core.Application.Interfaces.Payment;
-//using Authenticator.API.Core.Domain.Api;
-//using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
-//using Authenticator.API.Core.Domain.MultiTenant.Subscriptions.DTOs;
-//using Authenticator.API.Core.Domain.MultiTenant.Tenant; // For ETenantStatus if needed
-//using AutoMapper;
+using Authenticator.API.Core.Application.Interfaces.Auth;
+using Authenticator.API.Core.Application.Interfaces.MultiTenant;
+using Authenticator.API.Core.Application.Interfaces.Payment;
+using Authenticator.API.Core.Domain.Api;
+using Authenticator.API.Core.Domain.Api.Commons;
+using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
+using Authenticator.API.Core.Domain.MultiTenant.Subscriptions.DTOs;
+using Authenticator.API.Core.Domain.MultiTenant.Tenant; // For ETenantStatus if needed
+using AutoMapper;
 
-//namespace Authenticator.API.Core.Application.Implementation.MultiTenant;
+namespace Authenticator.API.Core.Application.Implementation.MultiTenant;
 
-//public class SubscriptionService(
-//    ISubscriptionRepository subscriptionRepository,
-//    ITenantRepository tenantRepository,
-//    IPlanRepository planRepository,
-//    IPaymentGatewayService paymentGatewayService,
-//    IUserContext userContext,
-//    IMapper mapper,
-//    ILogger<SubscriptionService> logger) : ISubscriptionService
-//{
-//    public async Task<ResponseDTO<string>> CreateCheckoutSessionAsync()
-//    {
-//        try
-//        {
-//            var tenantId = userContext.CurrentUser?.TenantId;
-//            if (tenantId == null || tenantId == Guid.Empty)
-//            {
-//                return ResponseBuilder<string>.Fail("Tenant não identificado no contexto do usuário");
-//            }
+public class SubscriptionService(
+    ISubscriptionRepository subscriptionRepository,
+    ITenantRepository tenantRepository,
+    IPlanRepository planRepository,
+    IPaymentGatewayService paymentGatewayService,
+    IUserContext userContext,
+    ITenantProductRepository tenantProductRepository,
+    IMapper mapper,
+    ILogger<SubscriptionService> logger) : ISubscriptionService
+{
+    public async Task<ResponseDTO<string>> CreateCheckoutSessionAsync(Guid planId)
+    {
+        try
+        {
+            var tenantId = userContext.CurrentUser?.TenantId;
+            if (tenantId == null || tenantId == Guid.Empty)
+            {
+                return StaticResponseBuilder<string>.BuildError("Tenant não identificado no contexto do usuário");
+            }
 
-//            var subscription = await subscriptionRepository.GetByTenantIdAsync(tenantId.Value);
-//            if (subscription == null)
-//            {
-//                return ResponseBuilder<string>.Fail("Assinatura não encontrada");
-//            }
-
-//            var plan = await planRepository.GetByIdAsync(subscription.PlanId);
-//            if (plan == null)
-//            {
-//                return ResponseBuilder<string>.Fail("Plano não encontrado");
-//            }
-
-//            var checkoutUrl = await paymentGatewayService.CreateCheckoutSessionAsync(
-//                subscription, 
-//                plan.Price, 
-//                $"http://localhost:5173/payment/success?session_id={{CHECKOUT_SESSION_ID}}",
-//                $"http://localhost:5173/payment/cancel"
-//            );
-
-//            return ResponseBuilder<string>.Ok(checkoutUrl);
-//        }
-//        catch (Exception ex)
-//        {
-//            logger.LogError(ex, "Erro ao criar sessão de checkout");
-//            return ResponseBuilder<string>.Fail("Erro interno ao processar checkout");
-//        }
-//    }
-
-//    public async Task<ResponseDTO<string>> ActivateTrialAsync()
-//    {
-//        try
-//        {
-//            var tenantId = userContext.CurrentUser?.TenantId;
-//            if (tenantId == null || tenantId == Guid.Empty)
-//            {
-//                return ResponseBuilder<string>.Fail("Tenant não identificado no contexto do usuário");
-//            }
-
-//            var subscription = await subscriptionRepository.GetByTenantIdAsync(tenantId.Value);
-//            if (subscription == null)
-//            {
-//                return ResponseBuilder<string>.Fail("Assinatura não encontrada");
-//            }
-
-//            if (subscription.TrialEndsAt == null || subscription.TrialEndsAt < DateTime.UtcNow)
-//            {
-//                return ResponseBuilder<string>.Fail("Período de trial expirado ou inválido");
-//            }
-
-//            // Ativar Tenant
-//            var tenant = await tenantRepository.GetByIdAsync(tenantId.Value);
-//            if (tenant != null)
-//            {
-//                tenant.Status = ETenantStatus.Active;
-//                await tenantRepository.UpdateAsync(tenant);
-//            }
+            var subscription = await subscriptionRepository.GetByTenantIdAsync(tenantId.Value);
             
-//            // Atualizar status da assinatura se necessário
-//            subscription.Status = "active"; // Ou enum correspondente
-//            await subscriptionRepository.UpdateAsync(subscription);
+            if (subscription == null)
+            {
+                subscription = new SubscriptionEntity
+                {
+                    Id = Guid.NewGuid(),
+                    TenantId = tenantId.Value,
+                    PlanId = planId,
+                    Status = ESubscriptionStatus.Pendente,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await subscriptionRepository.AddAsync(subscription);
+            }
+            else 
+            {
+                // Atualiza o plano da assinatura existente
+                subscription.PlanId = planId;
+                await subscriptionRepository.UpdateAsync(subscription);
+            }
 
-//            return ResponseBuilder<string>.Ok("Trial ativado com sucesso", "Trial ativado com sucesso");
-//        }
-//        catch (Exception ex)
-//        {
-//            logger.LogError(ex, "Erro ao ativar trial");
-//            return ResponseBuilder<string>.Fail("Erro interno ao ativar trial");
-//        }
-//    }
+            var plan = await planRepository.GetByIdAsync(planId);
+            if (plan == null)
+            {
+                return StaticResponseBuilder<string>.BuildError("Plano não encontrado");
+            }
 
-//    public async Task<ResponseDTO<SubscriptionDTO>> GetCurrentSubscriptionAsync()
-//    {
-//        var tenantId = userContext.CurrentUser?.TenantId;
-//        if (tenantId == null || tenantId == Guid.Empty)
-//            return ResponseBuilder<SubscriptionDTO>.Fail("Tenant não identificado");
+            var checkoutUrl = await paymentGatewayService.CreateCheckoutSessionAsync(
+                subscription, 
+                plan.Price, 
+                $"http://localhost:5173/payment/success?session_id={{CHECKOUT_SESSION_ID}}",
+                $"http://localhost:5173/payment/cancel"
+            );
 
-//        var subscription = await subscriptionRepository.GetByTenantIdAsync(tenantId.Value);
-//        if (subscription == null)
-//            return ResponseBuilder<SubscriptionDTO>.Fail("Assinatura não encontrada");
+            return StaticResponseBuilder<string>.BuildOk(checkoutUrl);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Erro ao criar sessão de checkout");
+            return StaticResponseBuilder<string>.BuildError("Erro interno ao criar sessão de checkout");
+        }
+    }
 
-//        return ResponseBuilder<SubscriptionDTO>.Ok(mapper.Map<SubscriptionDTO>(subscription));
-//    }
+    public async Task<ResponseDTO<string>> ActivatePlanAsync(Guid planId)
+    {
+        try
+        {
+            var tenantId = userContext.CurrentUser?.TenantId;
+            if (tenantId == null || tenantId == Guid.Empty)
+                StaticResponseBuilder<string>.BuildError("Tenant não identificado no contexto do usuário");
 
-//    public async Task<ResponseDTO<SubscriptionDTO>> CreateAsync(CreateSubscriptionDTO dto)
-//    {
-//        try 
-//        {
-//            // Lógica de criação manual (ex: por admin)
-//            var entity = mapper.Map<SubscriptionEntity>(dto);
-//            entity.CreatedAt = DateTime.UtcNow;
+            var subscription = await subscriptionRepository.GetByTenantIdAsync(tenantId.Value);
+
+            var plan = await planRepository.GetByIdAsync(planId);
+
+            if (subscription == null)
+            {
+                var product = await tenantProductRepository.GetDefaultProductAsync();
+                if (product == null)
+                {
+                    var products = await tenantProductRepository.GetAllAsync();
+                    product = products.FirstOrDefault();
+                    
+                    if (product == null)
+                        return StaticResponseBuilder<string>.BuildError("Nenhum produto configurado no sistema");
+                }
+
+                subscription = new SubscriptionEntity
+                {
+                    Id = Guid.NewGuid(),
+                    TenantId = tenantId.Value,
+                    ProductId = product.Id,
+                    PlanId = planId,
+                    Status = plan!.IsTrial ? ESubscriptionStatus.Trial : ESubscriptionStatus.Ativo,
+                    CreatedAt = DateTime.UtcNow,
+                    TrialEndsAt = plan!.IsTrial ? DateTime.UtcNow.AddDays(plan!.TrialPeriodDays) : null
+                };
+                await subscriptionRepository.AddAsync(subscription);
+            }
+            else
+            {
+                subscription.PlanId = planId;
+                subscription.Status = ESubscriptionStatus.Ativo;
+                subscription.TrialEndsAt = DateTime.UtcNow.AddDays(14);
+                await subscriptionRepository.UpdateAsync(subscription);
+            }
+
+            if (subscription.TrialEndsAt == null || subscription.TrialEndsAt < DateTime.UtcNow)
+                return StaticResponseBuilder<string>.BuildError("Plano selecionado não é elegível para trial");
+
+            // Ativar Tenant
+            var tenant = await tenantRepository.GetByIdAsync(tenantId.Value);
+            if (tenant != null)
+            {
+                tenant.Status = ETenantStatus.Ativo;
+                await tenantRepository.UpdateAsync(tenant);
+            }
             
-//            var created = await subscriptionRepository.AddAsync(entity);
-//            return ResponseBuilder<SubscriptionDTO>.Ok(mapper.Map<SubscriptionDTO>(created));
-//        }
-//        catch(Exception ex)
-//        {
-//            logger.LogError(ex, "Erro ao criar assinatura");
-//            return ResponseBuilder<SubscriptionDTO>.Fail("Erro ao criar assinatura");
-//        }
-//    }
+            return StaticResponseBuilder<string>.BuildOk("Plano ativado com sucesso");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Erro ao ativar trial");
+            return StaticResponseBuilder<string>.BuildError("Erro interno ao ativar plano");
+        }
+    }
 
-//    public async Task<ResponseDTO<SubscriptionDTO>> UpdateAsync(Guid id, UpdateSubscriptionDTO dto)
-//    {
-//        try
-//        {
-//            var entity = await subscriptionRepository.GetByIdAsync(id);
-//            if (entity == null) return ResponseBuilder<SubscriptionDTO>.Fail("Assinatura não encontrada");
+    public async Task<ResponseDTO<SubscriptionDTO>> GetCurrentSubscriptionAsync()
+    {
+        var tenantId = userContext.CurrentUser?.TenantId;
+        if (tenantId == null || tenantId == Guid.Empty)
+            return StaticResponseBuilder<SubscriptionDTO>.BuildError("Tenant não identificado no contexto do usuário");
 
-//            mapper.Map(dto, entity);
-//            entity.UpdatedAt = DateTime.UtcNow;
+        var subscription = await subscriptionRepository.GetByTenantIdAsync(tenantId.Value);
+        if (subscription == null)
+            return StaticResponseBuilder<SubscriptionDTO>.BuildOk(new SubscriptionDTO { });
+
+        var subscriptionDto = mapper.Map<SubscriptionDTO>(subscription);
+        return StaticResponseBuilder<SubscriptionDTO>.BuildOk(subscriptionDto);
+    }
+
+    public async Task<ResponseDTO<SubscriptionDTO>> CreateAsync(CreateSubscriptionDTO dto)
+    {
+        try 
+        {
+            var entity = mapper.Map<SubscriptionEntity>(dto);            
+            var created = await subscriptionRepository.AddAsync(entity);
+
+            var dtoResult = mapper.Map<SubscriptionDTO>(created);
+
+            return StaticResponseBuilder<SubscriptionDTO>.BuildOk(dtoResult);
+        }
+        catch(Exception ex)
+        {
+            logger.LogError(ex, "Erro ao criar assinatura");
+            return StaticResponseBuilder<SubscriptionDTO>.BuildError("Erro ao criar assinatura");
+        }
+    }
+
+    public async Task<ResponseDTO<SubscriptionDTO>> UpdateAsync(Guid id, UpdateSubscriptionDTO dto)
+    {
+        try
+        {
+            var entity = await subscriptionRepository.GetByIdAsync(id);
+            if (entity == null) return StaticResponseBuilder<SubscriptionDTO>.BuildNotFound(new SubscriptionDTO { });
+
+            mapper.Map(dto, entity);
+            entity.UpdatedAt = DateTime.UtcNow;
             
-//            await subscriptionRepository.UpdateAsync(entity);
-//            return ResponseBuilder<SubscriptionDTO>.Ok(mapper.Map<SubscriptionDTO>(entity));
-//        }
-//        catch(Exception ex)
-//        {
-//            logger.LogError(ex, "Erro ao atualizar assinatura");
-//            return ResponseBuilder<SubscriptionDTO>.Fail("Erro ao atualizar assinatura");
-//        }
-//    }
+            await subscriptionRepository.UpdateAsync(entity);
 
-//    public async Task<ResponseDTO<bool>> CancelAsync(Guid id)
-//    {
-//        try
-//        {
-//            var entity = await subscriptionRepository.GetByIdAsync(id);
-//            if (entity == null) return ResponseBuilder<bool>.Fail("Assinatura não encontrada");
+            var dtoResult = mapper.Map<SubscriptionDTO>(entity);
+            return StaticResponseBuilder<SubscriptionDTO>.BuildOk(dtoResult);
+        }
+        catch(Exception ex)
+        {
+            logger.LogError(ex, "Erro ao atualizar assinatura");
+            return StaticResponseBuilder<SubscriptionDTO>.BuildError("Erro ao atualizar assinatura");
+        }
+    }
 
-//            entity.Status = "canceled";
-//            entity.CanceledAt = DateTime.UtcNow;
-//            entity.UpdatedAt = DateTime.UtcNow;
+    public async Task<ResponseDTO<bool>> CancelAsync(Guid id)
+    {
+        try
+        {
+            var entity = await subscriptionRepository.GetByIdAsync(id);
+            if (entity == null) return StaticResponseBuilder<bool>.BuildNotFound(false);
 
-//            await subscriptionRepository.UpdateAsync(entity);
-//            return ResponseBuilder<bool>.Ok(true, "Assinatura cancelada com sucesso");
-//        }
-//        catch(Exception ex)
-//        {
-//            logger.LogError(ex, "Erro ao cancelar assinatura");
-//            return ResponseBuilder<bool>.Fail("Erro ao cancelar assinatura");
-//        }
-//    }
-//}
+            entity.Status = ESubscriptionStatus.Cancelado;
+            entity.UpdatedAt = DateTime.UtcNow;
+
+            await subscriptionRepository.UpdateAsync(entity);
+
+            return StaticResponseBuilder<bool>.BuildOk(true);
+        }
+        catch(Exception ex)
+        {
+            logger.LogError(ex, "Erro ao cancelar assinatura");
+            return StaticResponseBuilder<bool>.BuildError("Erro ao cancelar assinatura");
+        }
+    }
+}

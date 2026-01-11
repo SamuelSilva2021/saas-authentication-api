@@ -14,7 +14,7 @@ namespace Authenticator.API.Core.Domain.MultiTenant.Subscriptions.DTOs
         public Guid PlanId { get; set; }
 
         [MaxLength(20)]
-        public string Status { get; set; } = "active";
+        public ESubscriptionStatus Status { get; set; } = ESubscriptionStatus.Ativo;
 
         public DateTime? TrialEndsAt { get; set; }
 

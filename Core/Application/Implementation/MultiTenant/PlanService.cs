@@ -111,20 +111,11 @@ public class PlanService(
     {
         try
         {
-            // Implementação simples de filtro. 
-            // O BaseRepository pode precisar de métodos de paginação mais robustos ou usar IQueryable.
-            // Assumindo que GetAllAsync retorna IEnumerable, faremos em memória por simplicidade inicial 
-            // ou idealmente refatorar para IQueryable no repositório.
-
-            // TODO: Refatorar Repository para suportar Paginação nativa com IQueryable
             var allPlans = await planRepository.GetAllAsync();
             var query = allPlans.AsQueryable();
 
             if (!string.IsNullOrEmpty(filter.Name))
                 query = query.Where(p => p.Name.Contains(filter.Name, StringComparison.OrdinalIgnoreCase));
-
-            if (filter.IsActive.HasValue)
-                query = query.Where(p => p.IsActive == filter.IsActive.Value);
 
             var total = query.Count();
             var items = query
@@ -156,8 +147,18 @@ public class PlanService(
         }
     }
 
-    public Task<ResponseDTO<List<PlanSummaryDTO>>> GetActivePlansAsync()
+    public async Task<ResponseDTO<List<PlanSummaryDTO>>> GetActivePlansAsync()
     {
-        throw new NotImplementedException();
+        try
+        {
+            var activePlans = await planRepository.FindAsync(p => p.Status == EPlanStatus.Ativo);
+            var dtos = mapper.Map<List<PlanSummaryDTO>>(activePlans);
+            return StaticResponseBuilder<List<PlanSummaryDTO>>.BuildOk(dtos);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Erro ao obter planos ativos.");
+            return StaticResponseBuilder<List<PlanSummaryDTO>>.BuildError("Erro ao obter planos ativos.");
+        }
     }
 }

@@ -12,8 +12,8 @@ namespace Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs
         public int? MaxUsers { get; set; }
         public int? MinStorage { get; set; }
         public int? MaxStorage { get; set; }
-        public string? Status { get; set; }
-        public bool? IsActive { get; set; }
+        public EPlanStatus Status { get; set; }
+        public bool? IsTrial { get; set; }
         public string? SearchTerm { get; set; }
         public string? SortBy { get; set; } = "sortorder";
         public bool SortDescending { get; set; } = false;

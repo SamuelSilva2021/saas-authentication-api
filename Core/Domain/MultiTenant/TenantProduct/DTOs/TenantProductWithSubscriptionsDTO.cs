@@ -1,4 +1,5 @@
-﻿using Authenticator.API.Core.Domain.MultiTenant.Subscriptions.DTOs;
+﻿using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
+using Authenticator.API.Core.Domain.MultiTenant.Subscriptions.DTOs;
 
 namespace Authenticator.API.Core.Domain.MultiTenant.TenantProduct.DTOs
 {
@@ -17,6 +18,6 @@ namespace Authenticator.API.Core.Domain.MultiTenant.TenantProduct.DTOs
 
         public ICollection<SubscriptionSummaryDTO> Subscriptions { get; set; } = [];
         public int TotalSubscriptionsCount => Subscriptions.Count;
-        public int ActiveSubscriptionsCount => Subscriptions.Count(s => s.Status == "active");
+        public int ActiveSubscriptionsCount => Subscriptions.Count(s => s.Status == ESubscriptionStatus.Ativo);
     }
 }

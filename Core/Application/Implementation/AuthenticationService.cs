@@ -97,11 +97,11 @@ public class AuthenticationService(
                 RefreshToken = refreshToken,
                 ExpiresIn = _jwtTokenService.GetTokenExpirationTime(),
                 TenantStatus = tenant?.Status.ToString(),
-                SubscriptionStatus = subscription?.Status,
-                // Requer pagamento se status for pendente ou suspenso, ou se assinatura não estiver ativa/trial
-                RequiresPayment = tenant?.Status == ETenantStatus.Pending || 
-                                  tenant?.Status == ETenantStatus.Suspended ||
-                                  (subscription != null && subscription.Status != "active" && subscription.Status != "trialing")
+                //SubscriptionStatus = subscription!.Status,
+                //// Requer pagamento se status for pendente ou suspenso, ou se assinatura não estiver ativa/trial
+                //RequiresPayment = tenant?.Status == ETenantStatus.Pendente || 
+                //                  tenant?.Status == ETenantStatus.Suspenso ||
+                //                  (subscription != null && subscription.Status != ESubscriptionStatus.Ativo && subscription.Status != ESubscriptionStatus.Trial)
             };
 
             _logger.LogInformation("Login bem-sucedido para usuário: {UserId}", user.Id);
@@ -176,10 +176,10 @@ public class AuthenticationService(
                 RefreshToken = newRefreshToken,
                 ExpiresIn = _jwtTokenService.GetTokenExpirationTime(),
                 TenantStatus = tenant?.Status.ToString(),
-                SubscriptionStatus = subscription?.Status,
-                RequiresPayment = tenant?.Status == ETenantStatus.Pending || 
-                                  tenant?.Status == ETenantStatus.Suspended ||
-                                  (subscription != null && subscription.Status != "active" && subscription.Status != "trialing")
+                SubscriptionStatus = (ESubscriptionStatus)(subscription!.Status),
+                RequiresPayment = tenant?.Status == ETenantStatus.Pendente || 
+                                  tenant?.Status == ETenantStatus.Suspenso ||
+                                  (subscription != null && subscription.Status != ESubscriptionStatus.Ativo && subscription.Status != ESubscriptionStatus.Trial)
             };
 
             _logger.LogInformation("Token renovado com sucesso para usuário: {UserId}", user.Id);

@@ -8,7 +8,7 @@ namespace Authenticator.API.Infrastructure.Repositories.MultiTenant
     {
         public async Task<SubscriptionEntity?> GetActiveByTenantIdAsync(Guid tenantId)
         {
-            return await FirstOrDefaultAsync(s => s.TenantId == tenantId && (s.Status == "active" || s.Status == "trialing"));
+            return await FirstOrDefaultAsync(s => s.TenantId == tenantId && (s.Status == ESubscriptionStatus.Ativo || s.Status == ESubscriptionStatus.Trial));
         }
 
         public async Task<SubscriptionEntity?> GetByTenantIdAsync(Guid tenantId)

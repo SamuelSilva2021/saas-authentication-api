@@ -1,6 +1,6 @@
 ﻿namespace Authenticator.API.Core.Domain.MultiTenant.TenantProduct
 {
-    public enum EStatusProduct
+    public enum EProductStatus
     {
         Inativo,
         Ativo,

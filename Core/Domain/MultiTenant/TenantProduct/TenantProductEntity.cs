@@ -49,7 +49,7 @@ public class TenantProductEntity
     /// Status do produto
     /// </summary>
     [MaxLength(20)]
-    public EStatusProduct Status { get; set; } = EStatusProduct.Active;
+    public EProductStatus Status { get; set; } = EProductStatus.Ativo;
 
     /// <summary>
     /// Schema de configuração em JSON

@@ -7,14 +7,15 @@
         public string Slug { get; set; } = string.Empty;
         public string? Description { get; set; }
         public decimal Price { get; set; }
-        public string BillingCycle { get; set; } = "monthly";
+        public EBillingCycle BillingCycle { get; set; } = EBillingCycle.Mensal;
+        public EPlanStatus Status { get; set; } = EPlanStatus.Ativo;
         public int MaxUsers { get; set; } = 1;
         public int MaxStorageGb { get; set; } = 1;
-        public bool IsActive { get; set; } = true;
         public int SortOrder { get; set; } = 0;
-
         public Dictionary<string, object> Features { get; set; } = new();
         public List<string> FeatureList { get; set; } = new();
+        public bool? IsTrial { get; set; } = false;
+        public int? TrialPeriodDays { get; set; } = 0;
 
         public DateTime CreatedAt { get; set; }
     }

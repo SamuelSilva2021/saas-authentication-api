@@ -144,13 +144,14 @@ public class MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options
             entity.Property(e => e.Slug).HasColumnName("slug").IsRequired();
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Price).HasColumnName("price").HasPrecision(10, 2);
-            entity.Property(e => e.BillingCycle).HasColumnName("billing_cycle");
+            entity.Property(e => e.BillingCycle).HasColumnName("billing_cycle").HasColumnName("billing_cycle").HasConversion<string>();
             entity.Property(e => e.MaxUsers).HasColumnName("max_users");
             entity.Property(e => e.MaxStorageGb).HasColumnName("max_storage_gb");
             entity.Property(e => e.Features).HasColumnName("features").HasColumnType("jsonb");
-            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.Status).HasColumnName("status").HasColumnName("status").HasConversion<string>();
             entity.Property(e => e.SortOrder).HasColumnName("sort_order");
-            entity.Property(e => e.IsActive).HasColumnName("is_active").HasDefaultValue(true);
+            entity.Property(e => e.IsTrial).HasColumnName("is_trial").HasDefaultValue(true);
+            entity.Property(e => e.TrialPeriodDays).HasColumnName("trial_period_days").HasDefaultValue(0);
             entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp with time zone").HasDefaultValueSql("NOW()");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp with time zone");
 
@@ -170,7 +171,7 @@ public class MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options
             entity.Property(e => e.TenantId).HasColumnName("tenant_id").IsRequired();
             entity.Property(e => e.ProductId).HasColumnName("product_id").IsRequired();
             entity.Property(e => e.PlanId).HasColumnName("plan_id");
-            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.Status).HasColumnName("status").HasConversion<string>();
             entity.Property(e => e.TrialEndsAt).HasColumnName("trial_ends_at").HasColumnType("timestamp with time zone");
             entity.Property(e => e.CurrentPeriodStart).HasColumnName("current_period_start").HasColumnType("timestamp with time zone");
             entity.Property(e => e.CurrentPeriodEnd).HasColumnName("current_period_end").HasColumnType("timestamp with time zone");

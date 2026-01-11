@@ -10,7 +10,7 @@ namespace Authenticator.API.Core.Domain.MultiTenant.Subscriptions.DTOs
         public Guid TenantId { get; set; }
         public Guid ProductId { get; set; }
         public Guid PlanId { get; set; }
-        public string Status { get; set; } = "active";
+        public ESubscriptionStatus Status { get; set; } = ESubscriptionStatus.Ativo;
         public DateTime? TrialEndsAt { get; set; }
         public DateTime CurrentPeriodStart { get; set; }
         public DateTime CurrentPeriodEnd { get; set; }
