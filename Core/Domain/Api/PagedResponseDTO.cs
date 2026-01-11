@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json.Serialization;
 
 namespace Authenticator.API.Core.Domain.Api;
@@ -37,4 +38,22 @@ public class PagedResponseDTO<T>
     /// </summary>
     [JsonPropertyName("totalPages")]
     public int TotalPages { get; set; }
+
+    /// <summary>
+    /// Se a operação foi bem-sucedida
+    /// </summary>
+    [JsonPropertyName("succeeded")]
+    public bool? Succeeded { get; set; }
+    /// <summary>
+    /// Codigo HTTP da resposta
+    /// </summary>
+    [JsonPropertyName("code")]
+    public int Code { get; set; }
+    /// <summary>
+    /// Gets or sets the current page number in a paginated collection.
+    /// </summary>
+    [JsonPropertyName("currentPage")]
+    public int CurrentPage { get; set; }
+    [JsonPropertyName("pageSize")]
+    public int PageSize { get; set; }
 }

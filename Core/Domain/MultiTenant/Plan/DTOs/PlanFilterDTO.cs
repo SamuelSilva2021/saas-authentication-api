@@ -1,7 +1,10 @@
-﻿namespace Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs
+namespace Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs
 {
     public class PlanFilterDTO
     {
+        public string? Name { get; set; }
+        public int Page { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
         public string? BillingCycle { get; set; }
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }

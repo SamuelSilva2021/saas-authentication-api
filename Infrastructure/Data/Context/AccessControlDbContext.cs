@@ -58,6 +58,7 @@ public class AccessControlDbContext : DbContext
         modelBuilder.Ignore<TenantProductEntity>();
         modelBuilder.Ignore<PlanEntity>();
         modelBuilder.Ignore<SubscriptionEntity>();
+        modelBuilder.Ignore<TenantBusinessEntity>();
 
         modelBuilder.Entity<TenantEntity>(entity =>
         {
@@ -82,6 +83,7 @@ public class AccessControlDbContext : DbContext
             entity.Ignore(e => e.Permissions);
             entity.Ignore(e => e.Subscriptions);
             entity.Ignore(e => e.ActiveSubscription);
+            entity.Ignore(e => e.BusinessInfo);
         });
 
         modelBuilder.Entity<UserAccountEntity>(entity =>
@@ -369,8 +371,59 @@ public class AccessControlDbContext : DbContext
         modelBuilder.Entity<RolePermissionEntity>().HasQueryFilter(e =>
             !_tenantContext.HasTenant || e.Permission.TenantId == _tenantContext.TenantId);
 
-        modelBuilder.Entity<PermissionOperationEntity>().HasQueryFilter(e =>
-            !_tenantContext.HasTenant || e.Permission.TenantId == _tenantContext.TenantId);
+        SeedData(modelBuilder);
+    }
 
+    private static void SeedData(ModelBuilder modelBuilder)
+    {
+        var seedDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
+
+        // Seed GroupTypes
+        modelBuilder.Entity<GroupTypeEntity>().HasData(
+            new GroupTypeEntity
+            {
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+                Name = "Sistema",
+                Code = "SYSTEM",
+                Description = "Grupos de acesso do sistema",
+                IsActive = true,
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
+            },
+            new GroupTypeEntity
+            {
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
+                Name = "Tenant",
+                Code = "TENANT",
+                Description = "Grupos de acesso do tenant",
+                IsActive = true,
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
+            }
+        );
+
+        // Seed Roles
+        modelBuilder.Entity<RoleEntity>().HasData(
+            new RoleEntity
+            {
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000010"),
+                Name = "Super Admin",
+                Code = "SUPER_ADMIN",
+                Description = "Administrador do Sistema",
+                IsActive = true,
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
+            },
+            new RoleEntity
+            {
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000020"),
+                Name = "Admin",
+                Code = "ADMIN",
+                Description = "Administrador do Tenant",
+                IsActive = true,
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
+            }
+        );
     }
 }

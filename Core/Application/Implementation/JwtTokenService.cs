@@ -30,8 +30,9 @@ public class JwtTokenService : IJwtTokenService
     /// </summary>
     /// <param name="user"></param>
     /// <param name="tenant"></param>
+    /// <param name="roles"></param>
     /// <returns></returns>
-    public string GenerateAccessToken(UserAccountEntity user, TenantEntity? tenant)
+    public string GenerateAccessToken(UserAccountEntity user, TenantEntity? tenant, IList<string> roles)
     {
         try
         {
@@ -45,6 +46,9 @@ public class JwtTokenService : IJwtTokenService
                 new("username", user.Username),
                 new("email", user.Email)
             };
+
+            foreach (var role in roles)
+                claims.Add(new Claim(ClaimTypes.Role, role));
 
             if (tenant != null)
             {

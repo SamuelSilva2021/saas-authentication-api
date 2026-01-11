@@ -14,8 +14,9 @@ public interface IJwtTokenService
     /// </summary>
     /// <param name="user">Usuário autenticado</param>
     /// <param name="tenant">Tenant (opcional)</param>
+    /// <param name="roles">Lista de roles do usuário</param>
     /// <returns>Token JWT gerado</returns>
-    string GenerateAccessToken(UserAccountEntity user, TenantEntity? tenant);
+    string GenerateAccessToken(UserAccountEntity user, TenantEntity? tenant, IList<string> roles);
 
     /// <summary>
     /// Gera um refresh token

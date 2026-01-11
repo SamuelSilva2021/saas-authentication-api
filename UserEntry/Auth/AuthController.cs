@@ -50,14 +50,10 @@ public class AuthController : ControllerBase
                     .Fail(new ErrorDTO { Message = "Dados inválidos", Details = errors }).WithCode(400).Build();
             }
 
-            var result = await _authenticationService.LoginAsync(
-                request.UsernameOrEmail,
-                request.Password);
+            var result = await _authenticationService.LoginAsync(request.UsernameOrEmail,request.Password);
 
             if (!result.Succeeded)
-            {
                 return Unauthorized(result);
-            }
 
             _logger.LogInformation("Login realizado com sucesso para usuário: {Username}", request.UsernameOrEmail);
             return ResponseBuilder<LoginResponse>.Ok(result.Data!).Build();

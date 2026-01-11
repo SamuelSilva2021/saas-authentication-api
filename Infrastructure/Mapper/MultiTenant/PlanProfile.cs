@@ -1,4 +1,4 @@
-﻿using Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs;
+using Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs;
 using Authenticator.API.Core.Domain.MultiTenant.Plan;
 using AutoMapper;
 using System.Text.Json;
@@ -14,7 +14,8 @@ namespace Authenticator.API.Infrastructure.Mapper.MultiTenant
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-                .ForMember(dest => dest.Subscriptions, opt => opt.Ignore());
+                .ForMember(dest => dest.Subscriptions, opt => opt.Ignore())
+                .ForMember(dest => dest.Features, opt => opt.MapFrom(src => string.IsNullOrWhiteSpace(src.Features) ? null : src.Features));
 
             // UpdatePlanDto -> PlanEntity  
             CreateMap<UpdatePlanDTO, PlanEntity>()
@@ -22,6 +23,7 @@ namespace Authenticator.API.Infrastructure.Mapper.MultiTenant
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
                 .ForMember(dest => dest.Subscriptions, opt => opt.Ignore())
+                .ForMember(dest => dest.Features, opt => opt.MapFrom(src => string.IsNullOrWhiteSpace(src.Features) ? null : src.Features))
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) =>
                     srcMember != null));
 

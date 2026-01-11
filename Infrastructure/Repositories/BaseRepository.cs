@@ -126,9 +126,7 @@ namespace Authenticator.API.Infrastructure.Repositories
         /// <exception cref="InvalidOperationException"></exception>
         public virtual async Task<bool> ExistsAsync(Guid id)
         {
-            var idProperty = typeof(T).GetProperty("Id");
-            if (idProperty == null)
-                throw new InvalidOperationException($"Entity {typeof(T).Name} does not have an Id property");
+            var idProperty = typeof(T).GetProperty("Id") ?? throw new InvalidOperationException($"Entity {typeof(T).Name} does not have an Id property");
 
             var parameter = Expression.Parameter(typeof(T), "x");
             var property = Expression.Property(parameter, idProperty);

@@ -77,7 +77,7 @@ public class AuthenticationService(
             var roles = await GetUserRolesAsync(accessGroups);
             var permissions = await GetUserPermissionsAsync(roles);
 
-            var accessToken = _jwtTokenService.GenerateAccessToken(user, tenant);
+            var accessToken = _jwtTokenService.GenerateAccessToken(user, tenant, roles);
             var refreshToken = _jwtTokenService.GenerateRefreshToken();
 
             await StoreRefreshTokenAsync(refreshToken, user.Id, tenant?.Id);
@@ -89,9 +89,7 @@ public class AuthenticationService(
             // Verificar assinatura
             SubscriptionEntity? subscription = null;
             if (tenant != null)
-            {
                 subscription = await _subscriptionRepository.GetActiveByTenantIdAsync(tenant.Id);
-            }
 
             var loginResponse = new LoginResponse
             {
@@ -156,7 +154,10 @@ public class AuthenticationService(
 
             var permissions = await GetUserPermissionsAsync(user.Id);
 
-            var newAccessToken = _jwtTokenService.GenerateAccessToken(user, tenant);
+            var accessGroups = await GetUserAccessGroupsAsync(user.Id);
+            var roles = await GetUserRolesAsync(accessGroups);
+
+            var newAccessToken = _jwtTokenService.GenerateAccessToken(user, tenant, roles);
             var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
 
             await RevokeRefreshTokenAsync(refreshToken);
@@ -309,7 +310,7 @@ public class AuthenticationService(
             .Where(rag => accessGroups.Contains(rag.AccessGroup.Name) && rag.IsActive)
             .Include(rag => rag.Role)
             .Where(rag => rag.Role.IsActive)
-            .Select(rag => rag.Role.Name)
+            .Select(rag => rag.Role.Code)
             .Distinct()
             .ToListAsync();
     }

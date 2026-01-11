@@ -1,13 +1,21 @@
 using Authenticator.API.Core.Application.Interfaces;
+using Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGroup;
+using Authenticator.API.Core.Application.Interfaces.AccessControl.AccountAccessGroups;
+using Authenticator.API.Core.Application.Interfaces.AccessControl.RoleAccessGroups;
+using Authenticator.API.Core.Application.Interfaces.AccessControl.Roles;
 using Authenticator.API.Core.Application.Interfaces.MultiTenant;
+using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
+using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups.Etities;
+using Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
+using Authenticator.API.Core.Domain.AccessControl.Roles;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
 using Authenticator.API.Core.Domain.Api;
+using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
 using AutoMapper;
 using System.Text.RegularExpressions;
-using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
 
 namespace Authenticator.API.Core.Application.Implementation.MultiTenant
 {
@@ -28,7 +36,12 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
         ITenantBusinessRepository tenantBusinessRepository,
         ISubscriptionRepository subscriptionRepository,
         IPlanRepository planRepository,
-        ITenantProductRepository tenantProductRepository
+        ITenantProductRepository tenantProductRepository,
+        IAccessGroupRepository accessGroupRepository,
+        IAccountAccessGroupRepository accountAccessGroupRepository,
+        IRoleRepository roleRepository,
+        IRoleAccessGroupRepository roleAccessGroupRepository,
+        IGroupTypeRepository groupTypeRepository
         ) : ITenantService
     {
         private readonly ITenantRepository _tenantRepository = tenantRepository;
@@ -40,6 +53,11 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
         private readonly ISubscriptionRepository _subscriptionRepository = subscriptionRepository;
         private readonly IPlanRepository _planRepository = planRepository;
         private readonly ITenantProductRepository _tenantProductRepository = tenantProductRepository;
+        private readonly IAccessGroupRepository _accessGroupRepository = accessGroupRepository;
+        private readonly IAccountAccessGroupRepository _accountAccessGroupRepository = accountAccessGroupRepository;
+        private readonly IRoleRepository _roleRepository = roleRepository;
+        private readonly IRoleAccessGroupRepository _roleAccessGroupRepository = roleAccessGroupRepository;
+        private readonly IGroupTypeRepository _groupTypeRepository = groupTypeRepository;
 
         /// <summary>
         /// Adiciona um novo tenant e cria o usuário administrador associado
@@ -125,7 +143,73 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                 await _userAccountsRepository.AddAsync(adminUser);
                 _logger.LogInformation("Usuário administrador criado com sucesso: {UserId}", adminUser.Id);
 
-                var accessToken = _jwtTokenService.GenerateAccessToken(adminUser, createdTenant);
+                // 3. Configurar Permissões (Roles e AccessGroups)
+                try 
+                {
+                    // Buscar GroupType "Tenant"
+                    var tenantGroupTypes = await _groupTypeRepository.FindAsync(gt => gt.Code == "TENANT");
+                    var tenantGroupType = tenantGroupTypes.FirstOrDefault();
+                    var groupTypeId = tenantGroupType?.Id ?? Guid.Parse("00000000-0000-0000-0000-000000000002");
+
+                    // Criar Grupo "Administradores"
+                    var adminGroup = new AccessGroupEntity
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Administradores",
+                        Description = "Grupo de administradores do tenant",
+                        TenantId = createdTenant.Id,
+                        GroupTypeId = groupTypeId,
+                        IsActive = true,
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    await _accessGroupRepository.AddAsync(adminGroup);
+
+                    // Criar Role "Admin" para o Tenant (cópia da role base ou nova)
+                    // Como o sistema filtra por TenantId, precisamos criar uma role Admin para este tenant
+                    var adminRole = new RoleEntity
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Admin",
+                        Code = "ADMIN",
+                        Description = "Administrador do Tenant",
+                        TenantId = createdTenant.Id,
+                        IsActive = true,
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    await _roleRepository.AddAsync(adminRole);
+
+                    // Vincular Role ao Grupo
+                    var roleGroup = new RoleAccessGroupEntity
+                    {
+                        Id = Guid.NewGuid(),
+                        RoleId = adminRole.Id,
+                        AccessGroupId = adminGroup.Id,
+                        IsActive = true,
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    await _roleAccessGroupRepository.AddAsync(roleGroup);
+
+                    // Vincular Usuário ao Grupo
+                    var userGroup = new AccountAccessGroupEntity
+                    {
+                        Id = Guid.NewGuid(),
+                        UserAccountId = adminUser.Id,
+                        AccessGroupId = adminGroup.Id,
+                        IsActive = true,
+                        CreatedAt = DateTime.UtcNow,
+                        GrantedBy = adminUser.Id // Auto-concedido na criação
+                    };
+                    await _accountAccessGroupRepository.AddAsync(userGroup);
+
+                    _logger.LogInformation("Permissões de administrador configuradas para o usuário: {UserId}", adminUser.Id);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Erro ao configurar permissões iniciais para o tenant {TenantId}", createdTenant.Id);
+                    // Não falhar o processo todo, mas logar o erro. O usuário pode precisar de ajuste manual ou retry.
+                }
+
+                var accessToken = _jwtTokenService.GenerateAccessToken(adminUser, createdTenant, new List<string> { "Admin" });
                 var refreshToken = _jwtTokenService.GenerateRefreshToken();
                 var expiresIn = _jwtTokenService.GetTokenExpirationTime();
 

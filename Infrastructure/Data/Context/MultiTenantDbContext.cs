@@ -56,8 +56,8 @@ public class MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options
                 .Metadata.SetValueComparer(JsonComparerHelper.GetDictionaryComparer());
 
             entity.Property(e => e.ActiveSubscriptionId).HasColumnName("active_subscription_id");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp with time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp with time zone");
 
             // Campos corporativos
             entity.Property(e => e.Document).HasColumnName("document");
@@ -119,13 +119,13 @@ public class MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Category).HasColumnName("category");
             entity.Property(e => e.Version).HasColumnName("version");
-            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.Status).HasColumnName("status").HasConversion<string>();
             entity.Property(e => e.ConfigurationSchema).HasColumnName("configuration_schema").HasColumnType("jsonb");
             entity.Property(e => e.PricingModel).HasColumnName("pricing_model");
             entity.Property(e => e.BasePrice).HasColumnName("base_price").HasPrecision(10, 2);
             entity.Property(e => e.SetupFee).HasColumnName("setup_fee").HasPrecision(10, 2);
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp with time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp with time zone");
 
             entity.HasMany(p => p.Subscriptions)
                 .WithOne(s => s.Product)
@@ -151,8 +151,8 @@ public class MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options
             entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.SortOrder).HasColumnName("sort_order");
             entity.Property(e => e.IsActive).HasColumnName("is_active").HasDefaultValue(true);
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp without time zone").HasDefaultValueSql("NOW()");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp without time zone");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp with time zone").HasDefaultValueSql("NOW()");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp with time zone");
 
             entity.HasMany(p => p.Subscriptions)
                 .WithOne(s => s.Plan)

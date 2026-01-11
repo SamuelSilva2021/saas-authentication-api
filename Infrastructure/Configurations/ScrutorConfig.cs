@@ -8,14 +8,17 @@ namespace Authenticator.API.Infrastructure.Configurations
         {
             string[] namespaces = ["Authenticator.API"];
 
-            services.Scan(
-                scan => scan
-                    .FromApplicationDependencies()
-                        .AddClasses(classes => classes.InNamespaces(namespaces))
-                        .UsingRegistrationStrategy(RegistrationStrategy.Skip)
-                        .AsImplementedInterfaces()
-                        .WithScopedLifetime()
-            );
+            services.Scan(scan =>
+                 scan.FromApplicationDependencies()
+                    .AddClasses(classes =>
+                        classes.InNamespaces(namespaces)
+                        .Where(t => !typeof(Exception).IsAssignableFrom(t))
+                    )
+                    .UsingRegistrationStrategy(RegistrationStrategy.Skip)
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime()
+);
+
         }
     }
 }
