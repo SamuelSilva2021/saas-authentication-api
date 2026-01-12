@@ -1,6 +1,6 @@
-using Authenticator.API.Core.Application.Interfaces;
+﻿using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Application.Interfaces.MultiTenant;
-using Authenticator.API.Core.Domain.MultiTenant.TenantProduct;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.TenantProduct;
 
 namespace Authenticator.API.Infrastructure.Repositories.MultiTenant
 {
@@ -10,3 +10,4 @@ namespace Authenticator.API.Infrastructure.Repositories.MultiTenant
             await FirstOrDefaultAsync(p => p.Status == EProductStatus.Ativo);
     }
 }
+

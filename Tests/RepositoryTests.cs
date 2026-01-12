@@ -1,7 +1,7 @@
+﻿using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts.Enum;
 using Authenticator.API.Core.Application.Interfaces;
-using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
-using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
-using Authenticator.API.Core.Domain.MultiTenant.Tenant;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Tenant;
 using Authenticator.API.Infrastructure.Data;
 using Authenticator.API.Infrastructure.Data.Context;
 using Authenticator.API.Infrastructure.Providers;
@@ -352,3 +352,5 @@ namespace Authenticator.API.Tests
         }
     }
 }
+
+

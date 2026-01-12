@@ -1,7 +1,7 @@
-using Authenticator.API.Core.Application.Interfaces.MultiTenant;
+﻿using Authenticator.API.Core.Application.Interfaces.MultiTenant;
 using Authenticator.API.Core.Domain.Api;
 using Authenticator.API.Core.Domain.Api.Commons;
-using Authenticator.API.Core.Domain.MultiTenant.Plan;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Plan;
 using Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs;
 using AutoMapper;
 
@@ -18,7 +18,7 @@ public class PlanService(
         {
             var existingSlug = await planRepository.FirstOrDefaultAsync(p => p.Slug == dto.Slug);
             if (existingSlug != null)
-                return StaticResponseBuilder<PlanDTO>.BuildError("Já existe um plano com este slug.");
+                return StaticResponseBuilder<PlanDTO>.BuildError("JÃ¡ existe um plano com este slug.");
 
             var entity = mapper.Map<PlanEntity>(dto);
 
@@ -41,13 +41,13 @@ public class PlanService(
         {
             var entity = await planRepository.GetByIdAsync(id);
             if (entity == null)
-                return StaticResponseBuilder<PlanDTO>.BuildError("Plano não encontrado.");
+                return StaticResponseBuilder<PlanDTO>.BuildError("Plano nÃ£o encontrado.");
 
             if (!string.IsNullOrEmpty(dto.Slug) && dto.Slug != entity.Slug)
             {
                 var existingSlug = await planRepository.FirstOrDefaultAsync(p => p.Slug == dto.Slug && p.Id != id);
                 if (existingSlug != null)
-                    return StaticResponseBuilder<PlanDTO>.BuildError("Já existe um plano com este slug.");
+                    return StaticResponseBuilder<PlanDTO>.BuildError("JÃ¡ existe um plano com este slug.");
             }
 
             mapper.Map(dto, entity);
@@ -71,7 +71,7 @@ public class PlanService(
         {
             var entity = await planRepository.GetByIdAsync(id);
             if (entity == null)
-                return StaticResponseBuilder<bool>.BuildError("Plano não encontrado.");
+                return StaticResponseBuilder<bool>.BuildError("Plano nÃ£o encontrado.");
 
             // Soft delete ou Hard delete? Geralmente soft delete se tiver relacionamentos.
             // Aqui faremos hard delete por enquanto, mas o ideal seria verificar assinaturas ativas.
@@ -89,7 +89,7 @@ public class PlanService(
     {
         var entity = await planRepository.GetByIdAsync(id);
         if (entity == null)
-            return StaticResponseBuilder<PlanDTO>.BuildError("Plano não encontrado.");
+            return StaticResponseBuilder<PlanDTO>.BuildError("Plano nÃ£o encontrado.");
 
         var planDto = mapper.Map<PlanDTO>(entity);
 
@@ -100,7 +100,7 @@ public class PlanService(
     {
         var entity = await planRepository.FirstOrDefaultAsync(p => p.Slug == slug);
         if (entity == null)
-            return StaticResponseBuilder<PlanDTO>.BuildError("Plano não encontrado.");
+            return StaticResponseBuilder<PlanDTO>.BuildError("Plano nÃ£o encontrado.");
 
         var planDto = mapper.Map<PlanDTO>(entity);
 
@@ -162,3 +162,4 @@ public class PlanService(
         }
     }
 }
+

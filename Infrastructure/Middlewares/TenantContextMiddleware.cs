@@ -1,11 +1,11 @@
-using System.Security.Claims;
-using Authenticator.API.Infrastructure.Data.Interfaces;
+﻿using System.Security.Claims;
+using OpaMenu.Infrastructure.Shared.Interfaces;
 
 namespace Authenticator.API.Infrastructure.Middlewares
 {
     /// <summary>
-    /// Middleware responsável por popular o ITenantContext a partir dos claims do JWT
-    /// e/ou cabeçalhos da requisição
+    /// Middleware responsÃ¡vel por popular o ITenantContext a partir dos claims do JWT
+    /// e/ou cabeÃ§alhos da requisiÃ§Ã£o
     /// </summary>
     public class TenantContextMiddleware
     {
@@ -27,7 +27,7 @@ namespace Authenticator.API.Infrastructure.Middlewares
                 var tenantSlugClaim = context.User?.FindFirst("tenant_slug")?.Value;
                 var tenantNameClaim = context.User?.FindFirst("tenant_name")?.Value;
 
-                // Cabeçalhos (fallback)
+                // CabeÃ§alhos (fallback)
                 context.Request.Headers.TryGetValue("X-Tenant-Id", out var tenantIdHeader);
                 context.Request.Headers.TryGetValue("X-Tenant-Slug", out var tenantSlugHeader);
                 context.Request.Headers.TryGetValue("X-Tenant-Name", out var tenantNameHeader);

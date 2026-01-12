@@ -1,8 +1,7 @@
-using Authenticator.API.Core.Application.Interfaces.AccessControl.Permissions;
+﻿using Authenticator.API.Core.Application.Interfaces.AccessControl.Permissions;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.Operation;
-using Authenticator.API.Core.Domain.AccessControl.Permissions;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Authenticator.API.Core.Domain.AccessControl.Permissions.DTOs;
-using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
 using Authenticator.API.Core.Domain.Api;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +10,7 @@ using Authenticator.API.Core.Application.Interfaces.AccessControl.PermissionOper
 namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permissions
 {
     /// <summary>
-    /// Serviço para gerenciar permissões
+    /// ServiÃ§o para gerenciar permissÃµes
     /// </summary>
     /// <param name="permissionRepository"></param>
     /// <param name="operationRepository"></param>
@@ -28,7 +27,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         private readonly IMapper _mapper = mapper;
 
         /// <summary>
-        /// Obtém todas as permissões
+        /// ObtÃ©m todas as permissÃµes
         /// </summary>
         /// <returns></returns>
         public async Task<ResponseDTO<IEnumerable<PermissionDTO>>> GetAllPermissionsAsync()
@@ -54,7 +53,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Obtém todas as permissões paginadas
+        /// ObtÃ©m todas as permissÃµes paginadas
         /// </summary>
         /// <param name="page"></param>
         /// <param name="limit"></param>
@@ -95,7 +94,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Obtém uma permissão pelo ID
+        /// ObtÃ©m uma permissÃ£o pelo ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -110,7 +109,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
 
                 if (entity == null)
                     return ResponseBuilder<PermissionDTO>
-                        .Fail(new ErrorDTO { Message = "Permissão não encontrada" })
+                        .Fail(new ErrorDTO { Message = "PermissÃ£o nÃ£o encontrada" })
                         .WithCode(404)
                         .Build();
 
@@ -128,7 +127,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Obtém permissões por módulo
+        /// ObtÃ©m permissÃµes por mÃ³dulo
         /// </summary>
         /// <param name="moduleId"></param>
         /// <returns></returns>
@@ -157,7 +156,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Obtém permissões por role
+        /// ObtÃ©m permissÃµes por role
         /// </summary>
         /// <param name="roleId"></param>
         /// <returns></returns>
@@ -186,7 +185,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Adiciona uma nova permissão
+        /// Adiciona uma nova permissÃ£o
         /// </summary>
         /// <param name="permission"></param>
         /// <returns></returns>
@@ -199,7 +198,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
 
                 var createdEntity = await _permissionRepository.AddAsync(entity);
 
-                // Associar operações se fornecidas
+                // Associar operaÃ§Ãµes se fornecidas
                 if (permission.OperationIds != null && permission.OperationIds.Any())
                 {
                     await AssignOperationsToPermissionInternalAsync(createdEntity.Id, permission.OperationIds);
@@ -225,7 +224,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Atualiza uma permissão
+        /// Atualiza uma permissÃ£o
         /// </summary>
         /// <param name="id"></param>
         /// <param name="permission"></param>
@@ -241,7 +240,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
 
                 if (existingEntity == null)
                     return ResponseBuilder<PermissionDTO>
-                        .Fail(new ErrorDTO { Message = "Permissão não encontrada" })
+                        .Fail(new ErrorDTO { Message = "PermissÃ£o nÃ£o encontrada" })
                         .WithCode(404)
                         .Build();
 
@@ -280,7 +279,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Deleta uma permissão
+        /// Deleta uma permissÃ£o
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -291,11 +290,11 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
                 var existingEntity = await _permissionRepository.GetByIdAsync(id);
                 if (existingEntity == null)
                     return ResponseBuilder<bool>
-                        .Fail(new ErrorDTO { Message = "Permissão não encontrada" })
+                        .Fail(new ErrorDTO { Message = "PermissÃ£o nÃ£o encontrada" })
                         .WithCode(404)
                         .Build();
 
-                // Remover todas as operações associadas antes de deletar
+                // Remover todas as operaÃ§Ãµes associadas antes de deletar
                 await RemoveAllOperationsFromPermissionInternalAsync(id);
 
                 await _permissionRepository.DeleteAsync(existingEntity);
@@ -312,7 +311,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Associa operações a uma permissão
+        /// Associa operaÃ§Ãµes a uma permissÃ£o
         /// </summary>
         /// <param name="permissionId"></param>
         /// <param name="operationIds"></param>
@@ -335,7 +334,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Remove operações de uma permissão
+        /// Remove operaÃ§Ãµes de uma permissÃ£o
         /// </summary>
         /// <param name="permissionId"></param>
         /// <param name="operationIds"></param>
@@ -359,7 +358,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Método interno para associar operações a uma permissão
+        /// MÃ©todo interno para associar operaÃ§Ãµes a uma permissÃ£o
         /// </summary>
         /// <param name="permissionId"></param>
         /// <param name="operationIds"></param>
@@ -370,13 +369,13 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
             {
                 var permission = await _permissionRepository.GetByIdAsync(permissionId);
                 if (permission == null)
-                    throw new ArgumentException("Permissão não encontrada");
+                    throw new ArgumentException("PermissÃ£o nÃ£o encontrada");
 
                 foreach (var operationId in operationIds)
                 {
                     var operation = await _operationRepository.GetByIdAsync(operationId);
                     if (operation == null)
-                        throw new ArgumentException($"Operação com ID {operationId} não encontrada");
+                        throw new ArgumentException($"OperaÃ§Ã£o com ID {operationId} nÃ£o encontrada");
                 }
 
                 var existingPermissionOperations = await _permissionRepository.GetAllAsync(
@@ -418,7 +417,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Método interno para adicionar ou remover operações de uma permissão
+        /// MÃ©todo interno para adicionar ou remover operaÃ§Ãµes de uma permissÃ£o
         /// </summary>
         /// <param name="permissionId"></param>
         /// <param name="operationIds"></param>
@@ -457,7 +456,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Método interno para remover todas as operações de uma permissão
+        /// MÃ©todo interno para remover todas as operaÃ§Ãµes de uma permissÃ£o
         /// </summary>
         /// <param name="permissionId"></param>
         /// <returns></returns>

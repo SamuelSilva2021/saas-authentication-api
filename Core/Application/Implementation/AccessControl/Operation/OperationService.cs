@@ -1,5 +1,5 @@
 ﻿using Authenticator.API.Core.Application.Interfaces.AccessControl.Operation;
-using Authenticator.API.Core.Domain.AccessControl.Operations;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Authenticator.API.Core.Domain.AccessControl.Operations.DTOs;
 using Authenticator.API.Core.Domain.Api;
 using AutoMapper;
@@ -148,3 +148,4 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Operat
         }
     }
 }
+

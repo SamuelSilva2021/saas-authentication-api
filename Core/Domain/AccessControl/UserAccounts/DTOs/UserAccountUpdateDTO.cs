@@ -1,4 +1,4 @@
-﻿using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
+﻿using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts.Enum;
 using System.ComponentModel.DataAnnotations;
 
 namespace Authenticator.API.Core.Domain.AccessControl.UserAccounts.DTOs
@@ -30,3 +30,4 @@ namespace Authenticator.API.Core.Domain.AccessControl.UserAccounts.DTOs
         public Guid? TenantId { get; set; }
     }
 }
+

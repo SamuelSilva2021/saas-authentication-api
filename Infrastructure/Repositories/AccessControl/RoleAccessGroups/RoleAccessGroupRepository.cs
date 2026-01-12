@@ -1,6 +1,6 @@
 ﻿using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.RoleAccessGroups;
-using Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Microsoft.EntityFrameworkCore;
 
 namespace Authenticator.API.Infrastructure.Repositories.AccessControl.RoleAccessGroups

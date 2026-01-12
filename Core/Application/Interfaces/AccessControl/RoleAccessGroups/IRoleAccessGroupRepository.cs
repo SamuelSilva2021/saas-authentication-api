@@ -1,5 +1,5 @@
 ﻿using Authenticator.API.Core.Application.Interfaces;
-using Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 
 namespace Authenticator.API.Core.Application.Interfaces.AccessControl.RoleAccessGroups
 {

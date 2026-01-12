@@ -1,4 +1,4 @@
-using Authenticator.API.Infrastructure.Data.Interfaces;
+using OpaMenu.Infrastructure.Shared.Interfaces;
 
 namespace Authenticator.API.Infrastructure.Data.Context
 {

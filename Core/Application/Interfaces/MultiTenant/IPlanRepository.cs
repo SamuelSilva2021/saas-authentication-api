@@ -1,4 +1,4 @@
-using Authenticator.API.Core.Domain.MultiTenant.Plan;
+﻿using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Plan;
 
 namespace Authenticator.API.Core.Application.Interfaces.MultiTenant
 {
@@ -7,3 +7,4 @@ namespace Authenticator.API.Core.Application.Interfaces.MultiTenant
         Task<PlanEntity?> GetDefaultPlanAsync();
     }
 }
+

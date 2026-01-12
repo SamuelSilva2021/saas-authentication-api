@@ -1,8 +1,8 @@
-using Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs;
-using Authenticator.API.Core.Domain.MultiTenant.Plan;
+﻿using Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Plan;
 using AutoMapper;
 using System.Text.Json;
-using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Subscription;
 
 namespace Authenticator.API.Infrastructure.Mapper.MultiTenant
 {
@@ -57,3 +57,4 @@ namespace Authenticator.API.Infrastructure.Mapper.MultiTenant
         }
     }
 }
+

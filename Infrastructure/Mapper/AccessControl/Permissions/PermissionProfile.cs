@@ -1,6 +1,5 @@
-using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
+﻿using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Authenticator.API.Core.Domain.AccessControl.Permissions.DTOs;
-using Authenticator.API.Core.Domain.AccessControl.Permissions;
 using AutoMapper;
 
 namespace Authenticator.API.Infrastructure.Mapper.AccessControl.Permissions
@@ -61,3 +60,4 @@ namespace Authenticator.API.Infrastructure.Mapper.AccessControl.Permissions
         }
     }
 }
+

@@ -1,7 +1,7 @@
-using Authenticator.API.Core.Application.Interfaces;
-using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
+﻿using Authenticator.API.Core.Application.Interfaces;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts;
 using Authenticator.API.Core.Domain.Api;
-using Authenticator.API.Core.Domain.MultiTenant.Tenant;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Tenant;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,7 +12,7 @@ using System.Text;
 namespace Authenticator.API.Core.Application.Implementation;
 
 /// <summary>
-/// Serviço para geração e validação de tokens JWT
+/// ServiÃ§o para geraÃ§Ã£o e validaÃ§Ã£o de tokens JWT
 /// </summary>
 public class JwtTokenService : IJwtTokenService
 {
@@ -26,7 +26,7 @@ public class JwtTokenService : IJwtTokenService
     }
 
     /// <summary>
-    /// Gera um token de acesso JWT para o usuário e tenant informados
+    /// Gera um token de acesso JWT para o usuÃ¡rio e tenant informados
     /// </summary>
     /// <param name="user"></param>
     /// <param name="tenant"></param>
@@ -72,7 +72,7 @@ public class JwtTokenService : IJwtTokenService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao gerar token de acesso para usuário {UserId}", user.Id);
+            _logger.LogError(ex, "Erro ao gerar token de acesso para usuÃ¡rio {UserId}", user.Id);
             throw;
         }
     }
@@ -90,7 +90,7 @@ public class JwtTokenService : IJwtTokenService
     }
 
     /// <summary>
-    /// Obtém os claims de um token JWT válido
+    /// ObtÃ©m os claims de um token JWT vÃ¡lido
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
@@ -152,14 +152,15 @@ public class JwtTokenService : IJwtTokenService
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Token inválido");
+            _logger.LogWarning(ex, "Token invÃ¡lido");
             return false;
         }
     }
 
     /// <summary>
-    /// Obtém o tempo de expiração configurado para tokens (em segundos)
+    /// ObtÃ©m o tempo de expiraÃ§Ã£o configurado para tokens (em segundos)
     /// </summary>
     /// <returns></returns>
     public int GetTokenExpirationTime() =>  _jwtSettings.AccessTokenExpirationMinutes * 60; 
 }
+

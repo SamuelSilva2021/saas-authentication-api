@@ -1,4 +1,4 @@
-using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
+﻿using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Subscription;
 
 namespace Authenticator.API.Core.Application.Interfaces.MultiTenant
 {
@@ -8,3 +8,4 @@ namespace Authenticator.API.Core.Application.Interfaces.MultiTenant
         Task<SubscriptionEntity?> GetByTenantIdAsync(Guid tenantId);
     }
 }
+

@@ -1,6 +1,6 @@
+﻿using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts.Enum;
 using Authenticator.API.Core.Application.Interfaces;
-using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
-using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts;
 using Authenticator.API.Infrastructure.Providers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -8,8 +8,8 @@ using Microsoft.Extensions.Caching.Memory;
 namespace Authenticator.API.Infrastructure.Repositories.AccessControl.UserAccount;
 
 /// <summary>
-/// Implementação específica do repositório para contas de usuário
-/// Herda de Repository<UserAccountEntity> para ter acesso aos métodos CRUD básicos
+/// ImplementaÃ§Ã£o especÃ­fica do repositÃ³rio para contas de usuÃ¡rio
+/// Herda de Repository<UserAccountEntity> para ter acesso aos mÃ©todos CRUD bÃ¡sicos
 /// </summary>
 public class UserAccountsRepository(
     IDbContextProvider dbContextProvider,
@@ -20,10 +20,10 @@ public class UserAccountsRepository(
     private readonly ILogger<UserAccountsRepository> _logger = logger;
 
     /// <summary>
-    /// Busca um usuário pelo email
+    /// Busca um usuÃ¡rio pelo email
     /// </summary>
-    /// <param name="email">Email do usuário</param>
-    /// <returns>Usuário encontrado ou null</returns>
+    /// <param name="email">Email do usuÃ¡rio</param>
+    /// <returns>UsuÃ¡rio encontrado ou null</returns>
     public async Task<UserAccountEntity?> GetByEmailAsync(string email)
     {
         var cacheKey = $"user_email_{email.ToLowerInvariant()}";
@@ -40,17 +40,17 @@ public class UserAccountsRepository(
     }
 
     /// <summary>
-    /// Busca um usuário pelo username
+    /// Busca um usuÃ¡rio pelo username
     /// </summary>
-    /// <param name="username">Nome de usuário</param>
-    /// <returns>Usuário encontrado ou null</returns>
+    /// <param name="username">Nome de usuÃ¡rio</param>
+    /// <returns>UsuÃ¡rio encontrado ou null</returns>
     public async Task<UserAccountEntity?> GetByUsernameAsync(string username)
     {
         var cacheKey = $"user_username_{username.ToLowerInvariant()}";
 
         if (_cache.TryGetValue(cacheKey, out UserAccountEntity? cachedUser))
         {
-            _logger.LogDebug("Usuário encontrado no cache para username: {Username}", username);
+            _logger.LogDebug("UsuÃ¡rio encontrado no cache para username: {Username}", username);
             return cachedUser;
         }
 
@@ -63,10 +63,10 @@ public class UserAccountsRepository(
     }
 
     /// <summary>
-    /// Busca um usuário pelo email ou username
+    /// Busca um usuÃ¡rio pelo email ou username
     /// </summary>
     /// <param name="emailOrUsername">Email ou username</param>
-    /// <returns>Usuário encontrado ou null</returns>
+    /// <returns>UsuÃ¡rio encontrado ou null</returns>
     public async Task<UserAccountEntity?> GetByEmailOrUsernameAsync(string emailOrUsername)
     {
         return await FirstOrDefaultAsync(u =>
@@ -76,11 +76,11 @@ public class UserAccountsRepository(
     }
 
     /// <summary>
-    /// Verifica se um email já está em uso
+    /// Verifica se um email jÃ¡ estÃ¡ em uso
     /// </summary>
     /// <param name="email">Email a ser verificado</param>
-    /// <param name="excludeUserId">ID do usuário a ser excluído da verificação (para updates)</param>
-    /// <returns>True se o email já existe</returns>
+    /// <param name="excludeUserId">ID do usuÃ¡rio a ser excluÃ­do da verificaÃ§Ã£o (para updates)</param>
+    /// <returns>True se o email jÃ¡ existe</returns>
     public async Task<bool> EmailExistsAsync(string email, Guid? excludeUserId = null)
     {
         if (excludeUserId.HasValue)
@@ -94,11 +94,11 @@ public class UserAccountsRepository(
     }
 
     /// <summary>
-    /// Verifica se um username já está em uso
+    /// Verifica se um username jÃ¡ estÃ¡ em uso
     /// </summary>
     /// <param name="username">Username a ser verificado</param>
-    /// <param name="excludeUserId">ID do usuário a ser excluído da verificação (para updates)</param>
-    /// <returns>True se o username já existe</returns>
+    /// <param name="excludeUserId">ID do usuÃ¡rio a ser excluÃ­do da verificaÃ§Ã£o (para updates)</param>
+    /// <returns>True se o username jÃ¡ existe</returns>
     public async Task<bool> UsernameExistsAsync(string username, Guid? excludeUserId = null)
     {
         if (excludeUserId.HasValue)
@@ -112,10 +112,10 @@ public class UserAccountsRepository(
     }
 
     /// <summary>
-    /// Busca usuários ativos por tenant
+    /// Busca usuÃ¡rios ativos por tenant
     /// </summary>
     /// <param name="tenantId">ID do tenant</param>
-    /// <returns>Lista de usuários ativos do tenant</returns>
+    /// <returns>Lista de usuÃ¡rios ativos do tenant</returns>
     public async Task<IEnumerable<UserAccountEntity>> GetActiveUsersByTenantAsync(Guid tenantId)
     {
         return await FindAsync(u => u.TenantId == tenantId &&
@@ -124,19 +124,19 @@ public class UserAccountsRepository(
     }
 
     /// <summary>
-    /// Busca usuários por tenant com paginação
+    /// Busca usuÃ¡rios por tenant com paginaÃ§Ã£o
     /// </summary>
     /// <param name="tenantId">ID do tenant</param>
-    /// <param name="pageNumber">Número da página</param>
-    /// <param name="pageSize">Tamanho da página</param>
-    /// <returns>Lista paginada de usuários do tenant</returns>
+    /// <param name="pageNumber">NÃºmero da pÃ¡gina</param>
+    /// <param name="pageSize">Tamanho da pÃ¡gina</param>
+    /// <returns>Lista paginada de usuÃ¡rios do tenant</returns>
     public async Task<IEnumerable<UserAccountEntity>> GetUsersByTenantPagedAsync(Guid tenantId, int pageNumber, int pageSize) =>
         await GetPagedAsync(u => u.TenantId == tenantId && u.DeletedAt == null, pageNumber, pageSize);
 
     /// <summary>
-    /// Atualiza a data do último login do usuário
+    /// Atualiza a data do Ãºltimo login do usuÃ¡rio
     /// </summary>
-    /// <param name="userId">ID do usuário</param>
+    /// <param name="userId">ID do usuÃ¡rio</param>
     /// <returns>Task</returns>
     public async Task UpdateLastLoginAsync(Guid userId)
     {
@@ -154,11 +154,11 @@ public class UserAccountsRepository(
     }
 
     /// <summary>
-    /// Define o token de reset de senha para um usuário
+    /// Define o token de reset de senha para um usuÃ¡rio
     /// </summary>
-    /// <param name="userId">ID do usuário</param>
+    /// <param name="userId">ID do usuÃ¡rio</param>
     /// <param name="resetToken">Token de reset</param>
-    /// <param name="expiresAt">Data de expiração do token</param>
+    /// <param name="expiresAt">Data de expiraÃ§Ã£o do token</param>
     /// <returns>Task</returns>
     public async Task SetPasswordResetTokenAsync(Guid userId, string resetToken, DateTime expiresAt)
     {
@@ -173,19 +173,19 @@ public class UserAccountsRepository(
     }
 
     /// <summary>
-    /// Busca usuário pelo token de reset de senha válido
+    /// Busca usuÃ¡rio pelo token de reset de senha vÃ¡lido
     /// </summary>
     /// <param name="resetToken">Token de reset</param>
-    /// <returns>Usuário encontrado ou null</returns>
+    /// <returns>UsuÃ¡rio encontrado ou null</returns>
     public async Task<UserAccountEntity?> GetByValidPasswordResetTokenAsync(string resetToken) =>
         await FirstOrDefaultAsync(u => u.PasswordResetToken == resetToken &&
                                              u.PasswordResetExpiresAt > DateTime.UtcNow &&
                                              u.DeletedAt == null);
 
     /// <summary>
-    /// Limpa o token de reset de senha do usuário
+    /// Limpa o token de reset de senha do usuÃ¡rio
     /// </summary>
-    /// <param name="userId">ID do usuário</param>
+    /// <param name="userId">ID do usuÃ¡rio</param>
     /// <returns>Task</returns>
     public async Task ClearPasswordResetTokenAsync(Guid userId)
     {
@@ -200,9 +200,9 @@ public class UserAccountsRepository(
     }
 
     /// <summary>
-    /// Ativa ou desativa um usuário
+    /// Ativa ou desativa um usuÃ¡rio
     /// </summary>
-    /// <param name="userId">ID do usuário</param>
+    /// <param name="userId">ID do usuÃ¡rio</param>
     /// <param name="isActive">Status ativo</param>
     /// <returns>Task</returns>
     public async Task SetUserActiveStatusAsync(Guid userId, bool isActive)
@@ -222,7 +222,7 @@ public class UserAccountsRepository(
     /// <summary>
     /// Marca o email como verificado
     /// </summary>
-    /// <param name="userId">ID do usuário</param>
+    /// <param name="userId">ID do usuÃ¡rio</param>
     /// <returns>Task</returns>
     public async Task MarkEmailAsVerifiedAsync(Guid userId)
     {
@@ -239,3 +239,5 @@ public class UserAccountsRepository(
         }
     }
 }
+
+

@@ -1,4 +1,5 @@
-﻿using Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs;
+﻿using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Subscription;
+using Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
 using Authenticator.API.Core.Domain.MultiTenant.TenantProduct.DTOs;
 
@@ -27,3 +28,4 @@ namespace Authenticator.API.Core.Domain.MultiTenant.Subscriptions.DTOs
         public PlanDTO? Plan { get; set; }
     }
 }
+

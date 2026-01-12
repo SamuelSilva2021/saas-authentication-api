@@ -1,22 +1,13 @@
-using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
-using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups.Etities;
-using Authenticator.API.Core.Domain.AccessControl.Applications;
-using Authenticator.API.Core.Domain.AccessControl.Operations;
-using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
-using Authenticator.API.Core.Domain.AccessControl.Permissions;
-using Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
-using Authenticator.API.Core.Domain.AccessControl.Roles;
-using Authenticator.API.Core.Domain.AccessControl.Roles.Entities;
-using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
-using Authenticator.API.Core.Domain.MultiTenant.Tenant;
-using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
-using Authenticator.API.Core.Domain.MultiTenant.Plan;
-using Authenticator.API.Core.Domain.MultiTenant.TenantProduct;
+﻿using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Tenant;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Subscription;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Plan;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.TenantProduct;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Authenticator.API.Infrastructure.Data.Interfaces;
-using Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
+using OpaMenu.Infrastructure.Shared.Interfaces;
 
 namespace Authenticator.API.Infrastructure.Data.Context;
 
@@ -28,13 +19,13 @@ public class AccessControlDbContext : DbContext
 {
     private readonly ITenantContext _tenantContext;
 
-    // Construtor utilizado pelos testes e cenários sem injeção de ITenantContext
+    // Construtor utilizado pelos testes e cenÃ¡rios sem injeÃ§Ã£o de ITenantContext
     public AccessControlDbContext(DbContextOptions<AccessControlDbContext> options) : base(options)
     {
         _tenantContext = new DefaultTenantContext();
     }
 
-    // Construtor utilizado em execução normal com ITenantContext resolvido pelo DI
+    // Construtor utilizado em execuÃ§Ã£o normal com ITenantContext resolvido pelo DI
     public AccessControlDbContext(DbContextOptions<AccessControlDbContext> options, ITenantContext tenantContext) : base(options)
     {
         _tenantContext = tenantContext;
@@ -300,7 +291,7 @@ public class AccessControlDbContext : DbContext
         {
             entity.ToTable("permission");
             entity.HasKey(e => e.Id);
-            // Índices ajustados: relação Permission↔Role agora é exclusiva via RolePermission (N:N)
+            // Ãndices ajustados: relaÃ§Ã£o Permissionâ†”Role agora Ã© exclusiva via RolePermission (N:N)
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.ModuleId).HasColumnName("module_id");
@@ -427,3 +418,5 @@ public class AccessControlDbContext : DbContext
         );
     }
 }
+
+

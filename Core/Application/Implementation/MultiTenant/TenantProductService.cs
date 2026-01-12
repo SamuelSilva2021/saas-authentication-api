@@ -1,7 +1,7 @@
-using Authenticator.API.Core.Application.Interfaces.MultiTenant;
+﻿using Authenticator.API.Core.Application.Interfaces.MultiTenant;
 using Authenticator.API.Core.Domain.Api;
 using Authenticator.API.Core.Domain.Api.Commons;
-using Authenticator.API.Core.Domain.MultiTenant.TenantProduct;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.TenantProduct;
 using Authenticator.API.Core.Domain.MultiTenant.TenantProduct.DTOs;
 using AutoMapper;
 
@@ -36,7 +36,7 @@ public class TenantProductService(
         {
             var entity = await productRepository.GetByIdAsync(id);
             if (entity == null)
-                return StaticResponseBuilder<TenantProductDTO>.BuildError("Produto não encontrado.");
+                return StaticResponseBuilder<TenantProductDTO>.BuildError("Produto nÃ£o encontrado.");
 
             mapper.Map(dto, entity);
 
@@ -58,7 +58,7 @@ public class TenantProductService(
         {
             var entity = await productRepository.GetByIdAsync(id);
             if (entity == null)
-                return StaticResponseBuilder<bool>.BuildError("Produto não encontrado.");
+                return StaticResponseBuilder<bool>.BuildError("Produto nÃ£o encontrado.");
 
             await productRepository.DeleteAsync(entity);
 
@@ -75,7 +75,7 @@ public class TenantProductService(
     {
         var entity = await productRepository.GetByIdAsync(id);
         if (entity == null)
-            return StaticResponseBuilder<TenantProductDTO>.BuildError("Produto não encontrado.");
+            return StaticResponseBuilder<TenantProductDTO>.BuildError("Produto nÃ£o encontrado.");
 
         var resultDto = mapper.Map<TenantProductDTO>(entity);
         return StaticResponseBuilder<TenantProductDTO>.BuildOk(resultDto);
@@ -116,3 +116,4 @@ public class TenantProductService(
         
     }
 }
+

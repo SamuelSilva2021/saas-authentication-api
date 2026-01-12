@@ -1,10 +1,8 @@
 ﻿using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.Module;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs;
-using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Authenticator.API.Core.Domain.AccessControl.Modules.DTOs;
-using Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
-using Authenticator.API.Core.Domain.AccessControl.Roles;
 using Authenticator.API.Core.Domain.AccessControl.Roles.DTOs;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts.DTOs;
 using Authenticator.API.Core.Domain.Api;
@@ -101,3 +99,5 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Module
         }
     }
 }
+
+

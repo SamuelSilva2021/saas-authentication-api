@@ -1,4 +1,4 @@
-﻿using Authenticator.API.Core.Domain.AccessControl.Permissions;
+﻿using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 
 namespace Authenticator.API.Core.Application.Interfaces.AccessControl.Permissions
 {
@@ -6,3 +6,4 @@ namespace Authenticator.API.Core.Application.Interfaces.AccessControl.Permission
     {
     }
 }
+

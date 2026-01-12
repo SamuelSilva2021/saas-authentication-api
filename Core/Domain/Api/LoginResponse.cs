@@ -1,4 +1,4 @@
-using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
+﻿using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Subscription;
 
 namespace Authenticator.API.Core.Domain.Api;
 
@@ -13,7 +13,7 @@ public class LoginResponse
     public string AccessToken { get; set; } = string.Empty;
 
     /// <summary>
-    /// Token de renovação
+    /// Token de renovaÃ§Ã£o
     /// </summary>
     public string RefreshToken { get; set; } = string.Empty;
 
@@ -23,7 +23,7 @@ public class LoginResponse
     public string TokenType { get; set; } = "Bearer";
 
     /// <summary>
-    /// Tempo de expiração do token em segundos
+    /// Tempo de expiraÃ§Ã£o do token em segundos
     /// </summary>
     public int ExpiresIn { get; set; }
 
@@ -38,7 +38,7 @@ public class LoginResponse
     public ESubscriptionStatus SubscriptionStatus { get; set; }
 
     /// <summary>
-    /// Indica se é necessário realizar pagamento/assinatura
+    /// Indica se Ã© necessÃ¡rio realizar pagamento/assinatura
     /// </summary>
     public bool RequiresPayment { get; set; }
 }

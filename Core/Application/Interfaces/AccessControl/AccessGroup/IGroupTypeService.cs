@@ -1,29 +1,29 @@
-using Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs;
-using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
+ï»¿using Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroups.DTOs;
 using Authenticator.API.Core.Domain.Api;
 
 namespace Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGroup
 {
     /// <summary>
-    /// Interface para o serviço de tipos de grupo
+    /// Interface para o serviÃ§o de tipos de grupo
     /// </summary>
     public interface IGroupTypeService
     {
         /// <summary>
-        /// Obtém todos os tipos de grupo
+        /// ObtÃ©m todos os tipos de grupo
         /// </summary>
         /// <returns></returns>
         Task<ResponseDTO<IEnumerable<GroupTypeDTO>>> GetAllAsync();
         /// <summary>
-        /// Obtém tipos de grupo paginados
+        /// ObtÃ©m tipos de grupo paginados
         /// </summary>
         /// <param name="page"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
         Task<ResponseDTO<PagedResponseDTO<GroupTypeDTO>>> GetPagedAsync(int page, int limit);
         /// <summary>
-        /// Obtém um tipo de grupo pelo ID
+        /// ObtÃ©m um tipo de grupo pelo ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -49,3 +49,4 @@ namespace Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGrou
         Task<ResponseDTO<bool>> DeleteAsync(Guid id);
     }
 }
+

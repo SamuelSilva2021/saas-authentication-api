@@ -1,18 +1,15 @@
+﻿using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts.Enum;
 using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGroup;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.AccountAccessGroups;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.RoleAccessGroups;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.Roles;
 using Authenticator.API.Core.Application.Interfaces.MultiTenant;
-using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
-using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups.Etities;
-using Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
-using Authenticator.API.Core.Domain.AccessControl.Roles;
-using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
-using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts;
 using Authenticator.API.Core.Domain.Api;
-using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
-using Authenticator.API.Core.Domain.MultiTenant.Tenant;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Subscription;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Tenant;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
 using AutoMapper;
 using System.Text.RegularExpressions;
@@ -20,7 +17,7 @@ using System.Text.RegularExpressions;
 namespace Authenticator.API.Core.Application.Implementation.MultiTenant
 {
     /// <summary>
-    /// Serviço para gerenciamento de tenants (empresas)
+    /// ServiÃ§o para gerenciamento de tenants (empresas)
     /// </summary>
     /// <param name="tenantRepository"></param>
     /// <param name="mapper"></param>
@@ -60,7 +57,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
         private readonly IGroupTypeRepository _groupTypeRepository = groupTypeRepository;
 
         /// <summary>
-        /// Adiciona um novo tenant e cria o usuário administrador associado
+        /// Adiciona um novo tenant e cria o usuÃ¡rio administrador associado
         /// </summary>
         /// <param name="tenant"></param>
         /// <returns></returns>
@@ -71,12 +68,12 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                 var existingUser = await _userAccountsRepository.GetByEmailAsync(tenant.Email);
                 if (existingUser != null)
                     return ResponseBuilder<RegisterTenantResponseDTO>
-                        .Fail(new ErrorDTO { Message = "Email já está em uso." }).WithCode(400).Build();
+                        .Fail(new ErrorDTO { Message = "Email jÃ¡ estÃ¡ em uso." }).WithCode(400).Build();
 
                 var existingDocument = await _tenantRepository.GetByDocumentAsync(tenant.Document!);
                 if (existingDocument != null)
                     return ResponseBuilder<RegisterTenantResponseDTO>
-                        .Fail(new ErrorDTO { Message = "CNPJ/CPF já está em uso." }).WithCode(400).Build();
+                        .Fail(new ErrorDTO { Message = "CNPJ/CPF jÃ¡ estÃ¡ em uso." }).WithCode(400).Build();
 
                 
                 var tenantEntity = _mapper.Map<TenantEntity>(tenant);
@@ -96,7 +93,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                 var tenantDTO = _mapper.Map<TenantDTO>(createdTenant);
                 _logger.LogInformation("Tenant criado com sucesso: {TenantId}", createdTenant.Id);
 
-                // 2. Criar o Usuário Administrador
+                // 2. Criar o UsuÃ¡rio Administrador
                 var passwordHash = BCrypt.Net.BCrypt.HashPassword(tenant.Password);
                 var userName = await GenerateUniqueUsernameAsync(tenant.Email);
 
@@ -114,9 +111,9 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                     IsEmailVerified = false
                 };
                 await _userAccountsRepository.AddAsync(adminUser);
-                _logger.LogInformation("Usuário administrador criado com sucesso: {UserId}", adminUser.Id);
+                _logger.LogInformation("UsuÃ¡rio administrador criado com sucesso: {UserId}", adminUser.Id);
 
-                // 3. Configurar Permissões (Roles e AccessGroups)
+                // 3. Configurar PermissÃµes (Roles e AccessGroups)
                 try 
                 {
                     // Buscar GroupType "Tenant"
@@ -160,7 +157,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                     };
                     await _roleAccessGroupRepository.AddAsync(roleGroup);
 
-                    // Vincular Usuário ao Grupo
+                    // Vincular UsuÃ¡rio ao Grupo
                     var userGroup = new AccountAccessGroupEntity
                     {
                         Id = Guid.NewGuid(),
@@ -172,12 +169,12 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                     };
                     await _accountAccessGroupRepository.AddAsync(userGroup);
 
-                    _logger.LogInformation("Permissões de administrador configuradas para o usuário: {UserId}", adminUser.Id);
+                    _logger.LogInformation("PermissÃµes de administrador configuradas para o usuÃ¡rio: {UserId}", adminUser.Id);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Erro ao configurar permissões iniciais para o tenant {TenantId}", createdTenant.Id);
-                    //Fazer rollback das operações anteriores
+                    _logger.LogError(ex, "Erro ao configurar permissÃµes iniciais para o tenant {TenantId}", createdTenant.Id);
+                    //Fazer rollback das operaÃ§Ãµes anteriores
                 }
 
                 var accessToken = _jwtTokenService.GenerateAccessToken(adminUser, createdTenant, new List<string> { "Admin" });
@@ -202,7 +199,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
                     RefreshToken = refreshToken,
                     ExpiresIn = expiresIn,
                     CreatedAt = createdTenant.CreatedAt,
-                    Message = "Empresa e usuário administrador criados com sucesso!"
+                    Message = "Empresa e usuÃ¡rio administrador criados com sucesso!"
                 };
 
                 return ResponseBuilder<RegisterTenantResponseDTO>.Ok(dto).WithCode(201).Build();
@@ -216,7 +213,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
         }
 
         /// <summary>
-        /// Gera um nome de usuário único baseado no email
+        /// Gera um nome de usuÃ¡rio Ãºnico baseado no email
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
@@ -236,7 +233,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
         }
 
         /// <summary>
-        /// Gera um slug único para o tenant baseado no nome da empresa
+        /// Gera um slug Ãºnico para o tenant baseado no nome da empresa
         /// </summary>
         private async Task<string> GenerateUniqueSlugAsync(string companyName)
         {
@@ -249,7 +246,7 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
             var originalSlug = slug;
             var counter = 1;
 
-            // Verificar se o slug já existe
+            // Verificar se o slug jÃ¡ existe
             while (await _tenantRepository.ExistingSlug(slug))
             {
                 slug = $"{originalSlug}_{counter}";
@@ -260,3 +257,6 @@ namespace Authenticator.API.Core.Application.Implementation.MultiTenant
         }
     }
 }
+
+
+

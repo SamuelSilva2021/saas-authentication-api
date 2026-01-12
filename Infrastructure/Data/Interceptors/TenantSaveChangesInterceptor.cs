@@ -1,11 +1,11 @@
-using Authenticator.API.Infrastructure.Data.Interfaces;
+﻿using OpaMenu.Infrastructure.Shared.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Authenticator.API.Infrastructure.Data.Interceptors
 {
     /// <summary>
-    /// Interceptor para garantir que operações de escrita respeitem o TenantId do contexto
+    /// Interceptor para garantir que operaÃ§Ãµes de escrita respeitem o TenantId do contexto
     /// </summary>
     public class TenantSaveChangesInterceptor : SaveChangesInterceptor
     {
@@ -44,7 +44,7 @@ namespace Authenticator.API.Infrastructure.Data.Interceptors
                 if (tenantProp == null)
                     continue;
 
-                // Em criação, define o TenantId se não informado
+                // Em criaÃ§Ã£o, define o TenantId se nÃ£o informado
                 if (entry.State == EntityState.Added)
                 {
                     if (tenantProp.CurrentValue is null || (tenantProp.CurrentValue is Guid g && g == Guid.Empty))
@@ -57,12 +57,12 @@ namespace Authenticator.API.Infrastructure.Data.Interceptors
                     }
                 }
 
-                // Em atualização, impede alteração cross-tenant
+                // Em atualizaÃ§Ã£o, impede alteraÃ§Ã£o cross-tenant
                 if (entry.State == EntityState.Modified)
                 {
                     if (tenantProp.CurrentValue is Guid current && current != tenantId)
                     {
-                        throw new InvalidOperationException("Operação de atualização cross-tenant não permitida");
+                        throw new InvalidOperationException("OperaÃ§Ã£o de atualizaÃ§Ã£o cross-tenant nÃ£o permitida");
                     }
                 }
             }

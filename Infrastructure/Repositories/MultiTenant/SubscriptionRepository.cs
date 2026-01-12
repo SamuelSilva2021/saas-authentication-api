@@ -1,6 +1,6 @@
-using Authenticator.API.Core.Application.Interfaces;
+﻿using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Application.Interfaces.MultiTenant;
-using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Subscription;
 
 namespace Authenticator.API.Infrastructure.Repositories.MultiTenant
 {
@@ -17,3 +17,4 @@ namespace Authenticator.API.Infrastructure.Repositories.MultiTenant
         }
     }
 }
+

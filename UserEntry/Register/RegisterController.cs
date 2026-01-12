@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using Authenticator.API.Core.Domain.Api;
 using Authenticator.API.Core.Application.Interfaces;
-using Authenticator.API.Core.Domain.MultiTenant.Tenant;
-using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Tenant;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts;
 using Authenticator.API.Infrastructure.Data;
 using Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
 using Authenticator.API.Core.Application.Interfaces.MultiTenant;
@@ -34,10 +34,10 @@ public class RegisterController(
     private readonly ILogger<RegisterController> _logger = logger;
 
     /// <summary>
-    /// Registra um novo tenant (cliente/empresa) com usuário administrador
+    /// Registra um novo tenant (cliente/empresa) com usuÃ¡rio administrador
     /// </summary>
-    /// <param name="request">Dados do tenant e usuário administrador</param>
-    /// <returns>Informações do tenant criado com tokens de autenticação</returns>
+    /// <param name="request">Dados do tenant e usuÃ¡rio administrador</param>
+    /// <returns>InformaÃ§Ãµes do tenant criado com tokens de autenticaÃ§Ã£o</returns>
     [HttpPost]
     public async Task<ActionResult<ResponseDTO<RegisterTenantResponseDTO>>> Register([FromBody] CreateTenantDTO request)
     {
@@ -45,3 +45,4 @@ public class RegisterController(
         return StatusCode(response.Code, response);
     }
 }
+

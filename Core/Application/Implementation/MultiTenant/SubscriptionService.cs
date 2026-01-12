@@ -1,11 +1,11 @@
-using Authenticator.API.Core.Application.Interfaces.Auth;
+﻿using Authenticator.API.Core.Application.Interfaces.Auth;
 using Authenticator.API.Core.Application.Interfaces.MultiTenant;
 using Authenticator.API.Core.Application.Interfaces.Payment;
 using Authenticator.API.Core.Domain.Api;
 using Authenticator.API.Core.Domain.Api.Commons;
-using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Subscription;
 using Authenticator.API.Core.Domain.MultiTenant.Subscriptions.DTOs;
-using Authenticator.API.Core.Domain.MultiTenant.Tenant; // For ETenantStatus if needed
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Tenant; // For ETenantStatus if needed
 using AutoMapper;
 
 namespace Authenticator.API.Core.Application.Implementation.MultiTenant;
@@ -27,7 +27,7 @@ public class SubscriptionService(
             var tenantId = userContext.CurrentUser?.TenantId;
             if (tenantId == null || tenantId == Guid.Empty)
             {
-                return StaticResponseBuilder<string>.BuildError("Tenant não identificado no contexto do usuário");
+                return StaticResponseBuilder<string>.BuildError("Tenant nÃ£o identificado no contexto do usuÃ¡rio");
             }
 
             var subscription = await subscriptionRepository.GetByTenantIdAsync(tenantId.Value);
@@ -54,7 +54,7 @@ public class SubscriptionService(
             var plan = await planRepository.GetByIdAsync(planId);
             if (plan == null)
             {
-                return StaticResponseBuilder<string>.BuildError("Plano não encontrado");
+                return StaticResponseBuilder<string>.BuildError("Plano nÃ£o encontrado");
             }
 
             var checkoutUrl = await paymentGatewayService.CreateCheckoutSessionAsync(
@@ -68,8 +68,8 @@ public class SubscriptionService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Erro ao criar sessão de checkout");
-            return StaticResponseBuilder<string>.BuildError("Erro interno ao criar sessão de checkout");
+            logger.LogError(ex, "Erro ao criar sessÃ£o de checkout");
+            return StaticResponseBuilder<string>.BuildError("Erro interno ao criar sessÃ£o de checkout");
         }
     }
 
@@ -79,7 +79,7 @@ public class SubscriptionService(
         {
             var tenantId = userContext.CurrentUser?.TenantId;
             if (tenantId == null || tenantId == Guid.Empty)
-                StaticResponseBuilder<string>.BuildError("Tenant não identificado no contexto do usuário");
+                StaticResponseBuilder<string>.BuildError("Tenant nÃ£o identificado no contexto do usuÃ¡rio");
 
             var subscription = await subscriptionRepository.GetByTenantIdAsync(tenantId.Value);
 
@@ -118,7 +118,7 @@ public class SubscriptionService(
             }
 
             if (subscription.TrialEndsAt == null || subscription.TrialEndsAt < DateTime.UtcNow)
-                return StaticResponseBuilder<string>.BuildError("Plano selecionado não é elegível para trial");
+                return StaticResponseBuilder<string>.BuildError("Plano selecionado nÃ£o Ã© elegÃ­vel para trial");
 
             // Ativar Tenant
             var tenant = await tenantRepository.GetByIdAsync(tenantId.Value);
@@ -141,7 +141,7 @@ public class SubscriptionService(
     {
         var tenantId = userContext.CurrentUser?.TenantId;
         if (tenantId == null || tenantId == Guid.Empty)
-            return StaticResponseBuilder<SubscriptionDTO>.BuildError("Tenant não identificado no contexto do usuário");
+            return StaticResponseBuilder<SubscriptionDTO>.BuildError("Tenant nÃ£o identificado no contexto do usuÃ¡rio");
 
         var subscription = await subscriptionRepository.GetByTenantIdAsync(tenantId.Value);
         if (subscription == null)
@@ -212,3 +212,4 @@ public class SubscriptionService(
         }
     }
 }
+

@@ -1,7 +1,7 @@
-using Authenticator.API.Core.Application.Interfaces;
+﻿using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.UserAccounts;
 using Authenticator.API.Core.Application.Interfaces.Auth;
-using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts.DTOs;
 using Authenticator.API.Core.Domain.Api;
 using AutoMapper;
@@ -9,7 +9,7 @@ using AutoMapper;
 namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAccounts
 {
     /// <summary>
-    /// Serviço para gerenciamento de contas de usuário
+    /// ServiÃ§o para gerenciamento de contas de usuÃ¡rio
     /// </summary>
     public class UserAccountService(
         IUserAccountsRepository userRepository,
@@ -37,7 +37,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
                 if (!tenantId.HasValue)
                 {
                     return ResponseBuilder<PagedResponseDTO<UserAccountDTO>>
-                        .Fail(new ErrorDTO { Message = "Tenant não identificado" })
+                        .Fail(new ErrorDTO { Message = "Tenant nÃ£o identificado" })
                         .WithCode(400)
                         .Build();
                 }
@@ -60,7 +60,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao listar usuários paginados");
+                _logger.LogError(ex, "Erro ao listar usuÃ¡rios paginados");
                 return ResponseBuilder<PagedResponseDTO<UserAccountDTO>>
                     .Fail(new ErrorDTO { Message = ex.Message })
                     .WithException(ex)
@@ -77,7 +77,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
                 if (!tenantId.HasValue)
                 {
                     return ResponseBuilder<IEnumerable<UserAccountDTO>>
-                        .Fail(new ErrorDTO { Message = "Tenant não identificado" })
+                        .Fail(new ErrorDTO { Message = "Tenant nÃ£o identificado" })
                         .WithCode(400)
                         .Build();
                 }
@@ -88,7 +88,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao listar usuários ativos");
+                _logger.LogError(ex, "Erro ao listar usuÃ¡rios ativos");
                 return ResponseBuilder<IEnumerable<UserAccountDTO>>
                     .Fail(new ErrorDTO { Message = ex.Message })
                     .WithException(ex)
@@ -106,7 +106,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
                 if (user == null || (tenantId.HasValue && user.TenantId != tenantId))
                 {
                     return ResponseBuilder<UserAccountDTO>
-                        .Fail(new ErrorDTO { Message = "Usuário não encontrado" })
+                        .Fail(new ErrorDTO { Message = "UsuÃ¡rio nÃ£o encontrado" })
                         .WithCode(404)
                         .Build();
                 }
@@ -116,7 +116,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao obter usuário por ID");
+                _logger.LogError(ex, "Erro ao obter usuÃ¡rio por ID");
                 return ResponseBuilder<UserAccountDTO>
                     .Fail(new ErrorDTO { Message = ex.Message })
                     .WithException(ex)
@@ -132,7 +132,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
                 if (await _userRepository.EmailExistsAsync(dto.Email))
                 {
                     return ResponseBuilder<UserAccountDTO>
-                        .Fail(new ErrorDTO { Message = "Email já está em uso" })
+                        .Fail(new ErrorDTO { Message = "Email jÃ¡ estÃ¡ em uso" })
                         .WithCode(400)
                         .Build();
                 }
@@ -162,7 +162,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao criar usuário");
+                _logger.LogError(ex, "Erro ao criar usuÃ¡rio");
                 return ResponseBuilder<UserAccountDTO>
                     .Fail(new ErrorDTO { Message = ex.Message })
                     .WithException(ex)
@@ -183,7 +183,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
                     if (emailExists)
                     {
                         return ResponseBuilder<UserAccountDTO>
-                            .Fail(new ErrorDTO { Message = "Email já está em uso" })
+                            .Fail(new ErrorDTO { Message = "Email jÃ¡ estÃ¡ em uso" })
                             .WithCode(400)
                             .Build();
                     }
@@ -195,7 +195,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
                     if (usernameExists)
                     {
                         return ResponseBuilder<UserAccountDTO>
-                            .Fail(new ErrorDTO { Message = "Username já está em uso" })
+                            .Fail(new ErrorDTO { Message = "Username jÃ¡ estÃ¡ em uso" })
                             .WithCode(400)
                             .Build();
                     }
@@ -212,7 +212,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao atualizar usuário");
+                _logger.LogError(ex, "Erro ao atualizar usuÃ¡rio");
                 return ResponseBuilder<UserAccountDTO>
                     .Fail(new ErrorDTO { Message = ex.Message })
                     .WithException(ex)
@@ -230,7 +230,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
                 if (existing == null || (tenantId.HasValue && existing.TenantId != tenantId))
                 {
                     return ResponseBuilder<bool>
-                        .Fail(new ErrorDTO { Message = "Usuário não encontrado" })
+                        .Fail(new ErrorDTO { Message = "UsuÃ¡rio nÃ£o encontrado" })
                         .WithCode(404)
                         .Build();
                 }
@@ -240,7 +240,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao deletar usuário");
+                _logger.LogError(ex, "Erro ao deletar usuÃ¡rio");
                 return ResponseBuilder<bool>
                     .Fail(new ErrorDTO { Message = ex.Message })
                     .WithException(ex)
@@ -257,7 +257,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
         //        if (!currentUserId.HasValue)
         //        {
         //            return ResponseBuilder<bool>
-        //                .Fail(new ErrorDTO { Message = "Usuário não autenticado" })
+        //                .Fail(new ErrorDTO { Message = "UsuÃ¡rio nÃ£o autenticado" })
         //                .WithCode(401)
         //                .Build();
         //        }
@@ -266,7 +266,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
         //        if (user == null)
         //        {
         //            return ResponseBuilder<bool>
-        //                .Fail(new ErrorDTO { Message = "Usuário não encontrado" })
+        //                .Fail(new ErrorDTO { Message = "UsuÃ¡rio nÃ£o encontrado" })
         //                .WithCode(404)
         //                .Build();
         //        }
@@ -275,7 +275,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
         //        if (!isValid)
         //        {
         //            return ResponseBuilder<bool>
-        //                .Fail(new ErrorDTO { Message = "Senha atual inválida" })
+        //                .Fail(new ErrorDTO { Message = "Senha atual invÃ¡lida" })
         //                .WithCode(400)
         //                .Build();
         //        }
@@ -332,7 +332,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.UserAc
                 if (user == null)
                 {
                     return ResponseBuilder<bool>
-                        .Fail(new ErrorDTO { Message = "Token de reset inválido ou expirado" })
+                        .Fail(new ErrorDTO { Message = "Token de reset invÃ¡lido ou expirado" })
                         .WithCode(400)
                         .Build();
                 }

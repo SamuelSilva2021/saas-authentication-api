@@ -1,5 +1,5 @@
 ﻿using Authenticator.API.Core.Domain.AccessControl.Modules.DTOs;
-using Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 
 namespace Authenticator.API.Core.Domain.AccessControl.Roles.DTOs
 {
@@ -10,3 +10,4 @@ namespace Authenticator.API.Core.Domain.AccessControl.Roles.DTOs
         public List<ModuleBasicDTO> Modules { get; set; } = new();
     }
 }
+

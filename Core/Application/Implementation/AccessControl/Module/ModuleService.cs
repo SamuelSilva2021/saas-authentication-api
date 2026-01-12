@@ -1,9 +1,8 @@
 ﻿using Authenticator.API.Core.Application.Interfaces.AccessControl.Module;
 using Authenticator.API.Core.Application.Interfaces.Auth;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs;
-using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Authenticator.API.Core.Domain.AccessControl.Modules.DTOs;
-using Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
 using Authenticator.API.Core.Domain.Api;
 using AutoMapper;
 
@@ -206,3 +205,4 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Module
         }
     }
 }
+

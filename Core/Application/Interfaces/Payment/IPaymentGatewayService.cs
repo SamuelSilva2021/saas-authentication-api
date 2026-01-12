@@ -1,5 +1,5 @@
-using Authenticator.API.Core.Domain.Api;
-using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
+﻿using Authenticator.API.Core.Domain.Api;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Subscription;
 
 namespace Authenticator.API.Core.Application.Interfaces.Payment
 {
@@ -9,3 +9,4 @@ namespace Authenticator.API.Core.Application.Interfaces.Payment
         Task<bool> VerifyPaymentAsync(string sessionId);
     }
 }
+

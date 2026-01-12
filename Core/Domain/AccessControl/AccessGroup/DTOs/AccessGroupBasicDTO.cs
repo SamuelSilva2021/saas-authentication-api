@@ -1,4 +1,4 @@
-﻿using Authenticator.API.Core.Domain.AccessControl.Roles;
+﻿using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Authenticator.API.Core.Domain.AccessControl.Roles.DTOs;
 
 namespace Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs
@@ -10,3 +10,4 @@ namespace Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs
         public List<RolesBasicDTO> Roles { get; set; } = new();
     }
 }
+

@@ -1,4 +1,4 @@
-﻿using Authenticator.API.Infrastructure.Data.Interfaces;
+﻿using OpaMenu.Infrastructure.Shared.Interfaces;
 
 namespace Authenticator.API.Infrastructure.Data.Context
 {
@@ -14,3 +14,4 @@ namespace Authenticator.API.Infrastructure.Data.Context
         public void SetTenant(Guid? tenantId, string? tenantSlug, string? tenantName) { }
     }
 }
+

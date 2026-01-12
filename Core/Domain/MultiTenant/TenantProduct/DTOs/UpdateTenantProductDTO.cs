@@ -1,3 +1,5 @@
+﻿using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.TenantProduct;
+using OpaMenu.Infrastructure.Shared.Enums.MultiTenant;
 using System.ComponentModel.DataAnnotations;
 
 namespace Authenticator.API.Core.Domain.MultiTenant.TenantProduct.DTOs
@@ -12,8 +14,7 @@ namespace Authenticator.API.Core.Domain.MultiTenant.TenantProduct.DTOs
 
         public string? Description { get; set; }
 
-        [MaxLength(100)]
-        public string? Category { get; set; }
+        public ETenantProductCategory Category { get; set; }
 
         [MaxLength(20)]
         public string? Version { get; set; }
@@ -22,8 +23,7 @@ namespace Authenticator.API.Core.Domain.MultiTenant.TenantProduct.DTOs
 
         public string? ConfigurationSchema { get; set; }
 
-        [MaxLength(50)]
-        public string? PricingModel { get; set; }
+        public ETenantProductPricingModel PricingModel { get; set; }
 
         [Range(0, double.MaxValue)]
         public decimal? BasePrice { get; set; }
@@ -32,3 +32,4 @@ namespace Authenticator.API.Core.Domain.MultiTenant.TenantProduct.DTOs
         public decimal? SetupFee { get; set; }
     }
 }
+

@@ -1,6 +1,6 @@
-using Authenticator.API.Core.Application.Interfaces;
+﻿using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.AccountAccessGroups;
-using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups.Etities;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Authenticator.API.Infrastructure.Data.Context;
 using Authenticator.API.Infrastructure.Providers;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Authenticator.API.Infrastructure.Repositories.AccessControl.AccountAccessGroups
 {
     /// <summary>
-    /// Repositório para vínculos de grupos de acesso com usuários
+    /// RepositÃ³rio para vÃ­nculos de grupos de acesso com usuÃ¡rios
     /// </summary>
     public class AccountAccessGroupRepository : BaseRepository<AccountAccessGroupEntity>, IAccountAccessGroupRepository
     {

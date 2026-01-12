@@ -1,24 +1,24 @@
-using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups.Etities;
+﻿using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 
 namespace Authenticator.API.Core.Application.Interfaces.AccessControl.AccountAccessGroups
 {
     /// <summary>
-    /// Repositório para gerenciar vínculos de grupos de acesso com contas de usuário
+    /// RepositÃ³rio para gerenciar vÃ­nculos de grupos de acesso com contas de usuÃ¡rio
     /// </summary>
     public interface IAccountAccessGroupRepository : IBaseRepository<AccountAccessGroupEntity>
     {
         /// <summary>
-        /// Lista vínculos ativos de grupos de acesso de um usuário
+        /// Lista vÃ­nculos ativos de grupos de acesso de um usuÃ¡rio
         /// </summary>
         Task<IEnumerable<AccountAccessGroupEntity>> GetByUserAsync(Guid userId);
 
         /// <summary>
-        /// Atribui (ou reativa) grupos de acesso a um usuário
+        /// Atribui (ou reativa) grupos de acesso a um usuÃ¡rio
         /// </summary>
         Task AssignGroupsAsync(Guid userId, IEnumerable<Guid> accessGroupIds, Guid? grantedBy, DateTime? expiresAt);
 
         /// <summary>
-        /// Revoga (desativa) um vínculo de grupo de acesso de um usuário
+        /// Revoga (desativa) um vÃ­nculo de grupo de acesso de um usuÃ¡rio
         /// </summary>
         Task<bool> RevokeAsync(Guid userId, Guid accessGroupId);
     }

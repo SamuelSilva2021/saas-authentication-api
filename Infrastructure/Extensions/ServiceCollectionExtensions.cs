@@ -1,10 +1,10 @@
-using Authenticator.API.Core.Application.Implementation;
+﻿using Authenticator.API.Core.Application.Implementation;
 using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Domain.Api;
 using Authenticator.API.Infrastructure.Configurations;
 using Authenticator.API.Infrastructure.Data;
 using Authenticator.API.Infrastructure.Data.Context;
-using Authenticator.API.Infrastructure.Data.Interfaces;
+using OpaMenu.Infrastructure.Shared.Interfaces;
 using Authenticator.API.Infrastructure.Data.Interceptors;
 using Authenticator.API.Infrastructure.Providers;
 using Authenticator.API.Infrastructure.Repositories;
@@ -18,7 +18,7 @@ using System.Text;
 namespace Authenticator.API.Infrastructure.Extensions;
 
 /// <summary>
-/// Extensões para configuração de serviços
+/// ExtensÃµes para configuraÃ§Ã£o de serviÃ§os
 /// </summary>
 public static class ServiceCollectionExtensions
 {
@@ -36,7 +36,7 @@ public static class ServiceCollectionExtensions
             options.UseNpgsql(accessControlDataSource)
                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
-            // Interceptor para garantir isolamento de tenant nas operações de escrita
+            // Interceptor para garantir isolamento de tenant nas operaÃ§Ãµes de escrita
             var interceptor = sp.GetRequiredService<TenantSaveChangesInterceptor>();
             options.AddInterceptors(interceptor);
         });
@@ -53,14 +53,14 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Configura a autenticação JWT
+    /// Configura a autenticaÃ§Ã£o JWT
     /// </summary>
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtSettings = configuration.GetSection("JwtSettings");
         services.Configure<JwtSettings>(jwtSettings);
 
-        var key = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey não configurada"));
+        var key = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey nÃ£o configurada"));
 
         services.AddAuthentication(options =>
         {
@@ -86,14 +86,14 @@ public static class ServiceCollectionExtensions
                 OnAuthenticationFailed = context =>
                 {
                     var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                    logger.LogWarning("Falha na autenticação JWT: {Error}", context.Exception.Message);
+                    logger.LogWarning("Falha na autenticaÃ§Ã£o JWT: {Error}", context.Exception.Message);
                     return Task.CompletedTask;
                 },
                 OnTokenValidated = context =>
                 {
                     var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
                     var userId = context.Principal?.Identity?.Name;
-                    logger.LogInformation("Token JWT validado para usuário: {UserId}", userId);
+                    logger.LogInformation("Token JWT validado para usuÃ¡rio: {UserId}", userId);
                     return Task.CompletedTask;
                 }
             };
@@ -103,7 +103,7 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Configura os serviços de aplicação
+    /// Configura os serviÃ§os de aplicaÃ§Ã£o
     /// </summary>
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
@@ -111,7 +111,7 @@ public static class ServiceCollectionExtensions
         services.AddAutoMapperConfig();
         services.AddMemoryCache();
 
-        // Contexto de Tenant por escopo de requisição
+        // Contexto de Tenant por escopo de requisiÃ§Ã£o
         services.AddScoped<ITenantContext, TenantContext>();
 
         // Interceptor de escrita por tenant
@@ -134,7 +134,7 @@ public static class ServiceCollectionExtensions
             {
                 Title = "Authentication API",
                 Version = "1.0.0",
-                Description = "API de autenticação e autorização com JWT e RBAC para o ecossistema Opa Menu",
+                Description = "API de autenticaÃ§Ã£o e autorizaÃ§Ã£o com JWT e RBAC para o ecossistema Opa Menu",
                 Contact = new OpenApiContact
                 {
                     Name = "Equipe Opa Menu",
@@ -143,13 +143,13 @@ public static class ServiceCollectionExtensions
                 },
                 License = new OpenApiLicense
                 {
-                    Name = "Proprietário",
+                    Name = "ProprietÃ¡rio",
                     Url = new Uri("https://opamenu.com/licenca")
                 },
                 TermsOfService = new Uri("https://opamenu.com/termos")
             });
 
-            // Configuração para autenticação JWT no Swagger
+            // ConfiguraÃ§Ã£o para autenticaÃ§Ã£o JWT no Swagger
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Name = "Authorization",
@@ -157,10 +157,10 @@ public static class ServiceCollectionExtensions
                 Scheme = "Bearer",
                 BearerFormat = "JWT",
                 In = ParameterLocation.Header,
-                Description = @"Autenticação JWT usando o esquema Bearer.
+                Description = @"AutenticaÃ§Ã£o JWT usando o esquema Bearer.
                 
                     **Como usar:**
-                    1. Faça login no endpoint `/api/auth/login`
+                    1. FaÃ§a login no endpoint `/api/auth/login`
                     2. Copie o `accessToken` da resposta
                     3. Cole o token no campo abaixo (apenas o token, sem 'Bearer ')
                     4. Clique em 'Authorize' e teste os endpoints protegidos
@@ -184,7 +184,7 @@ public static class ServiceCollectionExtensions
                 }
             });
 
-            // Inclui comentários XML na documentação
+            // Inclui comentÃ¡rios XML na documentaÃ§Ã£o
             var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             if (File.Exists(xmlPath))

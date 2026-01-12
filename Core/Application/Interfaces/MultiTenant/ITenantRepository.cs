@@ -1,4 +1,4 @@
-﻿using Authenticator.API.Core.Domain.MultiTenant.Tenant;
+﻿using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Tenant;
 
 namespace Authenticator.API.Core.Application.Interfaces.MultiTenant
 {
@@ -21,3 +21,4 @@ namespace Authenticator.API.Core.Application.Interfaces.MultiTenant
         Task<bool> ExistingSlug(string slug);
     }
 }
+

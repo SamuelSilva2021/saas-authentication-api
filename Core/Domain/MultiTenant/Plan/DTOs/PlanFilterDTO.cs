@@ -1,3 +1,4 @@
+﻿using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Plan;
 namespace Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs
 {
     public class PlanFilterDTO
@@ -19,3 +20,4 @@ namespace Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs
         public bool SortDescending { get; set; } = false;
     }
 }
+

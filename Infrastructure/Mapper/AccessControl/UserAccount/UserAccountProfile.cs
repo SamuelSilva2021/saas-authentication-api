@@ -1,6 +1,6 @@
-﻿using Authenticator.API.Core.Domain.AccessControl.UserAccounts.DTOs;
-using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
-using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
+﻿using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts.Enum;
+using Authenticator.API.Core.Domain.AccessControl.UserAccounts.DTOs;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts;
 using AutoMapper;
 
 namespace Authenticator.API.Infrastructure.Mapper.AccessControl.UserAccount
@@ -71,3 +71,5 @@ namespace Authenticator.API.Infrastructure.Mapper.AccessControl.UserAccount
         }
     }
 }
+
+

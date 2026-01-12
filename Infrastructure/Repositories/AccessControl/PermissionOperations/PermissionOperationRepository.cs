@@ -1,12 +1,12 @@
-using Authenticator.API.Core.Application.Interfaces;
+﻿using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.PermissionOperations;
-using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Microsoft.EntityFrameworkCore;
 
 namespace Authenticator.API.Infrastructure.Repositories.AccessControl.PermissionOperations
 {
     /// <summary>
-    /// Repositório para relações Permissão-Operação
+    /// RepositÃ³rio para relaÃ§Ãµes PermissÃ£o-OperaÃ§Ã£o
     /// </summary>
     /// <param name="dbContextProvider"></param>
     /// <param name="logger"></param>
@@ -18,7 +18,7 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Permission
         private readonly ILogger<PermissionOperationRepository> _logger = logger;
 
         /// <summary>
-        /// Busca relações por ID da permissão
+        /// Busca relaÃ§Ãµes por ID da permissÃ£o
         /// </summary>
         /// <param name="permissionId"></param>
         /// <returns></returns>
@@ -35,13 +35,13 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Permission
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao buscar relações por permissão {PermissionId}", permissionId);
+                _logger.LogError(ex, "Erro ao buscar relaÃ§Ãµes por permissÃ£o {PermissionId}", permissionId);
                 throw;
             }
         }
 
         /// <summary>
-        /// Busca relações por ID da operação
+        /// Busca relaÃ§Ãµes por ID da operaÃ§Ã£o
         /// </summary>
         /// <param name="operationId"></param>
         /// <returns></returns>
@@ -58,13 +58,13 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Permission
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao buscar relações por operação {OperationId}", operationId);
+                _logger.LogError(ex, "Erro ao buscar relaÃ§Ãµes por operaÃ§Ã£o {OperationId}", operationId);
                 throw;
             }
         }
 
         /// <summary>
-        /// Busca uma relação específica entre permissão e operação
+        /// Busca uma relaÃ§Ã£o especÃ­fica entre permissÃ£o e operaÃ§Ã£o
         /// </summary>
         /// <param name="permissionId"></param>
         /// <param name="operationId"></param>
@@ -86,14 +86,14 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Permission
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao buscar relação entre permissão {PermissionId} e operação {OperationId}", 
+                _logger.LogError(ex, "Erro ao buscar relaÃ§Ã£o entre permissÃ£o {PermissionId} e operaÃ§Ã£o {OperationId}", 
                     permissionId, operationId);
                 throw;
             }
         }
 
         /// <summary>
-        /// Remove todas as relações de uma permissão (soft delete)
+        /// Remove todas as relaÃ§Ãµes de uma permissÃ£o (soft delete)
         /// </summary>
         /// <param name="permissionId"></param>
         /// <returns></returns>
@@ -117,13 +117,13 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Permission
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao remover todas as relações da permissão {PermissionId}", permissionId);
+                _logger.LogError(ex, "Erro ao remover todas as relaÃ§Ãµes da permissÃ£o {PermissionId}", permissionId);
                 throw;
             }
         }
 
         /// <summary>
-        /// Remove relações específicas (soft delete)
+        /// Remove relaÃ§Ãµes especÃ­ficas (soft delete)
         /// </summary>
         /// <param name="permissionId"></param>
         /// <param name="operationIds"></param>
@@ -149,7 +149,7 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Permission
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao remover relações específicas da permissão {PermissionId}", permissionId);
+                _logger.LogError(ex, "Erro ao remover relaÃ§Ãµes especÃ­ficas da permissÃ£o {PermissionId}", permissionId);
                 throw;
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Plan;
+using System.ComponentModel.DataAnnotations;
 
 namespace Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs
 {
@@ -32,3 +33,4 @@ namespace Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs
         public int? TrialPeriodDays { get; set; }
     }
 }
+

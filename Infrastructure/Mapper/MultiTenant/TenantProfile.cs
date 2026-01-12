@@ -1,5 +1,5 @@
 ﻿using Authenticator.API.Core.Domain.MultiTenant.Tenant.DTOs;
-using Authenticator.API.Core.Domain.MultiTenant.Tenant;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Tenant;
 using AutoMapper;
 
 namespace Authenticator.API.Infrastructure.Mapper.Tenant
@@ -38,3 +38,4 @@ namespace Authenticator.API.Infrastructure.Mapper.Tenant
         }
     }
 }
+

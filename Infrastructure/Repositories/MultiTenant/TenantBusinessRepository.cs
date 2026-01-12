@@ -1,6 +1,6 @@
-using Authenticator.API.Core.Application.Interfaces;
+﻿using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Application.Interfaces.MultiTenant;
-using Authenticator.API.Core.Domain.MultiTenant.Tenant;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Tenant;
 using Microsoft.EntityFrameworkCore;
 
 namespace Authenticator.API.Infrastructure.Repositories.MultiTenant
@@ -29,3 +29,4 @@ namespace Authenticator.API.Infrastructure.Repositories.MultiTenant
         }
     }
 }
+

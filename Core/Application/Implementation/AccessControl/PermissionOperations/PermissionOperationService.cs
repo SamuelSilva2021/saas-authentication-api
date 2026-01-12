@@ -1,7 +1,7 @@
-using Authenticator.API.Core.Application.Interfaces.AccessControl.PermissionOperations;
+﻿using Authenticator.API.Core.Application.Interfaces.AccessControl.PermissionOperations;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.Permissions;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.Operation;
-using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Authenticator.API.Core.Domain.AccessControl.PermissionOperations.DTOs;
 using Authenticator.API.Core.Domain.Api;
 using AutoMapper;
@@ -9,7 +9,7 @@ using AutoMapper;
 namespace Authenticator.API.Core.Application.Implementation.AccessControl.PermissionOperations
 {
     /// <summary>
-    /// Serviço para gerenciar relações Permissão-Operação
+    /// ServiÃ§o para gerenciar relaÃ§Ãµes PermissÃ£o-OperaÃ§Ã£o
     /// </summary>
     /// <param name="permissionOperationRepository"></param>
     /// <param name="permissionRepository"></param>
@@ -27,7 +27,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         private readonly IMapper _mapper = mapper;
 
         /// <summary>
-        /// Obtém todas as relações Permissão-Operação
+        /// ObtÃ©m todas as relaÃ§Ãµes PermissÃ£o-OperaÃ§Ã£o
         /// </summary>
         /// <returns></returns>
         public async Task<ResponseDTO<IEnumerable<PermissionOperationDTO>>> GetAllPermissionOperationsAsync()
@@ -49,7 +49,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Obtém relações por ID da permissão
+        /// ObtÃ©m relaÃ§Ãµes por ID da permissÃ£o
         /// </summary>
         /// <param name="permissionId"></param>
         /// <returns></returns>
@@ -72,7 +72,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Obtém relações por ID da operação
+        /// ObtÃ©m relaÃ§Ãµes por ID da operaÃ§Ã£o
         /// </summary>
         /// <param name="operationId"></param>
         /// <returns></returns>
@@ -95,7 +95,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Obtém uma relação específica entre permissão e operação
+        /// ObtÃ©m uma relaÃ§Ã£o especÃ­fica entre permissÃ£o e operaÃ§Ã£o
         /// </summary>
         /// <param name="permissionId"></param>
         /// <param name="operationId"></param>
@@ -108,7 +108,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
                 
                 if (entity == null)
                     return ResponseBuilder<PermissionOperationDTO>
-                        .Fail(new ErrorDTO { Message = "Relação Permissão-Operação não encontrada" })
+                        .Fail(new ErrorDTO { Message = "RelaÃ§Ã£o PermissÃ£o-OperaÃ§Ã£o nÃ£o encontrada" })
                         .WithCode(404)
                         .Build();
 
@@ -126,7 +126,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Cria uma nova relação Permissão-Operação
+        /// Cria uma nova relaÃ§Ã£o PermissÃ£o-OperaÃ§Ã£o
         /// </summary>
         /// <param name="permissionOperation"></param>
         /// <returns></returns>
@@ -134,29 +134,29 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         {
             try
             {
-                // Validar se a permissão existe
+                // Validar se a permissÃ£o existe
                 var permission = await _permissionRepository.GetByIdAsync(permissionOperation.PermissionId);
                 if (permission == null)
                     return ResponseBuilder<PermissionOperationDTO>
-                        .Fail(new ErrorDTO { Message = "Permissão não encontrada" })
+                        .Fail(new ErrorDTO { Message = "PermissÃ£o nÃ£o encontrada" })
                         .WithCode(404)
                         .Build();
 
-                // Validar se a operação existe
+                // Validar se a operaÃ§Ã£o existe
                 var operation = await _operationRepository.GetByIdAsync(permissionOperation.OperationId);
                 if (operation == null)
                     return ResponseBuilder<PermissionOperationDTO>
-                        .Fail(new ErrorDTO { Message = "Operação não encontrada" })
+                        .Fail(new ErrorDTO { Message = "OperaÃ§Ã£o nÃ£o encontrada" })
                         .WithCode(404)
                         .Build();
 
-                // Verificar se a relação já existe
+                // Verificar se a relaÃ§Ã£o jÃ¡ existe
                 var existingRelation = await _permissionOperationRepository.GetByPermissionAndOperationAsync(
                     permissionOperation.PermissionId, permissionOperation.OperationId);
                 
                 if (existingRelation != null)
                     return ResponseBuilder<PermissionOperationDTO>
-                        .Fail(new ErrorDTO { Message = "Relação já existe entre a permissão e operação" })
+                        .Fail(new ErrorDTO { Message = "RelaÃ§Ã£o jÃ¡ existe entre a permissÃ£o e operaÃ§Ã£o" })
                         .WithCode(409)
                         .Build();
 
@@ -179,7 +179,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Cria múltiplas relações Permissão-Operação
+        /// Cria mÃºltiplas relaÃ§Ãµes PermissÃ£o-OperaÃ§Ã£o
         /// </summary>
         /// <param name="permissionOperations"></param>
         /// <returns></returns>
@@ -189,27 +189,27 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
             {
                 var results = new List<PermissionOperationDTO>();
 
-                // Validar se a permissão existe
+                // Validar se a permissÃ£o existe
                 var permission = await _permissionRepository.GetByIdAsync(permissionOperations.PermissionId);
                 if (permission == null)
                     return ResponseBuilder<IEnumerable<PermissionOperationDTO>>
-                        .Fail(new ErrorDTO { Message = "Permissão não encontrada" })
+                        .Fail(new ErrorDTO { Message = "PermissÃ£o nÃ£o encontrada" })
                         .WithCode(404)
                         .Build();
 
                 foreach (var operationId in permissionOperations.OperationIds)
                 {
-                    // Validar se a operação existe
+                    // Validar se a operaÃ§Ã£o existe
                     var operation = await _operationRepository.GetByIdAsync(operationId);
                     if (operation == null)
-                        continue; // Pular operações que não existem
+                        continue; // Pular operaÃ§Ãµes que nÃ£o existem
 
-                    // Verificar se a relação já existe
+                    // Verificar se a relaÃ§Ã£o jÃ¡ existe
                     var existingRelation = await _permissionOperationRepository.GetByPermissionAndOperationAsync(
                         permissionOperations.PermissionId, operationId);
                     
                     if (existingRelation != null)
-                        continue; // Pular relações que já existem
+                        continue; // Pular relaÃ§Ãµes que jÃ¡ existem
 
                     var entity = new PermissionOperationEntity
                     {
@@ -238,7 +238,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Atualiza uma relação Permissão-Operação
+        /// Atualiza uma relaÃ§Ã£o PermissÃ£o-OperaÃ§Ã£o
         /// </summary>
         /// <param name="id"></param>
         /// <param name="permissionOperation"></param>
@@ -250,7 +250,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
                 var existingEntity = await _permissionOperationRepository.GetByIdAsync(id);
                 if (existingEntity == null)
                     return ResponseBuilder<PermissionOperationDTO>
-                        .Fail(new ErrorDTO { Message = "Relação Permissão-Operação não encontrada" })
+                        .Fail(new ErrorDTO { Message = "RelaÃ§Ã£o PermissÃ£o-OperaÃ§Ã£o nÃ£o encontrada" })
                         .WithCode(404)
                         .Build();
 
@@ -273,7 +273,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Remove uma relação Permissão-Operação (soft delete)
+        /// Remove uma relaÃ§Ã£o PermissÃ£o-OperaÃ§Ã£o (soft delete)
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -284,7 +284,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
                 var existingEntity = await _permissionOperationRepository.GetByIdAsync(id);
                 if (existingEntity == null)
                     return ResponseBuilder<bool>
-                        .Fail(new ErrorDTO { Message = "Relação Permissão-Operação não encontrada" })
+                        .Fail(new ErrorDTO { Message = "RelaÃ§Ã£o PermissÃ£o-OperaÃ§Ã£o nÃ£o encontrada" })
                         .WithCode(404)
                         .Build();
 
@@ -305,7 +305,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Remove todas as relações de uma permissão (soft delete)
+        /// Remove todas as relaÃ§Ãµes de uma permissÃ£o (soft delete)
         /// </summary>
         /// <param name="permissionId"></param>
         /// <returns></returns>
@@ -327,7 +327,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Permis
         }
 
         /// <summary>
-        /// Remove relações específicas de uma permissão (soft delete)
+        /// Remove relaÃ§Ãµes especÃ­ficas de uma permissÃ£o (soft delete)
         /// </summary>
         /// <param name="permissionId"></param>
         /// <param name="operationIds"></param>

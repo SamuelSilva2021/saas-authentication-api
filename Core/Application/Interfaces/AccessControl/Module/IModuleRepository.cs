@@ -1,5 +1,5 @@
 ﻿using Authenticator.API.Core.Domain.AccessControl.Modules.DTOs;
-using Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Authenticator.API.Core.Domain.AccessControl.UserAccounts.DTOs;
 
 namespace Authenticator.API.Core.Application.Interfaces.AccessControl.Module
@@ -9,3 +9,4 @@ namespace Authenticator.API.Core.Application.Interfaces.AccessControl.Module
         Task<UserPermissionsDTO> GetModulesByUserAsync(Guid userId);
     }
 }
+

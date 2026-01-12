@@ -73,4 +73,8 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\opamenu-shared-infrastructure\OpaMenu.Infrastructure.Shared\OpaMenu.Infrastructure.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

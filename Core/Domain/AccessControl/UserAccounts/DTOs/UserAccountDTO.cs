@@ -1,4 +1,4 @@
-﻿using Authenticator.API.Core.Domain.AccessControl.UserAccounts.Enum;
+﻿using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts.Enum;
 
 namespace Authenticator.API.Core.Domain.AccessControl.UserAccounts.DTOs
 {
@@ -19,3 +19,4 @@ namespace Authenticator.API.Core.Domain.AccessControl.UserAccounts.DTOs
         public string FullName => $"{FirstName} {LastName}".Trim();
     }
 }
+

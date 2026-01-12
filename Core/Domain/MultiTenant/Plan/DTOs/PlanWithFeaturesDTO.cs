@@ -1,4 +1,5 @@
-﻿namespace Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs
+﻿using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Plan;
+namespace Authenticator.API.Core.Domain.MultiTenant.Plan.DTOs
 {
     public class PlanWithFeaturesDTO
     {
@@ -20,3 +21,4 @@
         public DateTime CreatedAt { get; set; }
     }
 }
+

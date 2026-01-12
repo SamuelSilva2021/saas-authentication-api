@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Subscription;
+using System.ComponentModel.DataAnnotations;
 
 namespace Authenticator.API.Core.Domain.MultiTenant.Subscriptions.DTOs
 {
@@ -23,3 +24,4 @@ namespace Authenticator.API.Core.Domain.MultiTenant.Subscriptions.DTOs
         public string? UsageLimits { get; set; }
     }
 }
+

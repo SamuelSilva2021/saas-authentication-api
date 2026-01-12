@@ -1,11 +1,9 @@
-using Authenticator.API.Core.Domain.MultiTenant.Plan;
-using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
-using Authenticator.API.Core.Domain.MultiTenant.Tenant;
-using Authenticator.API.Core.Domain.MultiTenant.TenantProduct;
-using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
-using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
-using Authenticator.API.Core.Domain.AccessControl.Roles;
-using Authenticator.API.Core.Domain.AccessControl.Permissions;
+﻿using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Plan;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Subscription;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Tenant;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.TenantProduct;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using Authenticator.API.Infrastructure.Data.Helpers;
@@ -70,7 +68,7 @@ public class MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options
             entity.Property(e => e.Email).HasColumnName("email");
             entity.Property(e => e.Website).HasColumnName("website");
 
-            // Endereço principal
+            // EndereÃ§o principal
             entity.Property(e => e.AddressStreet).HasColumnName("address_street");
             entity.Property(e => e.AddressNumber).HasColumnName("address_number");
             entity.Property(e => e.AddressComplement).HasColumnName("address_complement");
@@ -80,7 +78,7 @@ public class MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options
             entity.Property(e => e.AddressZipcode).HasColumnName("address_zipcode");
             entity.Property(e => e.AddressCountry).HasColumnName("address_country");
 
-            // Endereço de cobrança
+            // EndereÃ§o de cobranÃ§a
             entity.Property(e => e.BillingStreet).HasColumnName("billing_street");
             entity.Property(e => e.BillingNumber).HasColumnName("billing_number");
             entity.Property(e => e.BillingComplement).HasColumnName("billing_complement");
@@ -90,7 +88,7 @@ public class MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options
             entity.Property(e => e.BillingZipcode).HasColumnName("billing_zipcode");
             entity.Property(e => e.BillingCountry).HasColumnName("billing_country");
 
-            // Responsável legal
+            // ResponsÃ¡vel legal
             entity.Property(e => e.LegalRepresentativeName).HasColumnName("legal_representative_name");
             entity.Property(e => e.LegalRepresentativeCpf).HasColumnName("legal_representative_cpf");
             entity.Property(e => e.LegalRepresentativeEmail).HasColumnName("legal_representative_email");
@@ -228,3 +226,4 @@ public class MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options
         base.OnModelCreating(modelBuilder);
     }
 }
+

@@ -1,6 +1,6 @@
 ﻿using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGroup;
-using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Authenticator.API.Infrastructure.Repositories.AccessControl.AccessGroup
@@ -19,3 +19,4 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.AccessGrou
 
     }
 }
+

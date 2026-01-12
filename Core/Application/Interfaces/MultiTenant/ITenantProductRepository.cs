@@ -1,4 +1,4 @@
-using Authenticator.API.Core.Domain.MultiTenant.TenantProduct;
+﻿using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.TenantProduct;
 
 namespace Authenticator.API.Core.Application.Interfaces.MultiTenant
 {
@@ -7,3 +7,4 @@ namespace Authenticator.API.Core.Application.Interfaces.MultiTenant
         Task<TenantProductEntity?> GetDefaultProductAsync();
     }
 }
+

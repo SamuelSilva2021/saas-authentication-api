@@ -1,6 +1,6 @@
 ﻿using Authenticator.API.Core.Application.Interfaces;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.Permissions;
-using Authenticator.API.Core.Domain.AccessControl.Permissions;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 
 namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Permissions
 {
@@ -12,3 +12,4 @@ namespace Authenticator.API.Infrastructure.Repositories.AccessControl.Permission
         private readonly ILogger<PermissionRepository> _logger = logger;
     }
 }
+

@@ -1,5 +1,5 @@
 ﻿using Authenticator.API.Core.Domain.AccessControl.Modules.DTOs;
-using Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Authenticator.API.Core.Domain.Api;
 using AutoMapper;
 
@@ -43,3 +43,4 @@ namespace Authenticator.API.Infrastructure.Mapper.AccessControl.Module
         }
     }
 }
+

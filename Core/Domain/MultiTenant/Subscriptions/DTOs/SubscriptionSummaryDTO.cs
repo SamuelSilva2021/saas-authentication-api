@@ -1,4 +1,5 @@
-﻿namespace Authenticator.API.Core.Domain.MultiTenant.Subscriptions.DTOs
+﻿using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Subscription;
+namespace Authenticator.API.Core.Domain.MultiTenant.Subscriptions.DTOs
 {
     public class SubscriptionSummaryDTO
     {
@@ -16,3 +17,4 @@
         public DateTime CreatedAt { get; set; }
     }
 }
+

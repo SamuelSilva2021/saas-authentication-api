@@ -1,5 +1,7 @@
-﻿using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
+﻿using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Subscription;
 using Authenticator.API.Core.Domain.MultiTenant.Subscriptions.DTOs;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Tenant;
+using OpaMenu.Infrastructure.Shared.Enums.MultiTenant;
 
 namespace Authenticator.API.Core.Domain.MultiTenant.TenantProduct.DTOs
 {
@@ -8,10 +10,10 @@ namespace Authenticator.API.Core.Domain.MultiTenant.TenantProduct.DTOs
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
-        public string Category { get; set; } = string.Empty;
+        public ETenantProductCategory Category { get; set; } = ETenantProductCategory.WebApp;
         public string Version { get; set; } = "1.0.0";
-        public string Status { get; set; } = "active";
-        public string PricingModel { get; set; } = "subscription";
+        public ETenantStatus Status { get; set; } = ETenantStatus.Suspenso;
+        public ETenantProductPricingModel PricingModel { get; set; } = ETenantProductPricingModel.Assinatura;
         public decimal BasePrice { get; set; } = 0.00m;
         public decimal SetupFee { get; set; } = 0.00m;
         public DateTime CreatedAt { get; set; }
@@ -21,3 +23,4 @@ namespace Authenticator.API.Core.Domain.MultiTenant.TenantProduct.DTOs
         public int ActiveSubscriptionsCount => Subscriptions.Count(s => s.Status == ESubscriptionStatus.Ativo);
     }
 }
+

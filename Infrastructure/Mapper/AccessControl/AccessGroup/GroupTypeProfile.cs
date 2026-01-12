@@ -1,5 +1,5 @@
 ﻿using Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs;
-using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroups.DTOs;
 using Authenticator.API.Core.Domain.Api;
 using AutoMapper;
@@ -35,3 +35,4 @@ namespace Authenticator.API.Infrastructure.Mapper.AccessControl.AccessGroup
         }
     }
 }
+

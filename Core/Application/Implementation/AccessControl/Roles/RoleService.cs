@@ -1,16 +1,12 @@
-using Authenticator.API.Core.Application.Interfaces.AccessControl.Roles;
+﻿using Authenticator.API.Core.Application.Interfaces.AccessControl.Roles;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.RolePermissions;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.RoleAccessGroups;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.Permissions;
 using Authenticator.API.Core.Application.Interfaces.AccessControl.AccessGroup;
-using Authenticator.API.Core.Domain.AccessControl.Roles;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
 using Authenticator.API.Core.Domain.AccessControl.Roles.DTOs;
-using Authenticator.API.Core.Domain.AccessControl.Permissions;
 using Authenticator.API.Core.Domain.AccessControl.Permissions.DTOs;
 using Authenticator.API.Core.Domain.AccessControl.AccessGroup.DTOs;
-using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
-using Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
-using Authenticator.API.Core.Domain.AccessControl.Roles.Entities;
 using Authenticator.API.Core.Domain.Api;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Authenticator.API.Core.Application.Implementation.AccessControl.Roles
 {
     /// <summary>
-    /// Serviço para gerenciar Roles e seus relacionamentos
+    /// ServiÃ§o para gerenciar Roles e seus relacionamentos
     /// </summary>
     public class RoleService(
         IRoleRepository roleRepository,
@@ -99,7 +95,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Roles
 
                 if (entity == null)
                     return ResponseBuilder<RoleDTO>
-                        .Fail(new ErrorDTO { Message = "Role não encontrada" })
+                        .Fail(new ErrorDTO { Message = "Role nÃ£o encontrada" })
                         .WithCode(404)
                         .Build();
 
@@ -120,10 +116,10 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Roles
         {
             try
             {
-                // Utiliza método existente no repositório para obter roles por tenant
+                // Utiliza mÃ©todo existente no repositÃ³rio para obter roles por tenant
                 var entities = await _roleRepository.GetAllByTenantAsync(tenantId);
 
-                // Carregar includes manualmente se necessário
+                // Carregar includes manualmente se necessÃ¡rio
                 var entitiesWithIncludes = new List<RoleEntity>();
                 foreach (var role in entities)
                 {
@@ -156,7 +152,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Roles
 
                 var created = await _roleRepository.AddAsync(entity);
 
-                // Associar permissões
+                // Associar permissÃµes
                 if (dto.PermissionIds != null && dto.PermissionIds.Any())
                     await AssignPermissionsInternalAsync(created.Id, dto.PermissionIds);
 
@@ -191,7 +187,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Roles
 
                 if (existing == null)
                     return ResponseBuilder<RoleDTO>
-                        .Fail(new ErrorDTO { Message = "Role não encontrada" })
+                        .Fail(new ErrorDTO { Message = "Role nÃ£o encontrada" })
                         .WithCode(404)
                         .Build();
 
@@ -199,7 +195,7 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Roles
                 existing.UpdatedAt = DateTime.Now;
                 await _roleRepository.UpdateAsync(existing);
 
-                // Sincronizar permissões, se lista fornecida
+                // Sincronizar permissÃµes, se lista fornecida
                 if (dto.PermissionIds != null)
                     await SyncRolePermissionsInternalAsync(id, dto.PermissionIds);
 
@@ -227,11 +223,11 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Roles
                 var existing = await _roleRepository.GetByIdAsync(id);
                 if (existing == null)
                     return ResponseBuilder<bool>
-                        .Fail(new ErrorDTO { Message = "Role não encontrada" })
+                        .Fail(new ErrorDTO { Message = "Role nÃ£o encontrada" })
                         .WithCode(404)
                         .Build();
 
-                // Remover relações (soft delete) antes de excluir a role
+                // Remover relaÃ§Ãµes (soft delete) antes de excluir a role
                 await _rolePermissionRepository.RemoveAllByRoleIdAsync(id);
                 await _roleAccessGroupRepository.RemoveAllByRoleIdAsync(id);
 
@@ -373,19 +369,19 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Roles
         {
             var role = await _roleRepository.GetByIdAsync(roleId);
             if (role == null)
-                throw new ArgumentException("Role não encontrada");
+                throw new ArgumentException("Role nÃ£o encontrada");
 
             foreach (var permissionId in permissionIds)
             {
                 var permission = await _permissionRepository.GetByIdAsync(permissionId) ?? 
-                    throw new ArgumentException($"Permissão com ID {permissionId} não encontrada");
+                    throw new ArgumentException($"PermissÃ£o com ID {permissionId} nÃ£o encontrada");
             }
 
             var existing = await _rolePermissionRepository.GetAllRolePermissionsByRoleIdAsync(roleId);
             var existingIdsActive = existing.Where(rp => rp.IsActive).Select(rp => rp.PermissionId).ToList();
             var existingInactive = existing.Where(rp => !rp.IsActive).ToList();
 
-            // Reativar relações inativas caso existam
+            // Reativar relaÃ§Ãµes inativas caso existam
             if (existingInactive.Any())
             {
                 foreach (var rel in existingInactive)
@@ -424,13 +420,13 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Roles
         {
             var role = await _roleRepository.GetByIdAsync(roleId);
             if (role == null)
-                throw new ArgumentException("Role não encontrada");
+                throw new ArgumentException("Role nÃ£o encontrada");
 
             foreach (var groupId in accessGroupIds)
             {
                 var group = await _accessGroupRepository.GetByIdAsync(groupId);
                 if (group == null)
-                    throw new ArgumentException($"Grupo de acesso com ID {groupId} não encontrado");
+                    throw new ArgumentException($"Grupo de acesso com ID {groupId} nÃ£o encontrado");
             }
 
             var existing = await _roleAccessGroupRepository.GetByRoleIdAsync(roleId);
@@ -480,10 +476,11 @@ namespace Authenticator.API.Core.Application.Implementation.AccessControl.Roles
             if (toAdd.Any())
                 await AssignAccessGroupsInternalAsync(roleId, toAdd);
             if (toRemove.Any())
-                // Ajuste para utilizar o método existente no repositório
+                // Ajuste para utilizar o mÃ©todo existente no repositÃ³rio
                 await _roleAccessGroupRepository.RemoveByRoleAndGroupsAsync(roleId, toRemove);
 
             return true;
         }
     }
 }
+

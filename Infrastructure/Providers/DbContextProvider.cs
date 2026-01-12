@@ -1,19 +1,10 @@
-using Authenticator.API.Core.Application.Interfaces;
-using Authenticator.API.Core.Domain.AccessControl.AccessGroup.Entities;
-using Authenticator.API.Core.Domain.AccessControl.AccountAccessGroups.Etities;
-using Authenticator.API.Core.Domain.AccessControl.Applications;
-using Authenticator.API.Core.Domain.AccessControl.Modules.Entities;
-using Authenticator.API.Core.Domain.AccessControl.Operations;
-using Authenticator.API.Core.Domain.AccessControl.PermissionOperations;
-using Authenticator.API.Core.Domain.AccessControl.Permissions;
-using Authenticator.API.Core.Domain.AccessControl.RoleAccessGroups;
-using Authenticator.API.Core.Domain.AccessControl.Roles;
-using Authenticator.API.Core.Domain.AccessControl.Roles.Entities;
-using Authenticator.API.Core.Domain.AccessControl.UserAccounts;
-using Authenticator.API.Core.Domain.MultiTenant.Plan;
-using Authenticator.API.Core.Domain.MultiTenant.Subscriptions;
-using Authenticator.API.Core.Domain.MultiTenant.Tenant;
-using Authenticator.API.Core.Domain.MultiTenant.TenantProduct;
+﻿using Authenticator.API.Core.Application.Interfaces;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Plan;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Subscription;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.Tenant;
+using OpaMenu.Infrastructure.Shared.Entities.MultiTenant.TenantProduct;
 using Authenticator.API.Infrastructure.Data;
 using Authenticator.API.Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +28,7 @@ public class DbContextProvider : IDbContextProvider
     }
 
     /// <summary>
-    /// Obtém o contexto apropriado baseado no tipo da entidade
+    /// ObtÃ©m o contexto apropriado baseado no tipo da entidade
     /// </summary>
     /// <typeparam name="T">Tipo da entidade</typeparam>
     /// <returns>Contexto de banco de dados apropriado</returns>
@@ -57,11 +48,11 @@ public class DbContextProvider : IDbContextProvider
             return _multiTenantContext;
         }
 
-        throw new InvalidOperationException($"Não foi possível determinar o contexto para a entidade do tipo {entityType.Name}");
+        throw new InvalidOperationException($"NÃ£o foi possÃ­vel determinar o contexto para a entidade do tipo {entityType.Name}");
     }
 
     /// <summary>
-    /// Obtém o DbSet apropriado para o tipo da entidade
+    /// ObtÃ©m o DbSet apropriado para o tipo da entidade
     /// </summary>
     /// <typeparam name="T">Tipo da entidade</typeparam>
     /// <returns>DbSet da entidade</returns>
@@ -107,3 +98,4 @@ public class DbContextProvider : IDbContextProvider
                entityType == typeof(SubscriptionEntity);
     }
 }
+
