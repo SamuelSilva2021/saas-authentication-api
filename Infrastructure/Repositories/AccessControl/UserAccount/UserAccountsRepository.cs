@@ -1,4 +1,4 @@
-﻿using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts.Enum;
+using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts.Enum;
 using Authenticator.API.Core.Application.Interfaces;
 using OpaMenu.Infrastructure.Shared.Entities.AccessControl.UserAccounts;
 using Authenticator.API.Infrastructure.Providers;
@@ -8,8 +8,8 @@ using Microsoft.Extensions.Caching.Memory;
 namespace Authenticator.API.Infrastructure.Repositories.AccessControl.UserAccount;
 
 /// <summary>
-/// ImplementaÃ§Ã£o especÃ­fica do repositÃ³rio para contas de usuÃ¡rio
-/// Herda de Repository<UserAccountEntity> para ter acesso aos mÃ©todos CRUD bÃ¡sicos
+/// Implementação específica do repositório para contas de usuário
+/// Herda de Repository{UserAccountEntity} para ter acesso aos métodos CRUD básicos
 /// </summary>
 public class UserAccountsRepository(
     IDbContextProvider dbContextProvider,

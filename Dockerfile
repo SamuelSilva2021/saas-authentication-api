@@ -12,16 +12,25 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Authenticator.API.csproj", "."]
-RUN dotnet restore "./Authenticator.API.csproj"
+
+# Copiar csproj do projeto principal e das dependências
+COPY ["opamenu-authentication/Authenticator.API.csproj", "opamenu-authentication/"]
+COPY ["opamenu-shared-infrastructure/OpaMenu.Infrastructure.Shared/OpaMenu.Infrastructure.Shared.csproj", "opamenu-shared-infrastructure/OpaMenu.Infrastructure.Shared/"]
+
+# Restaurar dependências
+RUN dotnet restore "opamenu-authentication/Authenticator.API.csproj"
+
+# Copiar todo o código fonte
 COPY . .
-WORKDIR "/src/."
-RUN dotnet build "./Authenticator.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# Build
+WORKDIR "/src/opamenu-authentication"
+RUN dotnet build "Authenticator.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Esta fase é usada para publicar o projeto de serviço a ser copiado para a fase final
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Authenticator.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Authenticator.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Esta fase é usada na produção ou quando executada no VS no modo normal (padrão quando não está usando a configuração de Depuração)
 FROM base AS final

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Text.Json;
 
 namespace Authenticator.API.Infrastructure.Data.Helpers;
@@ -46,7 +46,7 @@ public static class JsonComparerHelper
     }
 
     /// <summary>
-    /// Cria um ValueComparer para List<T> serializado como JSON
+    /// Cria um ValueComparer para List{T} serializado como JSON
     /// </summary>
     public static ValueComparer<List<T>> GetListComparer<T>()
     {
