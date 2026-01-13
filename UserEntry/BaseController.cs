@@ -17,7 +17,7 @@ namespace Authenticator.API.UserEntry
         /// <param name="eTagFromObject"></param>
         /// <param name="etag"></param>
         /// <returns></returns>
-        public ActionResult BuildResponse<R>(ResponseDTO<R> serviceResponse, dynamic response,
+        public ActionResult BuildResponse<R>(ResponseDTO<R> serviceResponse, dynamic? response,
             Func<IList<ErrorDTO>, object>? errorHandler = null, object? eTagFromObject = null, string? etag = null)
         {
             return serviceResponse.Code switch
@@ -65,10 +65,11 @@ namespace Authenticator.API.UserEntry
         /// <summary>
         /// Build Empty Response
         /// </summary>
-        /// <typeparam name="R"></typeparam>
+        /// <typeparam name="TR"></typeparam>
         /// <param name="serviceResponse"></param>
+        /// <param name="errorHandler"></param>
         /// <returns></returns>
-        public ActionResult BuildEmptyResponse<R>(ResponseDTO<R> serviceResponse,
+        public ActionResult BuildEmptyResponse<TR>(ResponseDTO<TR> serviceResponse,
             Func<IList<ErrorDTO>, object>? errorHandler = null) =>
             serviceResponse.Code switch
             {
