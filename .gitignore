@@ -67,3 +67,4 @@ nunit-*.xml
 /appsettings.json
 /appsettings.Production.json
 /appsettings.Development.json
+.idea/.idea.Authenticator.API/.idea/workspace.xml
